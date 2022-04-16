@@ -32,12 +32,6 @@ public class DefaultScopeService implements OAuth2Service {
 
     }
 
-    /**
-     * 模拟持久化接口
-     *
-     * @param names
-     * @return
-     */
     @Override
     public Set<OAuth2Scope> findByNames(Set<String> names) {
         return names.stream()
