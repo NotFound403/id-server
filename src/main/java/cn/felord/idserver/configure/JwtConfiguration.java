@@ -9,11 +9,13 @@ import com.nimbusds.jose.proc.SecurityContext;
 import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
 import com.nimbusds.jwt.proc.DefaultJWTProcessor;
 import lombok.SneakyThrows;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationFilter;
 
 import java.security.KeyStore;
 
@@ -55,6 +57,7 @@ public class JwtConfiguration {
      */
     @SneakyThrows
     @Bean
+    @ConditionalOnClass(BearerTokenAuthenticationFilter.class)
     JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
         ConfigurableJWTProcessor<SecurityContext> jwtProcessor = new DefaultJWTProcessor<>();
         JWSVerificationKeySelector<SecurityContext> keySelector = new JWSVerificationKeySelector<>(JWSAlgorithm.RS256, jwkSource);
