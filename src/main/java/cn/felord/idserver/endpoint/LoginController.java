@@ -1,8 +1,6 @@
 package cn.felord.idserver.endpoint;
 
 import cn.felord.idserver.entity.SystemSettings;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestAttribute;
  * @since 1.0.0
  */
 @Controller
-public class LoginEndpoint {
+public class LoginController {
 
     /**
      * Login page string.
@@ -35,8 +33,7 @@ public class LoginEndpoint {
     }
 
     @GetMapping("/")
-    public String index(Model model,@AuthenticationPrincipal UserDetails currentUser) {
-        model.addAttribute("currentUser",currentUser);
+    public String index() {
         return "index";
     }
 }

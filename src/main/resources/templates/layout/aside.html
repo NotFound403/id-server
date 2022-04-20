@@ -1,0 +1,54 @@
+<aside th:fragment="th_aside" class="lyear-layout-sidebar">
+
+    <!-- logo -->
+    <div id="logo" class="sidebar-header">
+        <a href="index.html"><img th:src="@{/images/logo-sidebar.png}" title="LightYear" alt="LightYear"/></a>
+    </div>
+    <div class="lyear-layout-sidebar-info lyear-scroll">
+
+        <nav class="sidebar-main">
+            <ul class="nav-drawer">
+                <li class="nav-item active"><a href="/"><i class="mdi mdi-home"></i> <span>后台首页</span></a>
+                </li>
+                <li class="nav-item nav-item-has-subnav">
+                    <a href="javascript:void(0)"><i class="mdi mdi-palette"></i> <span>客户端管理</span></a>
+                    <ul class="nav nav-subnav">
+                        <li><a href="client/list">客户端列表</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item nav-item-has-subnav">
+                    <a href="javascript:void(0)"><i class="mdi mdi-format-align-justify"></i>
+                        <span>表单</span></a>
+                    <ul class="nav nav-subnav">
+                        <li><a href="lyear_forms_elements.html">基本元素</a></li>
+                        <li><a href="lyear_forms_input_group.html">输入框组</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item nav-item-has-subnav">
+                    <a href="javascript:void(0)"><i class="mdi mdi-tools"></i> <span>工具类</span></a>
+                    <ul class="nav nav-subnav">
+                        <li><a href="lyear_utilities_borders.html">边框</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item nav-item-has-subnav">
+                    <a href="javascript:void(0)"><i class="mdi mdi-file-outline"></i> <span>示例页面</span></a>
+                    <ul class="nav nav-subnav">
+                        <li><a href="lyear_pages_doc.html">文档列表</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item nav-item-has-subnav">
+                    <a href="javascript:void(0)"><i class="mdi mdi-language-javascript"></i> <span>JS 插件</span></a>
+                    <ul class="nav nav-subnav">
+                        <li><a href="lyear_js_datepicker.html">日期选取器</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer text-center">
+            <p class="copyright">Copyright © 2022 <a href='https://felord.cn'>felord.cn</a></p>
+            <p>All right reserved.</p>
+        </div>
+    </div>
+
+</aside>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/head::th_head(~{::title},~{},~{},~{})">
+    <title>首页</title>
+<!--todo 可以引入link style js-->
+</head>
+<body>
+<div class="lyear-layout-web">
+    <div class="lyear-layout-container">
+        <!--左侧导航-->
+        <aside th:replace="layout/aside::th_aside"></aside>
+        <!--End 左侧导航-->
+        <!--头部信息-->
+        <header th:replace="layout/header::th_header"></header>
+        <!--End 头部信息-->
+        <!--页面主要内容-->
+        <main class="lyear-layout-content">
+            <!--todo 页面写这里-->
+        </main>
+        <!--End 页面主要内容-->
+    </div>
+</div>
+<footer th:include="layout/footer::th_footer(~{})">
+<!--todo 引入js-->
+</footer>
+</body>
+</html>

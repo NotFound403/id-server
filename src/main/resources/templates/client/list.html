@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/head::th_head(~{::title},~{},~{},~{})">
+    <title>客户端列表</title>
+</head>
+<body>
+<div class="lyear-layout-web">
+    <div class="lyear-layout-container">
+        <!--左侧导航-->
+        <aside th:replace="layout/aside::th_aside"></aside>
+        <!--End 左侧导航-->
+        <!--头部信息-->
+        <header th:replace="layout/header::th_header"></header>
+        <!--End 头部信息-->
+        <!--页面主要内容-->
+        <main class="lyear-layout-content">
+            <div class="container-fluid p-t-15">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-toolbar d-flex flex-column flex-md-row">
+                                <div class="toolbar-btn-action">
+                                    <a class="btn btn-primary m-r-5" href="#!"><i class="mdi mdi-plus"></i> 新增</a>
+                                    <a class="btn btn-success m-r-5 ajax-post confirm" href="http://www.lyear.com/doc_test.php" target-form="ids"><i class="mdi mdi-check"></i> 启用</a>
+                                    <a class="btn btn-warning m-r-5" href="#!"><i class="mdi mdi-block-helper"></i> 禁用</a>
+                                    <a class="btn btn-danger" href="#!"><i class="mdi mdi-window-close"></i> 删除</a>
+                                </div>
+
+                                <form class="search-bar ml-md-auto" method="get" action="#!" role="form">
+                                    <input type="hidden" name="search_field" id="search-field" value="title" />
+                                    <div class="input-group ml-md-auto">
+                                        <div class="input-group-prepend">
+                                            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="search-btn">标题</button>
+                                            <div class="dropdown-menu" style="">
+                                                <a class="dropdown-item" href="#!" data-field="title">标题</a>
+                                                <a class="dropdown-item" href="#!" data-field="cat_name">栏目</a>
+                                            </div>
+                                        </div>
+                                        <input type="text" class="form-control" name="keyword" placeholder="请输入名称">
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="card-body">
+
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th>
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input" id="check-all">
+                                                    <label class="custom-control-label" for="check-all"></label>
+                                                </div>
+                                            </th>
+                                            <th>编号</th>
+                                            <th>标题</th>
+                                            <th>书籍</th>
+                                            <th>作者</th>
+                                            <th>阅读量</th>
+                                            <th>状态</th>
+                                            <th>操作</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td>
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input ids" name="ids[]" value="1" id="ids-1">
+                                                    <label class="custom-control-label" for="ids-1"></label>
+                                                </div>
+                                            </td>
+                                            <td>1</td>
+                                            <td>第01章 天涯思君不可忘</td>
+                                            <td>《倚天屠龙记》</td>
+                                            <td>金庸</td>
+                                            <td>36</td>
+                                            <td><font class="text-success">正常</font></td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a class="btn btn-xs btn-default" href="#!" title="" data-toggle="tooltip" data-original-title="编辑"><i class="mdi mdi-pencil"></i></a>
+                                                    <a class="btn btn-xs btn-default ajax-get confirm" href="http://www.lyear.com/doc_test.php?id=1" title="" data-toggle="tooltip" data-original-title="删除"><i class="mdi mdi-window-close"></i></a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input ids" name="ids[]" value="2" id="ids-2">
+                                                    <label class="custom-control-label" for="ids-2"></label>
+                                                </div>
+                                            </td>
+                                            <td>2</td>
+                                            <td>第01章 古道腾驹惊白发，危峦快剑识青翎</td>
+                                            <td>《书剑恩仇录》</td>
+                                            <td>金庸</td>
+                                            <td>44</td>
+                                            <td><font class="text-success">正常</font></td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a class="btn btn-xs btn-default" href="#!" title="" data-toggle="tooltip" data-original-title="编辑"><i class="mdi mdi-pencil"></i></a>
+                                                    <a class="btn btn-xs btn-default" href="#!" title="" data-toggle="tooltip" data-original-title="删除"><i class="mdi mdi-window-close"></i></a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input ids" name="ids[]" value="3" id="ids-3">
+                                                    <label class="custom-control-label" for="ids-3"></label>
+                                                </div>
+                                            </td>
+                                            <td>3</td>
+                                            <td>一个戴水獭皮帽子的朋友</td>
+                                            <td>《湘行散记》</td>
+                                            <td>沈从文</td>
+                                            <td>39</td>
+                                            <td><font class="text-success">正常</font></td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a class="btn btn-xs btn-default" href="#!" title="" data-toggle="tooltip" data-original-title="编辑"><i class="mdi mdi-pencil"></i></a>
+                                                    <a class="btn btn-xs btn-default" href="#!" title="" data-toggle="tooltip" data-original-title="删除"><i class="mdi mdi-window-close"></i></a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input ids" name="ids[]" value="4" id="ids-4">
+                                                    <label class="custom-control-label" for="ids-4"></label>
+                                                </div>
+                                            </td>
+                                            <td>4</td>
+                                            <td>你是要灼灼容颜，还是要宜其室家</td>
+                                            <td>《诗三百：思无邪》</td>
+                                            <td>安意如</td>
+                                            <td>36</td>
+                                            <td><font class="text-success">正常</font></td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a class="btn btn-xs btn-default" href="#!" title="" data-toggle="tooltip" data-original-title="编辑"><i class="mdi mdi-pencil"></i></a>
+                                                    <a class="btn btn-xs btn-default" href="#!" title="" data-toggle="tooltip" data-original-title="删除"><i class="mdi mdi-window-close"></i></a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input ids" name="ids[]" value="5" id="ids-5">
+                                                    <label class="custom-control-label" for="ids-5"></label>
+                                                </div>
+                                            </td>
+                                            <td>5</td>
+                                            <td>海上的消息</td>
+                                            <td>《打开心内的窗》</td>
+                                            <td>林清玄</td>
+                                            <td>32</td>
+                                            <td><font class="text-success">正常</font></td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a class="btn btn-xs btn-default" href="#!" title="" data-toggle="tooltip" data-original-title="编辑"><i class="mdi mdi-pencil"></i></a>
+                                                    <a class="btn btn-xs btn-default" href="#!" title="" data-toggle="tooltip" data-original-title="删除"><i class="mdi mdi-window-close"></i></a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input ids" name="ids[]" value="6" id="ids-6">
+                                                    <label class="custom-control-label" for="ids-6"></label>
+                                                </div>
+                                            </td>
+                                            <td>6</td>
+                                            <td>楔子 一阕词来 南国清秋魂梦绕 十年人散 绣房红烛剑光寒</td>
+                                            <td>《七剑下天山》</td>
+                                            <td>梁羽生</td>
+                                            <td>42</td>
+                                            <td><font class="text-success">正常</font></td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a class="btn btn-xs btn-default" href="#!" title="" data-toggle="tooltip" data-original-title="编辑"><i class="mdi mdi-pencil"></i></a>
+                                                    <a class="btn btn-xs btn-default" href="#!" title="" data-toggle="tooltip" data-original-title="删除"><i class="mdi mdi-window-close"></i></a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input ids" name="ids[]" value="7" id="ids-7">
+                                                    <label class="custom-control-label" for="ids-7"></label>
+                                                </div>
+                                            </td>
+                                            <td>7</td>
+                                            <td>祝福</td>
+                                            <td>《彷徨》</td>
+                                            <td>鲁迅</td>
+                                            <td>40</td>
+                                            <td><font class="text-success">正常</font></td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a class="btn btn-xs btn-default" href="#!" title="" data-toggle="tooltip" data-original-title="编辑"><i class="mdi mdi-pencil"></i></a>
+                                                    <a class="btn btn-xs btn-default" href="#!" title="" data-toggle="tooltip" data-original-title="删除"><i class="mdi mdi-window-close"></i></a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input ids" name="ids[]" value="8" id="ids-8">
+                                                    <label class="custom-control-label" for="ids-8"></label>
+                                                </div>
+                                            </td>
+                                            <td>8</td>
+                                            <td>一个女长年的故事</td>
+                                            <td>《莫泊桑短篇小说集》</td>
+                                            <td>莫泊桑</td>
+                                            <td>36</td>
+                                            <td><font class="text-success">正常</font></td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a class="btn btn-xs btn-default" href="#!" title="" data-toggle="tooltip" data-original-title="编辑"><i class="mdi mdi-pencil"></i></a>
+                                                    <a class="btn btn-xs btn-default" href="#!" title="" data-toggle="tooltip" data-original-title="删除"><i class="mdi mdi-window-close"></i></a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input ids" name="ids[]" value="9" id="ids-9">
+                                                    <label class="custom-control-label" for="ids-9"></label>
+                                                </div>
+                                            </td>
+                                            <td>9</td>
+                                            <td>第一回 赈民饥包公奉旨　图谋害庞相施计</td>
+                                            <td>《五虎征西》</td>
+                                            <td>李雨堂</td>
+                                            <td>35</td>
+                                            <td><font class="text-success">正常</font></td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a class="btn btn-xs btn-default" href="#!" title="" data-toggle="tooltip" data-original-title="编辑"><i class="mdi mdi-pencil"></i></a>
+                                                    <a class="btn btn-xs btn-default" href="#!" title="" data-toggle="tooltip" data-original-title="删除"><i class="mdi mdi-window-close"></i></a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input ids" name="ids[]" value="10" id="ids-10">
+                                                    <label class="custom-control-label" for="ids-10"></label>
+                                                </div>
+                                            </td>
+                                            <td>10</td>
+                                            <td>第一回 于按察山东赴任　邹其仁赴路登程</td>
+                                            <td>《于公案》</td>
+                                            <td>佚名</td>
+                                            <td>37</td>
+                                            <td><font class="text-success">正常</font></td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a class="btn btn-xs btn-default" href="#!" title="" data-toggle="tooltip" data-original-title="编辑"><i class="mdi mdi-pencil"></i></a>
+                                                    <a class="btn btn-xs btn-default" href="#!" title="" data-toggle="tooltip" data-original-title="删除"><i class="mdi mdi-window-close"></i></a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <ul class="pagination">
+                                    <li class="page-item disabled"><span class="page-link">上一页</span></li>
+                                    <li class="page-item active"><span class="page-link">1</span></li>
+                                    <li class="page-item"><a class="page-link" href="#1">2</a></li>
+                                    <li class="page-item"><a class="page-link" href="#1">3</a></li>
+                                    <li class="page-item"><a class="page-link" href="#1">4</a></li>
+                                    <li class="page-item"><a class="page-link" href="#1">5</a></li>
+                                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                                    <li class="page-item"><a class="page-link" href="#!">14452</a></li>
+                                    <li class="page-item"><a class="page-link" href="#!">14453</a></li>
+                                    <li class="page-item"><a class="page-link" href="#!">下一页</a></li>
+                                </ul>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+        <!--End 页面主要内容-->
+    </div>
+</div>
+<footer th:include="layout/footer::th_footer(~{})">
+    <script type="text/javascript">
+        $(function(){
+            $('.search-bar .dropdown-menu a').click(function() {
+                var field = $(this).data('field') || '';
+                $('#search-field').val(field);
+                $('#search-btn').html($(this).text());
+            });
+
+            // 通用ajax post请求
+            jQuery(document).delegate('.ajax-post', 'click', function(){
+                var self        = jQuery(this), tips = self.data('tips'), ajax_url = self.attr("href") || self.data("url");
+                var target_form = self.attr('target-form');
+                var text        = self.data('tips');
+                var form        = jQuery('form[name="'+ target_form +'"]');
+
+                if (form.length == 0) {
+                    form = jQuery('.' + target_form);
+                }
+
+                var form_data = form.serialize();
+                if ('submit' == self.attr('type') || ajax_url) {
+                    if (void 0 == form.get(0)) return false;
+
+                    // 如果节点是FORM表单
+                    if ('FORM' == form.get(0).nodeName) {
+                        ajax_url = ajax_url || form.get(0).action;
+
+                        // 确认提交
+                        if (self.hasClass('confirm')) {
+                            $.confirm({
+                                title: '',
+                                content: tips || '确认要执行该操作吗？',
+                                type: 'orange',
+                                typeAnimated: true,
+                                buttons: {
+                                    confirm: {
+                                        text: '确认',
+                                        btnClass: 'btn-blue',
+                                        action: function() {
+                                            var loader = $('body').lyearloading({
+                                                opacity: 0.2,
+                                                spinnerSize: 'lg'
+                                            });
+                                            self.attr('autocomplete', 'off').prop('disabled', true);
+                                            ajaxPostFun(self, ajax_url, form_data, loader);
+                                        }
+                                    },
+                                    cancel: {
+                                        text: '取消',
+                                        action: function() {}
+                                    }
+                                }
+                            });
+                            return false;
+                        } else {
+                            self.attr("autocomplete", "off").prop("disabled", true);
+                        }
+                    } else if ('INPUT' == form.get(0).nodeName || 'SELECT' == form.get(0).nodeName || 'TEXTAREA' == form.get(0).nodeName) {
+                        // 复选框判断是否有选择项
+                        if (form.get(0).type == 'checkbox' && form_data == '') {
+                            showNotify('请选择您要操作的数据', 'danger');
+                            return false;
+                        }
+
+                        if (self.hasClass('confirm')) {
+                            $.confirm({
+                                title: '',
+                                content: tips || '确认要执行该操作吗？',
+                                type: 'orange',
+                                typeAnimated: true,
+                                buttons: {
+                                    confirm: {
+                                        text: '确认',
+                                        btnClass: 'btn-blue',
+                                        action: function() {
+                                            var loader = $('body').lyearloading({
+                                                opacity: 0.2,
+                                                spinnerSize: 'lg'
+                                            });
+                                            self.attr('autocomplete', 'off').prop('disabled', true);
+
+                                            ajaxPostFun(self, ajax_url, form_data, loader);
+                                        }
+                                    },
+                                    cancel: {
+                                        text: '取消',
+                                        action: function() {}
+                                    }
+                                }
+                            });
+                            return false;
+                        } else {
+                            self.attr("autocomplete", "off").prop("disabled", true);
+                        }
+                    } else {
+                        if (self.hasClass('confirm')) {
+                            $.confirm({
+                                title: '',
+                                content: tips || '确认要执行该操作吗？',
+                                type: 'orange',
+                                typeAnimated: true,
+                                buttons: {
+                                    confirm: {
+                                        text: '确认',
+                                        btnClass: 'btn-blue',
+                                        action: function() {
+                                            var loader = $('body').lyearloading({
+                                                opacity: 0.2,
+                                                spinnerSize: 'lg'
+                                            });
+                                            self.attr('autocomplete', 'off').prop('disabled', true);
+
+                                            ajaxPostFun(self, ajax_url, form_data, loader);
+                                        }
+                                    },
+                                    cancel: {
+                                        text: '取消',
+                                        action: function() {}
+                                    }
+                                }
+                            });
+                            return false;
+                        } else {
+                            form_data = form.find("input,select,textarea").serialize();
+                            self.attr("autocomplete", "off").prop("disabled", true);
+                        }
+                    }
+
+                    var loader = $('body').lyearloading({
+                        opacity: 0.2,
+                        spinnerSize: 'lg'
+                    });
+                    ajaxPostFun(self, ajax_url, form_data, loader);
+
+                    return false;
+                }
+            });
+
+            // 通用ajax get请求
+            jQuery(document).delegate('.ajax-get', 'click', function(){
+                var self = $(this), tips = self.data('tips'), ajax_url = self.attr("href") || self.data("url");
+
+                if (self.hasClass('confirm')) {
+                    $.confirm({
+                        title: '',
+                        content: tips || '确认要执行该操作吗？',
+                        type: 'orange',
+                        typeAnimated: true,
+                        buttons: {
+                            confirm: {
+                                text: '确认',
+                                btnClass: 'btn-blue',
+                                action: function() {
+                                    var loader = $('body').lyearloading({
+                                        opacity: 0.2,
+                                        spinnerSize: 'lg'
+                                    });
+                                    self.attr('autocomplete', 'off').prop('disabled', true);
+
+                                    ajaxGetFun(self, ajax_url, loader);
+                                }
+                            },
+                            cancel: {
+                                text: '取消',
+                                action: function() {}
+                            }
+                        }
+                    });
+                    return false;
+                } else {
+                    var loader = $('body').lyearloading({
+                        opacity: 0.2,
+                        spinnerSize: 'lg'
+                    });
+                    self.attr('autocomplete', 'off').prop('disabled', true);
+
+                    ajaxGetFun(self, ajax_url, loader);
+                }
+                return false;
+            });
+
+            // POST提交处理
+            function ajaxPostFun(selfObj, ajax_url, form_data, loader) {
+                console.log('url==>'+ajax_url);
+                console.log('form_data==>'+form_data);
+                setTimeout(function() {
+                    loader.destroy();
+                    showNotify('修改成功，页面即将自动跳转~', 'success', 1000);
+                    selfObj.attr("autocomplete", "on").prop("disabled", false);
+                }, 1e3);
+                // 这里屏蔽get提交，js模拟返回成功，正常使用时请删除上面的内容，打开下面的注释代码
+                /*
+                jQuery.post(ajax_url, form_data).done(function(res) {
+                    loader.destroy();
+                    var res = eval('(' + res + ')');
+                    var msg = res.msg;
+                    if (200 == res.code) {
+                        if (res.url && !selfObj.hasClass('no-refresh')) {
+                            msg += '页面即将自动跳转';
+                        }
+                        showNotify(msg, 'info');
+                        setTimeout(function () {
+                            selfObj.attr("autocomplete", "on").prop("disabled", false);
+                            return selfObj.hasClass("no-refresh") ? false : (res.url ? location.href = res.url : location.reload());
+                        }, 1500);
+                    } else {
+                        showNotify(msg, 'danger');
+                        selfObj.attr("autocomplete", "on").prop("disabled", false);
+                    }
+                }).fail(function () {
+                    loader.destroy();
+                    showNotify('服务器发生错误，请稍后再试', 'danger');
+                    selfObj.attr("autocomplete", "on").prop("disabled", false);
+                });
+                */
+            }
+
+            // GET提交处理
+            function ajaxGetFun(selfObj, ajax_url, loader) {
+                console.log(ajax_url);
+                setTimeout(function() {
+                    loader.destroy();
+                    showNotify('修改成功，页面即将自动跳转~', 'success', 1000);
+                    selfObj.attr("autocomplete", "on").prop("disabled", false);
+                }, 1e3);
+                // 这里屏蔽get提交，js模拟返回成功，正常使用时请删除上面的内容，打开下面的注释代码
+                /*
+                jQuery.get(ajax_url).done(function(res) {
+                    loader.destroy();
+                    var res = eval('(' + res + ')');
+                    var msg = res.msg;
+                    if (200 == res.code) {
+                        if (res.url && !selfObj.hasClass('no-refresh')) {
+                            msg += '页面即将自动跳转';
+                        }
+                        showNotify(msg, 'info');
+                        setTimeout(function () {
+                            selfObj.attr("autocomplete", "on").prop("disabled", false);
+                            return selfObj.hasClass("no-refresh") ? false : (res.url ? location.href = res.url : location.reload());
+                        }, 1500);
+                    } else {
+                        showNotify(msg, 'danger');
+                        selfObj.attr("autocomplete", "on").prop("disabled", false);
+                    }
+                }).fail(function () {
+                    loader.destroy();
+                    showNotify('服务器发生错误，请稍后再试', 'danger');
+                    selfObj.attr("autocomplete", "on").prop("disabled", false);
+                });
+                */
+            }
+
+            /*
+             * 提取通用的通知消息方法
+             * 这里只采用简单的用法，如果想要使用回调或者更多的用法，请查看lyear_js_notify.html页面
+             * @param $msg 提示信息
+             * @param $type 提示类型:'info', 'success', 'warning', 'danger'
+             * @param $delay 毫秒数，例如：1000
+             * @param $icon 图标，例如：'fa fa-user' 或 'glyphicon glyphicon-warning-sign'
+             * @param $from 'top' 或 'bottom' 消息出现的位置
+             * @param $align 'left', 'right', 'center' 消息出现的位置
+             */
+            function showNotify($msg, $type, $delay, $icon, $from, $align) {
+                $type  = $type || 'info';
+                $delay = $delay || 1000;
+                $from  = $from || 'top';
+                $align = $align || 'right';
+                $enter = $type == 'danger' ? 'animated shake' : 'animated fadeInUp';
+
+                jQuery.notify({
+                        icon: $icon,
+                        message: $msg
+                    },
+                    {
+                        element: 'body',
+                        type: $type,
+                        allow_dismiss: true,
+                        newest_on_top: true,
+                        showProgressbar: false,
+                        placement: {
+                            from: $from,
+                            align: $align
+                        },
+                        offset: 20,
+                        spacing: 10,
+                        z_index: 10800,
+                        delay: $delay,
+                        animate: {
+                            enter: $enter,
+                            exit: 'animated fadeOutDown'
+                        }
+                    });
+            }
+        });
+    </script>
+</footer>
+</body>
+</html>
