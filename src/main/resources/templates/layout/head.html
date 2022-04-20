@@ -1,0 +1,20 @@
+<head th:fragment="th_head(th_title,th_links,th_styles,th_script)">
+    <!--  global begin   -->
+    <title th:replace="${th_title}"></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+    <link rel="icon" href="favicon.ico">
+    <meta name="keywords" content="id server">
+    <meta name="description" content="id server是一个基于Spring Authorization Server的授权服务器">
+    <meta name="author" content="felord.cn">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/materialdesignicons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="js/bootstrap-multitabs/multitabs.min.css">
+    <link href="css/style.min.css" rel="stylesheet">
+    <!--  global end  -->
+
+    <th:block th:replace="${th_links}"/>
+    <th:block th:replace="${th_styles}"/>
+    <th:block th:replace="${th_script}"/>
+
+</head>

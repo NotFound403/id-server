@@ -60,4 +60,12 @@ CREATE TABLE oauth2_scope
     scope       varchar(100) NOT NULL,
     description varchar(400) DEFAULT '',
     PRIMARY KEY (scope)
-)
+);
+
+CREATE TABLE system_settings
+(
+    id          VARCHAR(255) NOT NULL,
+    system_name VARCHAR(255) NOT NULL,
+    copyright   VARCHAR(255) NOT NULL,
+    PRIMARY KEY (id)
+);
