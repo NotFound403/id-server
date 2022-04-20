@@ -1,25 +1,4 @@
 var lightyear = function(){
-	
-	/**
-	 * 页面loading
-	 */
-	var pageLoader = function($mode) {
-		var $loadingEl = jQuery('#lyear-loading');
-		    $mode      = $mode || 'show';
-		if ($mode === 'show') {
-			if ($loadingEl.length) {
-				$loadingEl.fadeIn(250);
-			} else {
-				jQuery('body').prepend('<div id="lyear-loading"><div class="spinner-border text-primary" role="status"><span class="sr-only">Loading...</span></div></div>');
-			}
-		} else if ($mode === 'hide') {
-			if ($loadingEl.length) {
-				$loadingEl.fadeOut(250);
-			}
-		}
-		return false;
-	};
-	
     /**
      * 页面小提示
      * @param $msg 提示信息
