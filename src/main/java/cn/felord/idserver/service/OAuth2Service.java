@@ -2,6 +2,7 @@ package cn.felord.idserver.service;
 
 import cn.felord.idserver.entity.OAuth2Scope;
 
+import java.util.Collection;
 import java.util.Set;
 
 /**
@@ -14,5 +15,5 @@ public interface OAuth2Service {
      * @param names the names
      * @return the set
      */
-    Set<OAuth2Scope> findByNames(Set<String> names);
+    Set<OAuth2Scope> findByNames(String clientId, Collection<String> names);
 }

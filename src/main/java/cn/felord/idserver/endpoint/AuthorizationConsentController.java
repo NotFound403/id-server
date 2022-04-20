@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -62,21 +63,23 @@ public class AuthorizationConsentController {
         Set<String> authorizedScopes = currentAuthorizationConsent != null ?
                 currentAuthorizationConsent.getScopes() : Collections.emptySet();
 
-        Set<String> scopesToApprove = new HashSet<>();
-        Set<String> previouslyApprovedScopes = new HashSet<>();
+        Set<OAuth2Scope> scopesToApproves = new HashSet<>();
+        Set<OAuth2Scope> previouslyApprovedScopesSet = new HashSet<>();
 
-        for (String requestedScope : StringUtils.delimitedListToStringArray(scope, " ")) {
-            if (authorizedScopes.contains(requestedScope)) {
-                previouslyApprovedScopes.add(requestedScope);
-            } else {
-                scopesToApprove.add(requestedScope);
-            }
-        }
+        String[] scopes = StringUtils.delimitedListToStringArray(scope, " ");
 
-        Set<OAuth2Scope> scopesToApproves = scopeService.findByNames(scopesToApprove);
-        Set<OAuth2Scope> previouslyApprovedScopesSet = scopeService.findByNames(previouslyApprovedScopes);
+        Set<OAuth2Scope> oAuth2Scopes = scopeService.findByNames(clientId, Arrays.asList(scopes));
+
+              oAuth2Scopes.forEach(oAuth2Scope -> {
+                  if (authorizedScopes.contains(oAuth2Scope.getScope())) {
+                      previouslyApprovedScopesSet.add(oAuth2Scope);
+                  } else {
+                      scopesToApproves.add(oAuth2Scope);
+                  }
+              });
 
         String clientName = registeredClient.getClientName();
+
         model.addAttribute("clientId", clientId);
         model.addAttribute("clientName", clientName);
         model.addAttribute("state", state);
