@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/head::th_head(~{::title},~{},~{::style},~{})">
+    <title>登录</title>
+    <style>
+        .login-form .has-feedback {
+            position: relative;
+        }
+
+        .login-form .has-feedback .form-control {
+            padding-left: 36px;
+        }
+
+        .login-form .has-feedback .mdi {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: auto;
+            width: 36px;
+            height: 36px;
+            line-height: 36px;
+            z-index: 4;
+            color: #dcdcdc;
+            display: block;
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .login-form .has-feedback.row .mdi {
+            left: 15px;
+        }
+    </style>
+</head>
+
+</head>
+<body class="center-vh" th:style="'background-image: url(images/loginbg.jpg); background-size: cover;'">
+
+<div class="card card-shadowed p-5 w-420 mb-0 mr-2 ml-2">
+    <div class="text-center mb-3">
+        <h3 th:text="${systemSettings.systemName?:'ID Server 授权服务'}"></h3>
+    </div>
+
+    <form action="/login" method="post" class="login-form">
+        <div class="form-group has-feedback">
+            <!--            todo 账户错误异常-->
+            <span class="mdi mdi-account" aria-hidden="true"></span>
+            <input type="text" placeholder="请输入您的用户名" class="form-control" name="username" id="username"/>
+        </div>
+
+        <div class="form-group has-feedback">
+            <!--            todo 密码错误异常-->
+            <span class="mdi mdi-lock" aria-hidden="true"></span>
+            <input type="password" placeholder="请输入密码" class="form-control" id="password" name="password"/>
+        </div>
+        <div class="form-group">
+            <input name="_csrf" type="hidden" th:value="${_csrfToken.token}"/>
+            <button class="btn btn-block btn-primary" type="submit">立即登录</button>
+        </div>
+    </form>
+
+    <footer class="col-sm-12 text-center text-gray">
+        <p class="m-b-0"
+           th:utext="${systemSettings.copyright?:'Copyright © 2022 <a href=https://felord.cn>felord.cn</a><br> All right reserved'}"></p>
+    </footer>
+</div>
+
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+</body>
+</html>

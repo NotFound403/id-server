@@ -1,0 +1,14 @@
+<footer th:fragment="th_footer(th_script)">
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/popper.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/perfect-scrollbar.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jquery.cookie.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/main.min.js}"></script>
+
+    <script type="text/javascript" th:src="@{/js/lyear-loading.js}"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap-notify.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jquery-confirm/jquery-confirm.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/Chart.min.js}"></script>
+    <th:block th:replace="${th_script}"/>
+</footer>
