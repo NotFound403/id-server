@@ -14,7 +14,6 @@ public class ClientController {
 
     @GetMapping("/list")
     public String index() {
-
         return "client/list";
     }
 }
