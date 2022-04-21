@@ -18,6 +18,7 @@ import org.springframework.security.oauth2.server.authorization.client.Registere
 import org.springframework.security.oauth2.server.authorization.config.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.config.TokenSettings;
 
+import java.util.List;
 import java.util.UUID;
 
 @SpringBootTest
@@ -29,8 +30,11 @@ class IdServerApplicationTests {
 
     @Test
     void contextLoads() {
-        Page<Client> page = clientRepository.findAll(PageRequest.of(0, 10, Sort.sort(Client.class).by(Client::getId).descending()));
-        System.out.println("page = " + page.getContent());
+        Page<OAuth2Client> page = jpaRegisteredClientRepository.page(PageRequest.of(0, 10, Sort.sort(Client.class)
+                .by(Client::getClientIdIssuedAt).descending()));
+
+        List<OAuth2Client> content = page.getContent();
+        System.out.println("content = " + content);
     }
 
     private static RegisteredClient createRegisteredClient() {

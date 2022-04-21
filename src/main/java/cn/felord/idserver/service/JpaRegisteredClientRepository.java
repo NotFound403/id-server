@@ -15,11 +15,14 @@
  */
 package cn.felord.idserver.service;
 
+import cn.felord.idserver.dto.OAuth2Client;
 import cn.felord.idserver.entity.Client;
 import cn.felord.idserver.repository.ClientRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.jackson2.SecurityJackson2Modules;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
@@ -38,6 +41,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * The type Jpa registered client repository.
+ *
  * @author Steve Riesenberg
  */
 @Service
@@ -45,6 +50,11 @@ public class JpaRegisteredClientRepository implements RegisteredClientRepository
 	private final ClientRepository clientRepository;
 	private final ObjectMapper objectMapper = new ObjectMapper();
 
+	/**
+	 * Instantiates a new Jpa registered client repository.
+	 *
+	 * @param clientRepository the client repository
+	 */
 	public JpaRegisteredClientRepository(ClientRepository clientRepository) {
 		Assert.notNull(clientRepository, "clientRepository cannot be null");
 		this.clientRepository = clientRepository;
@@ -71,6 +81,18 @@ public class JpaRegisteredClientRepository implements RegisteredClientRepository
 	public RegisteredClient findByClientId(String clientId) {
 		Assert.hasText(clientId, "clientId cannot be empty");
 		return this.clientRepository.findByClientId(clientId).map(this::toObject).orElse(null);
+	}
+
+	/**
+	 * Page of OAuth2Client.
+	 *
+	 * @param pageable the pageable
+	 * @return the page
+	 */
+	public Page<OAuth2Client> page(Pageable pageable){
+		return this.clientRepository.findAll(pageable)
+				.map(this::toObject)
+				.map(OAuth2Client::fromRegisteredClient);
 	}
 
 	private RegisteredClient toObject(Client client) {
