@@ -1,0 +1,34 @@
+
+		<!-- basic scripts -->
+		<!--[if !IE]> -->
+		<script th:src="@{/resource/plugins/jquery/dist/jquery.js}"></script>
+		<script th:src="@{/resource/plugins/jquery-validation-1.17.0/jquery.validate.min.js}"></script>
+		<script th:src="@{/resource/plugins/jquery-validation-1.17.0/additional-methods.min.js}"></script>
+ 		<script th:src="@{/resource/plugins/jquery-validation-1.17.0/messages_zh.js}"></script>
+ 		<script th:src="@{/resource/plugins/jquery.serializejson.min.js}"></script> 
+ 		<script th:src="@{/resource/plugins/jquery.form.min.js}"></script> 
+		<!-- <![endif]-->
+		
+		<!--[if IE]> 
+		<script th:src="@{/resource/plugins/jquery.1x/dist/jquery.js}"></script>
+		
+		  <![endif]-->
+		
+		 
+		<script th:src="@{/resource/plugins/bootstrap/js/bootstrap.js}"></script>
+ 
+		<!-- resource scripts -->
+		<script th:src="@{/resource/js/ace.js}"></script>
+		<script th:src="@{/resource/js/ace-elements.js}"></script>
+		<script th:src="@{/resource/plugins/layer/layer.js}"></script> 
+		<!-- bootstrap table scripts -->
+		<script th:src="@{/resource/plugins/bootstrap-table-1.11.1/bootstrap-table.min.js}"></script>
+		<script th:src="@{/resource/plugins/bootstrap-table-1.11.1/locale/bootstrap-table-zh-CN.min.js}"></script>
+		
+		<script th:inline="javascript">
+		 /*<![CDATA[*/
+        	var ctx = [[@{/}]];
+   			 /*]]>*/
+		</script>
+		
+		  <script th:src="@{/resource/plugins/common/jeeplus.js}"></script> 

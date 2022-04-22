@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-CN">
+<head th:replace="common/layout :: common_header(~{::title},~{::link})">
+<title th:text="${global.fullname}">系统名称</title>
+<link rel="stylesheet" href="css/index.css">
+</head>
+
+<body class="login-layout blur-login">
+	<div class="main-container">
+		<div class="main-content">
+			<div class="row">
+				<div class="col-sm-10 col-sm-offset-1">
+					<div class="login-container">
+						<div class="center">
+							<h1>
+								<!-- <span class="red">Ace</span> -->
+								<span class="white" id="id-text2" th:text="${global.fullname}">系统名称</span>
+							</h1>
+							<h4 class="blue" id="id-company-text" th:text="${global.poweredby}">&copy;  2018</h4>
+						</div>
+
+						<div class="space-6"></div>
+
+						<div class="position-relative">
+							<div id="login-box"
+								class="login-box visible widget-box no-border">
+								<div class="widget-body">
+									<div class="widget-main">
+										<h4 class="header blue lighter bigger">
+											<i class="ace-icon fa fa-coffee green"></i> 系统登录
+										</h4>
+										<div class="space-6"></div>
+										<form th:action="@{/sys/login}" method="post">
+											<fieldset>
+												<label class="block clearfix"> <span
+													class="block input-icon input-icon-right"> <input
+														type="text" class="form-control" placeholder="用户名"
+														name="userId" /> <i class="ace-icon fa fa-user"></i>
+												</span>
+												</label> <label class="block clearfix"> <span
+													class="block input-icon input-icon-right"> <input
+														type="password" class="form-control" placeholder="密码"
+														name="password" /> <i class="ace-icon fa fa-lock"></i>
+												</span>
+												</label> <label class="block clearfix"> <input type="text"
+													name="kaptcha" id="kaptcha" maxlength="4" class="span4"
+													style="width: 72%" placeholder="验证码" /> <img
+													th:src="@{/kaptcha.jpg}" id="kaptchaImage"
+													src="/images/kaptcha.jpg"
+													style="margin-left: -5px; margin-top: -8px; width: 74px; height: 29px;" onclick="this.src='/kaptcha.jpg?time='+Math.random()"/>
+												</label>
+												<div class="space"></div>
+												<label class="block clearfix red" th:text="${msg}">
+
+												</label>
+												<div class="clearfix">
+													<label class="inline"> <input type="checkbox"
+														class="ace" name="rememberMe" /> <span class="lbl">
+															记住我</span>
+													</label>
+
+													<button type="submit"
+														class="width-35 pull-right btn btn-sm btn-primary">
+														<i class="ace-icon fa fa-key"></i> <span
+															class="bigger-110">登录</span>
+													</button>
+												</div>
+
+												<div class="space-4"></div>
+											</fieldset>
+										</form>
+									</div>
+									<!-- /.widget-main -->
+								</div>
+								<!-- /.widget-body -->
+							</div>
+							<!-- /.login-box -->
+						</div>
+						<!-- /.position-relative -->
+
+						<div class="navbar-fixed-top align-right">
+							<br /> &nbsp; <a id="btn-login-dark" href="#">Dark</a> &nbsp; <span
+								class="blue">/</span> &nbsp; <a id="btn-login-blur" href="#">Blur</a>
+							&nbsp; <span class="blue">/</span> &nbsp; <a id="btn-login-light"
+								href="#">Light</a> &nbsp; &nbsp; &nbsp;
+						</div>
+					</div>
+				</div>
+				<!-- /.col -->
+			</div>
+			<!-- /.row -->
+		</div>
+		<!-- /.main-content -->
+	</div>
+	<!-- /.main-container -->
+	<!-- basic scripts -->
+	<!--[if IE]>  -->
+	<script th:src="@{/resource/plugins/jquery.1x/dist/jquery.js}"></script>
+	<!-- <![endif]-->
+	<!-- inline scripts related to this page -->
+	<script type="text/javascript">
+		jQuery(function($) {
+			$(document).on('click', '.toolbar a[data-target]', function(e) {
+				e.preventDefault();
+				var target = $(this).data('target');
+				$('.widget-box.visible').removeClass('visible');//hide others
+				$(target).addClass('visible');//show target
+			});
+		});
+
+		//you don't need this, just used for changing background
+		jQuery(function($) {
+			$('#btn-login-dark').on('click', function(e) {
+				$('body').attr('class', 'login-layout');
+				$('#id-text2').attr('class', 'white');
+				$('#id-company-text').attr('class', 'blue');
+
+				e.preventDefault();
+			});
+			$('#btn-login-light').on('click', function(e) {
+				$('body').attr('class', 'login-layout light-login');
+				$('#id-text2').attr('class', 'grey');
+				$('#id-company-text').attr('class', 'blue');
+
+				e.preventDefault();
+			});
+			$('#btn-login-blur').on('click', function(e) {
+				$('body').attr('class', 'login-layout blur-login');
+				$('#id-text2').attr('class', 'white');
+				$('#id-company-text').attr('class', 'light-blue');
+
+				e.preventDefault();
+			});
+
+		});
+	</script>
+</body>
+</html>

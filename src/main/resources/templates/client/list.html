@@ -18,111 +18,19 @@
                 <section class="content-header">
                     <h1>
                         <small>
-                            <td>客户端管理 > 客户端列表</td>
+                            <td>OAuth2客户端管理 > 客户端列表</td>
                         </small>
                     </h1>
                 </section>
                 <section class="content">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="card">
-                                <div class="card-toolbar d-flex flex-column flex-md-row">
-                                    <div class="toolbar-btn-action">
-                                        <a class="btn btn-primary m-r-5" href="#!"><i class="mdi mdi-plus"></i> 新增</a>
-                                        <a class="btn btn-success m-r-5 ajax-post confirm"
-                                           href="http://www.lyear.com/doc_test.php" target-form="ids"><i
-                                                class="mdi mdi-check"></i> 启用</a>
-                                        <a class="btn btn-warning m-r-5" href="#!"><i class="mdi mdi-block-helper"></i>
-                                            禁用</a>
-                                        <a class="btn btn-danger" href="#!"><i class="mdi mdi-window-close"></i> 删除</a>
-                                    </div>
-
-                                    <form class="search-bar ml-md-auto" method="get" action="#!" role="form">
-                                        <input type="hidden" name="search_field" id="search-field" value="title"/>
-                                        <div class="input-group ml-md-auto">
-                                            <div class="input-group-prepend">
-                                                <button class="btn btn-default dropdown-toggle" type="button"
-                                                        data-toggle="dropdown" aria-haspopup="true"
-                                                        aria-expanded="false"
-                                                        id="search-btn">标题
-                                                </button>
-                                                <div class="dropdown-menu" style="">
-                                                    <a class="dropdown-item" href="#!" data-field="title">标题</a>
-                                                    <a class="dropdown-item" href="#!" data-field="cat_name">栏目</a>
-                                                </div>
-                                            </div>
-                                            <input type="text" class="form-control" name="keyword" placeholder="请输入名称">
-                                        </div>
-                                    </form>
-                                </div>
-                                <div class="card-body">
-
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered">
-                                            <thead>
-                                            <tr>
-                                                <th>
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input"
-                                                               id="check-all">
-                                                        <label class="custom-control-label" for="check-all"></label>
-                                                    </div>
-                                                </th>
-                                                <th>ID</th>
-                                                <th>客户端ID</th>
-                                                <th>客户端名称</th>
-                                                <th>认证方式</th>
-                                                <th>授权类型</th>
-                                                <th>创建时间</th>
-                                                <th>操作</th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                            <tr>
-                                                <td>
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input ids"
-                                                               name="ids[]"
-                                                               value="1" id="ids-1">
-                                                        <label class="custom-control-label" for="ids-1"></label>
-                                                    </div>
-                                                </td>
-                                                <td>0b62d264-2d89-465d-a8c1-b83e633aafaf</td>
-                                                <td>felord</td>
-                                                <td>我的客户端</td>
-                                                <td>client_secret_basic</td>
-                                                <td>refresh_token, client_credentials, authorization_code</td>
-<!--                                                <td><font class="text-success">正常</font></td>-->
-                                                <td>2022-04-21 14:55:27</td>
-                                                <td>
-                                                    <div class="btn-group">
-                                                        <a class="btn btn-xs btn-default" href="#!" title=""
-                                                           data-toggle="tooltip" data-original-title="编辑"><i
-                                                                class="mdi mdi-pencil"></i></a>
-                                                        <a class="btn btn-xs btn-default ajax-get confirm"
-                                                           href="http://www.lyear.com/doc_test.php?id=1" title=""
-                                                           data-toggle="tooltip" data-original-title="删除"><i
-                                                                class="mdi mdi-window-close"></i></a>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <ul class="pagination">
-                                        <li class="page-item disabled"><span class="page-link">上一页</span></li>
-                                        <li class="page-item active"><span class="page-link">1</span></li>
-                                        <li class="page-item"><a class="page-link" href="#1">2</a></li>
-                                        <li class="page-item disabled"><span class="page-link">...</span></li>
-                                        <li class="page-item"><a class="page-link" href="#!">5</a></li>
-                                        <li class="page-item"><a class="page-link" href="#!">6</a></li>
-                                        <li class="page-item"><a class="page-link" href="#!">下一页</a></li>
-                                    </ul>
-
-                                </div>
-                            </div>
-                        </div>
+                    <!-- tools -->
+                    <div id="toolbar" class="toolbar-btn-action">
+                        <button id="btn_add" type="button" class="btn btn-primary m-r-5">
+                            <span class="mdi mdi-plus" aria-hidden="true"></span>新增
+                        </button>
                     </div>
+                    <!-- table container -->
+                    <table id="tb_departments"></table>
                 </section>
             </div>
         </main>
@@ -131,314 +39,178 @@
 </div>
 <footer th:include="layout/footer::th_footer(~{::script})">
     <script type="text/javascript">
-        $(function () {
-            $('.search-bar .dropdown-menu a').click(function () {
-                var field = $(this).data('field') || '';
-                $('#search-field').val(field);
-                $('#search-btn').html($(this).text());
+
+        $('#btn_add').on('click',function () {
+            layer.open({
+                type: 1,
+                shadeClose: false, //点击遮罩关闭
+                content: $('#client-add-form'),
             });
+        })
+        <!--    表格    -->
+        $('#tb_departments').bootstrapTable({
+            classes: 'table table-bordered table-hover table-striped',
+            url: '/client/pagination',
+            method: 'get',
+            dataType: 'json',
+            uniqueId: 'id',
+            idField: 'id',             // 每行的唯一标识字段
+            toolbar: '#toolbar',       // 工具按钮容器
+            //clickToSelect: true,     // 是否启用点击选中行
+            showColumns: true,         // 是否显示所有的列
+            showRefresh: true,         // 是否显示刷新按钮
+            showToggle: false,        // 是否显示详细视图和列表视图的切换按钮(clickToSelect同时设置为true时点击会报错)
+            pagination: true,                    // 是否显示分页
+            sortOrder: "asc",                    // 排序方式
+            responseHandler: function (response) {
 
-            // 通用ajax post请求
-            jQuery(document).delegate('.ajax-post', 'click', function () {
-                var self = jQuery(this), tips = self.data('tips'), ajax_url = self.attr("href") || self.data("url");
-                var target_form = self.attr('target-form');
-                var text = self.data('tips');
-                var form = jQuery('form[name="' + target_form + '"]');
-
-                if (form.length == 0) {
-                    form = jQuery('.' + target_form);
+                if (response.code === 200) {
+                    var rows = response.data.content;
+                    var total = response.data.totalPages
+                    return {"rows": rows, "total": total}
                 }
+                return {};
+            },
+            queryParams: function (params) {
+                return {
+                    limit: params.limit,         // 每页数据量
+                    offset: params.offset,       // sql语句起始索引
+                    page: (params.offset / params.limit),
+                    sort: params.sort,           // 排序的列名
+                    sortOrder: params.order      // 排序方式'asc' 'desc'
+                };
+            },                                   // 传递参数
+            sidePagination: "server",            // 分页方式：client客户端分页，server服务端分页
+            pageNumber: 1,                       // 初始化加载第一页，默认第一页
+            pageSize: 10,                        // 每页的记录行数
+            pageList: [10, 25, 50, 100],         // 可供选择的每页的行数
+            //search: true,                      // 是否显示表格搜索，此搜索是客户端搜索
 
-                var form_data = form.serialize();
-                if ('submit' == self.attr('type') || ajax_url) {
-                    if (void 0 == form.get(0)) return false;
+            //showExport: true,        // 是否显示导出按钮, 导出功能需要导出插件支持(tableexport.min.js)
+            //exportDataType: "basic", // 导出数据类型, 'basic':当前页, 'all':所有数据, 'selected':选中的数据
 
-                    // 如果节点是FORM表单
-                    if ('FORM' == form.get(0).nodeName) {
-                        ajax_url = ajax_url || form.get(0).action;
-
-                        // 确认提交
-                        if (self.hasClass('confirm')) {
-                            $.confirm({
-                                title: '',
-                                content: tips || '确认要执行该操作吗？',
-                                type: 'orange',
-                                typeAnimated: true,
-                                buttons: {
-                                    confirm: {
-                                        text: '确认',
-                                        btnClass: 'btn-blue',
-                                        action: function () {
-                                            var loader = $('body').lyearloading({
-                                                opacity: 0.2,
-                                                spinnerSize: 'lg'
-                                            });
-                                            self.attr('autocomplete', 'off').prop('disabled', true);
-                                            ajaxPostFun(self, ajax_url, form_data, loader);
-                                        }
-                                    },
-                                    cancel: {
-                                        text: '取消',
-                                        action: function () {
-                                        }
-                                    }
-                                }
-                            });
-                            return false;
-                        } else {
-                            self.attr("autocomplete", "off").prop("disabled", true);
-                        }
-                    } else if ('INPUT' == form.get(0).nodeName || 'SELECT' == form.get(0).nodeName || 'TEXTAREA' == form.get(0).nodeName) {
-                        // 复选框判断是否有选择项
-                        if (form.get(0).type == 'checkbox' && form_data == '') {
-                            showNotify('请选择您要操作的数据', 'danger');
-                            return false;
-                        }
-
-                        if (self.hasClass('confirm')) {
-                            $.confirm({
-                                title: '',
-                                content: tips || '确认要执行该操作吗？',
-                                type: 'orange',
-                                typeAnimated: true,
-                                buttons: {
-                                    confirm: {
-                                        text: '确认',
-                                        btnClass: 'btn-blue',
-                                        action: function () {
-                                            var loader = $('body').lyearloading({
-                                                opacity: 0.2,
-                                                spinnerSize: 'lg'
-                                            });
-                                            self.attr('autocomplete', 'off').prop('disabled', true);
-
-                                            ajaxPostFun(self, ajax_url, form_data, loader);
-                                        }
-                                    },
-                                    cancel: {
-                                        text: '取消',
-                                        action: function () {
-                                        }
-                                    }
-                                }
-                            });
-                            return false;
-                        } else {
-                            self.attr("autocomplete", "off").prop("disabled", true);
-                        }
-                    } else {
-                        if (self.hasClass('confirm')) {
-                            $.confirm({
-                                title: '',
-                                content: tips || '确认要执行该操作吗？',
-                                type: 'orange',
-                                typeAnimated: true,
-                                buttons: {
-                                    confirm: {
-                                        text: '确认',
-                                        btnClass: 'btn-blue',
-                                        action: function () {
-                                            var loader = $('body').lyearloading({
-                                                opacity: 0.2,
-                                                spinnerSize: 'lg'
-                                            });
-                                            self.attr('autocomplete', 'off').prop('disabled', true);
-
-                                            ajaxPostFun(self, ajax_url, form_data, loader);
-                                        }
-                                    },
-                                    cancel: {
-                                        text: '取消',
-                                        action: function () {
-                                        }
-                                    }
-                                }
-                            });
-                            return false;
-                        } else {
-                            form_data = form.find("input,select,textarea").serialize();
-                            self.attr("autocomplete", "off").prop("disabled", true);
-                        }
+            columns: [{
+                field: 'example',
+                checkbox: true    // 是否显示复选框
+            }, {
+                field: 'id',
+                title: 'ID',
+                sortable: true    // 是否排序
+            }, {
+                field: 'clientId',
+                title: '客户端ID'
+            }, {
+                field: 'clientName',
+                title: '客户端名称',
+            }, {
+                field: 'clientAuthenticationMethods',
+                title: '认证方式'
+            }, {
+                field: 'authorizationGrantTypes',
+                title: '授权类型'
+            }, {
+                field: 'clientIdIssuedAt',
+                title: '创建时间'
+            }/*, {
+                field: 'status',
+                title: '状态',
+                formatter:function(value, row, index){
+                    var tag;
+                    if (row.status === '0') {
+                        tag = '<span class="badge badge-danger">禁用</span>';
+                    } else if(row.status === '1') {
+                        tag = '<span class="badge badge-success">正常</span>';
+                    }else {
+                        tag = row.pType ;
                     }
-
-                    var loader = $('body').lyearloading({
-                        opacity: 0.2,
-                        spinnerSize: 'lg'
-                    });
-                    ajaxPostFun(self, ajax_url, form_data, loader);
-
-                    return false;
+                    return tag;
                 }
-            });
-
-            // 通用ajax get请求
-            jQuery(document).delegate('.ajax-get', 'click', function () {
-                var self = $(this), tips = self.data('tips'), ajax_url = self.attr("href") || self.data("url");
-
-                if (self.hasClass('confirm')) {
-                    $.confirm({
-                        title: '',
-                        content: tips || '确认要执行该操作吗？',
-                        type: 'orange',
-                        typeAnimated: true,
-                        buttons: {
-                            confirm: {
-                                text: '确认',
-                                btnClass: 'btn-blue',
-                                action: function () {
-                                    var loader = $('body').lyearloading({
-                                        opacity: 0.2,
-                                        spinnerSize: 'lg'
-                                    });
-                                    self.attr('autocomplete', 'off').prop('disabled', true);
-
-                                    ajaxGetFun(self, ajax_url, loader);
-                                }
-                            },
-                            cancel: {
-                                text: '取消',
-                                action: function () {
-                                }
-                            }
-                        }
-                    });
-                    return false;
-                } else {
-                    var loader = $('body').lyearloading({
-                        opacity: 0.2,
-                        spinnerSize: 'lg'
-                    });
-                    self.attr('autocomplete', 'off').prop('disabled', true);
-
-                    ajaxGetFun(self, ajax_url, loader);
-                }
-                return false;
-            });
-
-            // POST提交处理
-            function ajaxPostFun(selfObj, ajax_url, form_data, loader) {
-                console.log('url==>' + ajax_url);
-                console.log('form_data==>' + form_data);
-                setTimeout(function () {
-                    loader.destroy();
-                    showNotify('修改成功，页面即将自动跳转~', 'success', 1000);
-                    selfObj.attr("autocomplete", "on").prop("disabled", false);
-                }, 1e3);
-                // 这里屏蔽get提交，js模拟返回成功，正常使用时请删除上面的内容，打开下面的注释代码
-                /*
-                jQuery.post(ajax_url, form_data).done(function(res) {
-                    loader.destroy();
-                    var res = eval('(' + res + ')');
-                    var msg = res.msg;
-                    if (200 == res.code) {
-                        if (res.url && !selfObj.hasClass('no-refresh')) {
-                            msg += '页面即将自动跳转';
-                        }
-                        showNotify(msg, 'info');
-                        setTimeout(function () {
-                            selfObj.attr("autocomplete", "on").prop("disabled", false);
-                            return selfObj.hasClass("no-refresh") ? false : (res.url ? location.href = res.url : location.reload());
-                        }, 1500);
-                    } else {
-                        showNotify(msg, 'danger');
-                        selfObj.attr("autocomplete", "on").prop("disabled", false);
-                    }
-                }).fail(function () {
-                    loader.destroy();
-                    showNotify('服务器发生错误，请稍后再试', 'danger');
-                    selfObj.attr("autocomplete", "on").prop("disabled", false);
-                });
-                */
-            }
-
-            // GET提交处理
-            function ajaxGetFun(selfObj, ajax_url, loader) {
-                console.log(ajax_url);
-                setTimeout(function () {
-                    loader.destroy();
-                    showNotify('修改成功，页面即将自动跳转~', 'success', 1000);
-                    selfObj.attr("autocomplete", "on").prop("disabled", false);
-                }, 1e3);
-                // 这里屏蔽get提交，js模拟返回成功，正常使用时请删除上面的内容，打开下面的注释代码
-                /*
-                jQuery.get(ajax_url).done(function(res) {
-                    loader.destroy();
-                    var res = eval('(' + res + ')');
-                    var msg = res.msg;
-                    if (200 == res.code) {
-                        if (res.url && !selfObj.hasClass('no-refresh')) {
-                            msg += '页面即将自动跳转';
-                        }
-                        showNotify(msg, 'info');
-                        setTimeout(function () {
-                            selfObj.attr("autocomplete", "on").prop("disabled", false);
-                            return selfObj.hasClass("no-refresh") ? false : (res.url ? location.href = res.url : location.reload());
-                        }, 1500);
-                    } else {
-                        showNotify(msg, 'danger');
-                        selfObj.attr("autocomplete", "on").prop("disabled", false);
-                    }
-                }).fail(function () {
-                    loader.destroy();
-                    showNotify('服务器发生错误，请稍后再试', 'danger');
-                    selfObj.attr("autocomplete", "on").prop("disabled", false);
-                });
-                */
-            }
-
-            /*
-             * 提取通用的通知消息方法
-             * 这里只采用简单的用法，如果想要使用回调或者更多的用法，请查看lyear_js_notify.html页面
-             * @param $msg 提示信息
-             * @param $type 提示类型:'info', 'success', 'warning', 'danger'
-             * @param $delay 毫秒数，例如：1000
-             * @param $icon 图标，例如：'fa fa-user' 或 'glyphicon glyphicon-warning-sign'
-             * @param $from 'top' 或 'bottom' 消息出现的位置
-             * @param $align 'left', 'right', 'center' 消息出现的位置
-             */
-            function showNotify($msg, $type, $delay, $icon, $from, $align) {
-                $type = $type || 'info';
-                $delay = $delay || 1000;
-                $from = $from || 'top';
-                $align = $align || 'right';
-                $enter = $type == 'danger' ? 'animated shake' : 'animated fadeInUp';
-
-                jQuery.notify({
-                        icon: $icon,
-                        message: $msg
+            }*/, {
+                field: 'operate',
+                title: '操作',
+                formatter: btnGroup,  // 自定义方法
+                events: {
+                    'click .edit-btn': function (event, value, row, index) {
+                        editUser(row);
                     },
-                    {
-                        element: 'body',
-                        type: $type,
-                        allow_dismiss: true,
-                        newest_on_top: true,
-                        showProgressbar: false,
-                        placement: {
-                            from: $from,
-                            align: $align
-                        },
-                        offset: 20,
-                        spacing: 10,
-                        z_index: 10800,
-                        delay: $delay,
-                        animate: {
-                            enter: $enter,
-                            exit: 'animated fadeOutDown'
-                        }
-                    });
+                    'click .del-btn': function (event, value, row, index) {
+                        delUser(row);
+                    }
+                }
+            }],
+            onLoadSuccess: function (data) {
+                $("[data-toggle='tooltip']").tooltip();
             }
         });
 
+        // 操作按钮
+        function btnGroup() {
+            let html =
+                '<a href="#!" class="btn btn-xs btn-default m-r-5 edit-btn" title="编辑" data-toggle="tooltip"><i class="mdi mdi-pencil"></i></a>' +
+                '<a href="#!" class="btn btn-xs btn-default del-btn" title="删除" data-toggle="tooltip"><i class="mdi mdi-window-close"></i></a>';
+            return html;
+        }
 
+        // 操作方法 - 编辑
+        function editUser() {
+            alert('跳转修改信息');
+        }
+
+        // 操作方法 - 删除
+        function delUser() {
+            alert('信息删除成功');
+        }
+
+
+        //手风琴
         $(function () {
-            var $href="/client/list"
+            var $href = "/client/list"
             $('.nav-item').removeClass('active');
             $('.nav-subnav li').removeClass('active');
-            $subnavToggle = jQuery('ul.nav-subnav>li>a[href="'+$href+'"]');
+            $subnavToggle = $('ul.nav-subnav>li>a[href="' + $href + '"]');
             $subnavToggle.parents('li').addClass('active');
             $subnavToggle.parents('.nav-item-has-subnav').addClass('open').first().addClass('active');
         })
     </script>
 </footer>
 </body>
+<div class="card">
+
+</div>
+<form id="client-add-form"  action="#!" method="post" style="display: none" class="form-horizontal">
+  <div class="form-row col-md-12">
+      <div class="form-row row-cols-2">
+          <div class="form-group col-md-6">
+              <label for="type">栏目</label>
+              <div class="form-controls">
+                  <select name="type" class="form-control" id="type">
+                      <option value="1">小说</option>
+                      <option value="2">古籍</option>
+                      <option value="3">专辑</option>
+                      <option value="4">自传</option>
+                  </select>
+              </div>
+          </div>
+          <div class="form-group col-md-6">
+              <label for="title">标题</label>
+              <input type="text" class="form-control" id="title" name="title" value="" placeholder="请输入标题" />
+          </div>
+      </div>
+
+      <div class="form-group col-md-12">
+          <label for="seo_keywords">关键词</label>
+          <input type="text" class="form-control" id="seo_keywords" name="seo_keywords" value="" placeholder="关键词" />
+      </div>
+      <div class="form-group col-md-12">
+          <label for="seo_description">描述</label>
+          <textarea class="form-control" id="seo_description" name="seo_description" rows="5" value="" placeholder="描述"></textarea>
+      </div>
+
+      <div class="form-group col-md-12">
+          <button type="submit" class="btn btn-primary ajax-post" target-form="add-form">确 定</button>
+          <button type="button" class="btn btn-default" onclick="javascript:history.back(-1);return false;">返 回</button>
+      </div>
+  </div>
+</form>
+
 </html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/layout :: common_header(~{::title},~{::link})">
+<title>机构管理</title>
+<!-- 
+  additional css  -->
+<link
+	th:href="@{/resource/plugins/treeTable/themes/vsStyle/treeTable.min.css}"
+	rel="stylesheet" type="text/css" />
+
+</head>
+
+<body>
+	<div class="main-container">
+		<div class="main-content-inner">
+			<div class="page-content">
+
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="pull-left">
+							<button class="btn btn-primary btn-sm" data-toggle="tooltip"
+								data-placement="left" onclick="add()" title="添加">
+								<i class="fa fa-plus"></i> 新建
+							</button>
+							<button class="btn btn-warning btn-sm" data-toggle="tooltip"
+								data-placement="left" onclick="refresh()" title="添加">
+								<i class="glyphicon glyphicon-repeat"></i>刷新
+							</button>
+						</div>
+						<div class="pull-right"></div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-xs-12">
+						<table id="treeTable"
+							class="table table-striped table-bordered table-condensed">
+							<thead>
+								<tr>
+									<th   width="20%">机构名称</th>
+									<th   width="10%">归属区域</th>
+									<th   width="10%">机构编码</th>
+									<th width="10%">机构类型</th>
+									<th width="10%">机构级别</th>
+									<th   width="20%">备注</th>
+									<th  width="30%">操作</th>
+								</tr>
+							</thead>
+							<tbody id="treeTableList">
+								<tr th:each="office:${officeList}" th:id="${office.id}"
+									th:pid="${office.parentId}">
+									<td   th:text="${office.name}"></td>
+									<td th:text="${office.areaName}"></td>
+									<td th:text="${office.code}"></td>
+									<td  >
+									<dict:show code="orgType" value="${office.type}"></dict:show>
+									</td>
+									<td  >
+									<dict:show code="orgLevel" value="${office.grade}"></dict:show>
+									</td>
+									<td th:text="${office.remarks}"></td>
+									<td>
+										 
+												 
+												 <a href="#"
+													th:onclick="'edit('+${office.id}+')'"><i
+														class="fa fa-edit"></i> 修改</a> 
+														&nbsp;&nbsp;&nbsp;
+												 <a href="#"
+													th:onclick="'del('+${office.id}+')'"><i
+														class="fa fa-trash"></i> 删除</a> 
+														&nbsp;&nbsp;&nbsp;
+												 <a href="#"
+													th:onclick="'addsubarea('+${office.id}+')'"><i
+														class="fa fa-plus"></i> 添加下级区域</a> 
+										 
+									</td>
+								</tr>
+
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<!-- /.col -->
+			</div>
+
+		</div>
+		<!-- end main container -->
+	</div>
+
+	<div th:replace="common/commonJS"></div>
+	<script th:src="@{/resource/plugins/treeTable/jquery.treeTable.min.js}"></script>
+	<script>
+		 
+		function refresh() {
+			window.location.reload()
+		}
+		function add() {
+			jp.openWindow("新增" + '机构', "sys/office/add", "800px", "360px");
+		}
+
+		function addsubarea(parent) {
+			jp.openWindow("新增" + '机构', "sys/office/add?parentId="+parent, "800px", "360px");
+		}
+
+		function edit(id) {
+			 
+			jp.openWindow("修改" + '机构', ctx + "sys/office/edit/" + id, "800px",
+					"325px");
+
+		}
+
+		function del(id) {
+				jp.confirm('确定要删除该机构和所有子机构吗？', function() {
+					jp.loading();
+					$.get(ctx + "sys/office/delete?id=" + id,
+							function(data) {
+								if (data==1) {
+									jp.alert("删除成功！")
+									refresh();
+								} else {
+									jp.error("删除失败");
+								}
+							})
+				});
+		}
+		$(function() {
+
+			$("#treeTable").treeTable({
+				expandLevel : 5
+			});
+		});
+	</script>
+</body>
+</html>

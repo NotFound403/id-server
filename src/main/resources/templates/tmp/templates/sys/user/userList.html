@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/layout :: common_header(~{::title},~{::link})">
+<title>用户管理</title>
+ <!-- 
+  additional css  -->
+	<link th:href="@{/resource/plugins/jstree/themes/default/style.min.css}" rel="stylesheet" type="text/css"/>
+	
+</head>
+ 
+<body>
+	<div class="main-container">
+		<div class="main-content-inner">
+			<div class="page-content">
+			<div class="row">
+				<div class="col-sm-3 col-md-2" >
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<h3 class="panel-title">机构列表</h3>
+					</div>
+					<div class="panel-body">
+					<div id="jstree"></div> 
+					</div>
+					</div>
+				</div>
+				<div  class="col-sm-9 col-md-10 animated fadeInRight">
+				<div class="row">
+					<div class="col-xs-12">
+						<form action="" class="form-inline" id="userForm">
+							<input type="hidden" id="companyId" name="companyId">
+							<input type="hidden" id="officeId" name="officeId">
+							<label>用户名：</label><input type="text" name="loginName"> <label>姓名：</label><input
+								type="text" name="name">
+							<button class="btn btn-primary btn-rounded btn-outline btn-sm "
+							 type="button"	onclick="search()">
+								<i class="fa fa-search"></i> 查询
+							</button>
+							<button class="btn btn-primary btn-rounded btn-outline btn-sm "
+								type="reset">
+								<i class="fa fa-refresh"></i> 重置
+							</button>
+						</form>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="pull-left">
+							<button class="btn btn-primary btn-sm" data-toggle="tooltip"
+								data-placement="left" onclick="add()" title="添加">
+								<i class="fa fa-plus"></i> 添加
+							</button>
+							<button class="btn btn-success btn-sm" data-toggle="tooltip"
+								data-placement="left" onclick="edit()" id="edit" title="修改">
+								<i class="glyphicon glyphicon-edit"></i> 修改
+							</button>
+							<button class="btn btn-danger btn-sm" onclick="del()" id="delete"
+								data-toggle="tooltip" data-placement="top">
+								<i class="fa fa-trash-o"> 删除</i>
+							</button>
+							 
+
+						</div>
+						<div class="pull-right"></div>
+					</div>
+				</div>
+				 
+				<div class="row">
+					<div class="col-xs-12">
+						<table id="usertable"  data-toggle="table" data-side-pagination="server" 
+						data-striped="true"  data-query-params="queryParams" data-pagination-loop="false"
+               			data-page-number="1" data-data-field="list" data-total-field="totalRow"
+               			data-content-type="application/x-www-form-urlencoded" data-click-to-select="true"
+               			data-pagination="true" data-method="post"  th:data-url="@{/sys/user/query}"  >
+               			<thead>
+										<tr>
+											<th class="center" data-checkbox="true"  > </th>
+											<th   data-field="id"   > ID</th>
+											<th data-field="no">工号</th>
+											<th class="center" data-field="loginName" data-formatter="nameFormatter"> 用户名</th>
+											<th data-field="name">姓名</th>
+											
+											<th data-field="phone">手机</th>
+											<th class="hidden-480" data-field="email">邮箱</th>
+
+											<th data-field="updateDate"><i
+												class="ace-icon fa fa-clock-o bigger-110 hidden-480"></i>
+												修改时间</th>
+											<th class="hidden-480" data-field="loginFlag" data-formatter="statusFormatter">状态</th>
+
+											<!-- <th data-field="id" data-formatter="optFormatter">操作</th> -->
+										</tr>
+									</thead>
+						</table>
+					</div>
+				</div>
+				</div>
+				</div>
+				<!-- /.col -->
+			</div>
+
+		</div>
+		<!-- end main container -->
+	</div>
+
+<div th:replace="common/commonJS"></div>
+ <script th:src="@{/resource/plugins/jstree/jstree.min.js}" type="text/javascript"></script>
+ 
+ 
+ 	 <script>
+
+	 function queryParams(params){
+		 var temp = $("#userForm").serializeJSON();
+		 temp.pageSize=params.limit;   //页面大小
+		 temp.pageNumber=(params.offset / params.limit) + 1;   //页码  
+		 temp.sort=params.sort;      //排序列名  
+		 temp.sortOrder=	 params.order; //排位命令（desc，asc）
+		 return temp; 
+	 }
+    function statusFormatter(value,row,index){
+    	if(value=="0"){
+    		return "<span class='label label-sm label-success'>启用</span>"
+    	}else{
+    		return "<span class='label label-sm label-warning'>禁用</span>";
+    	}
+    }
+    function  nameFormatter(value,row,index){
+    	return "<a href='javascript:;' onclick='edit("+row.id+")'>"+value
+    	 "</a>"
+    	
+    }
+    function optFormatter(value,row,index){
+    	return "<div class='hidden-sm hidden-xs btn-group'>"+
+    	"<button class='btn btn-xs btn-info' onclick='edit("+value+")'>修改</button>"
+    	+"<button class='btn btn-xs btn-danger'>角色分配</button>"
+    	+"</div>"
+    	
+    }
+    function search(){
+    	$('#usertable').bootstrapTable('refresh');
+    }
+    function add(){
+    	jp.openWindow("新增"+'用户',"sys/user/add","800px", "520px");
+    }
+    
+    function getIdSelections() {
+        return $.map($("#usertable").bootstrapTable('getSelections'), function (row) {
+            return row.id
+        });
+    }
+
+    function edit(id){
+    		if(!id){
+    			var selectRows=$('#usertable').bootstrapTable('getSelections');
+    	    	if(selectRows.length==0){
+    	    		jp.alert("未选择任何行");
+    	    	}else if(selectRows.length>1){
+    	    		jp.alert("只能修改一行");
+    	    	}
+  			  id = getIdSelections();
+  		  }
+    		jp.openWindow("修改"+'用户',ctx+"sys/user/edit/"+id,"800px", "550px");	
+    	 
+    	
+    }
+    
+    function del(ids){
+    	//layer.confirm("确定要删除吗"){}
+    	var selectRows=$('#usertable').bootstrapTable('getSelections');
+    	if(selectRows.length==0){
+    		jp.alert("未选择任何行");
+    	 
+    	}else{
+    		 if(!ids){
+			    	ids =  getIdSelections();
+			    }
+
+    		jp.confirm('确定要删除选择的用户吗？', function (){
+    			 jp.loading();
+          	  	$.get(ctx+"sys/user/deleteAll?ids=" +ids, function(data){
+          	  		if(data){
+          	  			$('#usertable').bootstrapTable('refresh');
+         	  			jp.success("删除成功");
+         	  		}else{
+         	  			jp.error("删除失败");
+         	  		}
+          	  	})
+
+    		 }
+ 			
+ 		);
+    	}
+    }
+    
+	 $(function () {
+		 
+		 $('#jstree').jstree({
+				'core' : {
+					"multiple" : true,
+					"animation" : 0,
+					"themes" : { "icons":true ,"stripes":false},
+					'data' : {
+						"url" : ctx+"sys/office/treeData",
+						"dataType" : "json" // needed only if you do not supply JSON headers
+					}
+				} ,
+				'plugins' : ['types' ,"search",  'wholerow'],
+				"types":{ 
+					'default' : { 'icon' : 'fa fa-file-text-o' }, 
+			        '1' : {'icon' : 'fa fa-home'},
+					'2' : {'icon' : 'fa fa-umbrella' },
+				    '3' : { 'icon' : 'fa fa-group'},
+					'4' : { 'icon' : 'fa fa-eur' },
+					'btn':{'icon' : 'fa fa-square'}
+				}  
+
+			});
+		 $('#jstree').on("changed.jstree", function (e, data) {
+			  console.log(data.selected);
+			  $("#officeId").val(data.selected[0]);
+			  $('#usertable').bootstrapTable('refresh');
+			});
+		 /* $.getJSON(ctx+"sys/office/treeData",function(data){
+				$('#jstree').treeview({
+					data: data,
+					levels: 5,
+		            onNodeSelected: function(event, treeNode) {
+		            	var id = treeNode.id == '0' ? '' :treeNode.id;
+						if(treeNode.level == 1){//level=0 代表公司
+							$("#companyId").val(id);
+							//$("#companyName").val(treeNode.text);
+							$("#officeId").val("");
+							//$("#officeName").val("");
+						}else{
+							$("#companyId").val("");
+							//$("#companyName").val("");
+							$("#officeId").val(id);
+							//$("#officeName").val(treeNode.text);
+						}
+						
+						$('#usertable').bootstrapTable('refresh');
+		            },
+		         });
+			}); */
+			
+
+		 
+		 
+    	$('#usertable').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
+                'check-all.bs.table uncheck-all.bs.table', function () {
+            $('#delete').prop('disabled', ! $('#usertable').bootstrapTable('getSelections').length);
+            $('#edit').prop('disabled', $('#usertable').bootstrapTable('getSelections').length!=1);
+        });
+    });
+</script>
+</body>
+</html>

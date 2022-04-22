@@ -1,0 +1,329 @@
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-CN">
+<head th:replace="common/layout :: common_header(~{::title},~{::link})">
+<title>修改用户</title>
+<link rel="stylesheet" th:href="@{/resource/plugins/chosen/chosen.min.css}" />
+</head>
+<body>
+	<div class="main-container">
+		<div class="main-content-inner">
+			<div class="page-content">
+				 
+					<form class="form-horizontal" role="form" id="userAddForm" onsubmit="return confirmSubmit();"
+					method="post" th:action="@{/sys/user/update}">
+					<input id="id" name="id" type="hidden" th:value="${user.id}" /> 
+					<input id="companyId" name="companyId" type="hidden" th:value="${user.companyId}" /> <input
+						id="officeId" name="officeId" type="hidden" th:value="${user.officeId}"  />
+					<table
+						class="table table-bordered  table-condensed dataTables-example dataTable no-footer">
+<tr>
+						<td class="width-15 active"> 
+						<label
+								class="pull-right control-label" for="companyName"><font
+									color="red">*</font>头像</label> 
+						</td>
+						<td><span class="profile-picture">
+						
+						<img id="avatar" onclick="fileSelect();" class="" alt="头像" th:src="(${user.photo=='0'})?(@{/resource/avatars/profile-pic.jpg}):(@{/sys/showFile/}+${user.photo})" style="display: block;" width="60">
+						</span><input type="file" id="photoImg" accept="image/*" name="file" onchange="fileSelected();" style="display:none;">
+						<input type="button" onclick="fileSelect()" value="选择"> <input type="button" onclick="clearfileSelect()" value="清除">
+						</td>
+						<td>
+						<label
+								class="pull-right control-label" for="ds_no"><font
+									color="red">*</font>工号</label> 
+						</td>
+						<td class="width-35"><input class="form-control"
+								id="ds_no" name="no" type="text" placeholder="请输入工号" th:value="${user.no}"
+								required /></td>
+						</tr>
+						<tr>
+							<td class="width-15 active"><label
+								class="pull-right control-label" for="companyName"><font
+									color="red">*</font>归属公司</label></td>
+							<td class="width-35">
+								<div class="input-group" style="width: 100%">
+									<input class="form-control" id="companyName" name="companyName"
+										type="text" readonly="readonly"  th:value="${user.companyName}" /> <span
+										class="input-group-btn">
+										<button type="button" id="companyButton"
+											class="btn   btn-primary  ">
+											<i class="fa fa-search"></i>
+										</button>
+										<button type="button" id="companyDelButton" class="close"
+											data-dismiss="alert"
+											style="position: absolute; top: 5px; right: 53px; z-index: 999; display: block;">×</button>
+									</span>
+								</div>
+							</td>
+
+							<td class="width-15 active"><label
+								class="pull-right  control-label" for="ds_name"><font
+									color="red">*</font>归属部门</label></td>
+							<td class="width-35"><div class="input-group"
+									style="width: 100%">
+									<input class="form-control" id="officeName" name="officeName"
+										type="text" readonly="readonly" th:value="${user.officeName}"/> <span
+										class="input-group-btn">
+										<button type="button" id="officeButton"
+											class="btn   btn-primary  ">
+											<i class="fa fa-search"></i>
+										</button>
+										<button type="button" id="officeDelButton" class="close"
+											data-dismiss="alert"
+											style="position: absolute; top: 5px; right: 53px; z-index: 999; display: block;">×</button>
+									</span>
+								</div></td>
+						</tr>
+
+						<tr>
+							<td class="width-15 active"><label
+								class="pull-right  control-label" for="ds_id">用户名</label></td>
+							<td class="width-15 active"><input class="form-control"
+								id="ds_id"   type="text" placeholder="请输入用户名" th:value="${user.loginName}" disabled="disabled"
+								  /></td>
+							<td class="width-15 active"><label
+								class="pull-right  control-label" for="ds_name">姓名</label></td>
+							<td class="width-35"><input class="form-control"
+								id="ds_name" name="name" type="text" placeholder="请输入姓名" th:value="${user.Name}"
+								required /></td>
+
+						</tr>
+						
+						<tr>
+							<td class="width-15 active"><label
+								class="pull-right control-label" for="ds_phone">手机号码</label></td>
+							<td class="width-35"><input class="form-control"
+								id="ds_phone" name="phone" type="text" placeholder="请输入手机号码"  th:value="${user.phone}"/>
+							</td>
+							<td class="width-15 active"><label
+								class="pull-right control-label" for="ds_email">邮箱</label></td>
+							<td class="width-35"><input class="form-control"
+								id="ds_email" name="email" type="email" placeholder="请输入邮箱"  th:value="${user.email}"/>
+							</td>
+
+
+						</tr>
+						<tr>
+							<td class="width-15 active"><label
+								class="pull-right control-label" for="ds_password">密码</label></td>
+							<td class="width-35"><input class="form-control"
+								id="ds_password" name="password" type="password"
+								placeholder="若不修改密码，请留空"   />
+								<span class="help-inline"></span></td>
+							<td class="width-15 active"><label
+								class="pull-right control-label" for="ds_repassword">确认密码</label>
+							</td>
+							<td class="width-35"><input class="form-control"
+								id="ds_repassword" name="repassword" equalTo="#ds_password"
+								type="password" placeholder="确认密码"   /></td>
+						</tr>
+						<tr>
+							<td class="width-15 active"><label
+								class="pull-right control-label" for="ds_loginFlag">是否允许登录</label></td>
+							<td class="width-35"><select class="form-control"
+								id="ds_loginFlag" name="loginFlag">
+									<option value="0" th:selected="${user.loginFlag=='0'}">启用</option>
+									<option value="1" th:selected="${user.loginFlag=='1'}">禁用</option>
+							</select></td>
+							<td class="width-15 active"><label
+								class="pull-right control-label" for="ds_loginFlag">角色</label></td>
+							<td class="width-35">
+							<select multiple="" name="roleList" class="chosen-select form-control" id="roleValue" data-placeholder="请分配角色...">
+									<option th:each="role:${roleList}" th:value="${role.id}" th:text="${role.name}">Alabama</option>
+									</select>
+							</td>
+						</tr>
+						<tr>
+							<td class="width-15 active"><label class="pull-right  control-label"
+								for="ds_remarks">备注</label></td>
+							<td class="width-35"><textarea class="form-control"
+									id="ds_remarks" name="remarks"  >[[${user.remarks}]]</textarea>
+							</td>
+							 
+						</tr>
+					</table>
+					<div class="clearfix ">
+						<div class="center">
+							<button class="btn btn-info" type="submit" id="submitBtn">
+								<i class="ace-icon fa fa-check bigger-110"></i> 保存
+							</button>
+
+							&nbsp; &nbsp; &nbsp;
+							<button class="btn" type="button" id="closeWin">
+								<i class="ace-icon fa fa-del bigger-110"></i> 关闭
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+
+		</div>
+		<!-- end main container -->
+	</div>
+
+	<div th:replace="common/commonJS"></div>
+	<script th:src="@{/resource/plugins/chosen/chosen.jquery.min.js}"></script>
+	<script type="text/javascript">
+	var myRole=[(${myRole})];
+	 
+	$(document).ready(function(){
+		$.each(myRole, function(index, value, array) {
+			$(".chosen-select option[value='"+value.id+"']").attr("selected","selected");
+			});
+		
+		$(".chosen-select").chosen();
+		
+	$("#officeButton, #officeName").click(function(){
+		// 是否限制选择，如果限制，设置为disabled
+		if ($("#officeButton").hasClass("disabled")){
+			return true;
+		}
+		var comapanyId=$("#companyId").val();
+		if($("#companyId").val()==''){
+			jp.alert("请先选择公司！");
+			return true;
+		}
+		// 正常打开	
+		top.layer.open({
+		    type: 2, 
+		    area: ['300px', '420px'],
+		    title:"选择部门",
+		    ajaxData:{selectIds: $("#p_Id").val()},
+		    content: ctx+"sys/treeselect?url="+encodeURIComponent("sys/office/treeData?pId="+comapanyId)+"&module=&checked=&extId=&isAll=&allowSearch=" ,
+		    btn: ['确定', '关闭']
+    	       ,yes: function(index, layero){ //或者使用btn1
+						var tree = layero.find("iframe")[0].contentWindow.tree;//h.find("iframe").contents();
+						var ids = [], names = [], nodes = [];
+						if ("" == "true"){
+							nodes = tree.get_checked(true);
+						}else{
+							nodes = tree.get_selected(true);
+						}
+						for(var i=0; i<nodes.length; i++) {//
+							ids.push(nodes[i].id);
+							names.push(nodes[i].text);//
+							break; // 如果为非复选框选择，则返回第一个选择  
+						}
+						$("#officeId").val(ids.join(",").replace(/u_/ig,""));
+						$("#officeName").val(names.join(","));
+						$("#officeName").focus();
+						top.layer.close(index);
+				    	       },
+    	cancel: function(index){ //或者使用btn2
+    	           //按钮【按钮二】的回调
+    	       }
+		}); 
+	
+	});
+	
+	$("#officeDelButton").click(function(){
+		// 是否限制选择，如果限制，设置为disabled
+		if ($("#officeButton").hasClass("disabled")){
+			return true;
+		}
+		// 清除	
+		$("#officeId").val("");
+		$("#officeName").val("");
+		$("#officeName").focus();
+	
+	});
+	
+	$("#companyButton, #companyName").click(function(){
+		// 是否限制选择，如果限制，设置为disabled
+		if ($("#companyButton").hasClass("disabled")){
+			return true;
+		}
+		// 正常打开	
+		top.layer.open({
+		    type: 2, 
+		    area: ['300px', '420px'],
+		    title:"选择公司",
+		    ajaxData:{selectIds: $("#areaId").val()},
+		    content: ctx+"sys/treeselect?url="+encodeURIComponent("sys/office/treeData?type=1")+"&module=&checked=&extId=&isAll=&allowSearch=" ,
+		    btn: ['确定', '关闭']
+    	       ,yes: function(index, layero){ //或者使用btn1
+						var tree = layero.find("iframe")[0].contentWindow.tree;//h.find("iframe").contents();
+						var ids = [], names = [], nodes = [];
+						if ("" == "true"){
+							nodes = tree.get_checked(true);
+						}else{
+							nodes = tree.get_selected(true);
+						}
+						for(var i=0; i<nodes.length; i++) {//
+							ids.push(nodes[i].id);
+							names.push(nodes[i].text);//
+							break; // 如果为非复选框选择，则返回第一个选择  
+						}
+						$("#companyId").val(ids.join(",").replace(/u_/ig,""));
+						$("#companyName").val(names.join(","));
+						$("#companyName").focus();
+						top.layer.close(index);
+				    	       },
+    	cancel: function(index){ //或者使用btn2
+    	           //按钮【按钮二】的回调
+    	       }
+		}); 
+	
+	});
+
+	$("#companyDelButton").click(function(){
+		// 是否限制选择，如果限制，设置为disabled
+		if ($("#companyButton").hasClass("disabled")){
+			return true;
+		}
+		// 清除	
+		$("#companyId").val("");
+		$("#companyName").val("");
+		$("#companyName").focus();
+	
+	});
+})
+</script>
+	<script type="text/javascript">
+	var defaultImg="[[@{/ace/avatars/profile-pic.jpg}]]";
+	 function fileSelect() {
+       $("#photoImg").click(); 
+   }
+	 function clearfileSelect(){
+		 $("#avatar").attr("src",defaultImg);
+	 }
+   function fileSelected(selectedFile) {
+   	 var docObj=document.getElementById("photoImg");
+     // 文件选择后触发次函数
+   	if(docObj.files &&docObj.files[0]){
+   		$("#avatar").attr("src", window.URL.createObjectURL(docObj.files[0]));
+   	 } 
+  	 return true;
+   }
+	
+	var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+	//关闭iframe
+	$('#closeWin').click(function(){
+	    top.layer.close(index);
+	});
+	    
+	function confirmSubmit() {
+		var result = jp.confirm('确定要修改用户信息吗？',function() {
+			$("#userAddForm").ajaxSubmit({
+				dataType : "json",
+				success : function(data) {
+					if (data == 1) {
+						top.layer.alert('修改成功')
+						top.layer.close(index);
+						top.getActiveTab()[0].contentWindow.search();
+					} else {
+						top.layer.alert('修改失败')
+					}
+
+				},
+				error : function(xhr, status, error) {
+					top.layer.alert('操作失败');
+				}
+			});
+		});
+		
+		return result;
+	}
+	</script>
+</body>
+</html>

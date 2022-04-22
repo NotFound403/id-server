@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-CN">
+<head th:replace="common/layout :: common_header(~{::title},~{::link})">
+<title>系统信息</title>
+
+</head>
+
+
+<body class="">
+	<div class="main-container">
+		<div class="main-content">
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<h3 class="panel-title">系统信息</h3>
+				</div>
+				<div class="panel-body">
+				<div class="row">
+					<table class="table  table-bordered  ">
+					<tbody>
+			    	<tr>
+			        <th style="width:30%">操作系统</th>
+		      		<td th:text="${props['os.name']}+'   '+ ${props['os.version']}">${props['os.name']} ${props['os.version']}</td>
+				    </tr>
+			    	<tr>
+			        <th style="width:30%">JAVA运行环境</th>
+		      		<td th:text="${props['java.runtime.name']}+'   '+ ${props['java.runtime.version']}">${props['java.runtime.name']} ${props['java.runtime.version']}</td>
+				    </tr>
+			    	<tr>
+			        <th style="width:30%">JAVA虚拟机</th>
+		      		<td th:text="${props['java.vm.name']} +'   '+${props['java.vm.version']}">${props['java.vm.name']} ${props['java.vm.version']}</td>
+				    </tr>
+			    	<tr>
+			        <th style="width:30%">系统用户</th>
+		      		<td th:text="${props['user.name']}">${props['user.name']}</td>
+				    </tr>
+			    	<tr>
+			        <th style="width:30%">用户主目录</th>
+		      		<td th:text="${props['user.home']}">${props['user.home']}</td>
+				    </tr>
+			    	<tr>
+			        <th style="width:30%">用户工作目录</th>
+		      		<td th:text="${props['user.dir']}">${props['user.dir']}</td>
+				    </tr>
+			    	<tr>
+			        <th style="width:30%">用户临时目录</th>
+		      		<td th:text="${props['java.io.tmpdir']}">${props['java.io.tmpdir']}</td>
+				    </tr>
+			    	<tr>
+			        <th style="width:30%">最大内存</th>
+		      		<td th:text="${#numbers.formatDecimal(maxMemoryMB,3,2)} +'M'">2048 MB</td>
+				    </tr>
+			    	<tr>
+			        <th style="width:30%">已用内存</th>
+		      		<td th:text="${#numbers.formatDecimal(usedMemoryMB,3,2)} +'M'">512 MB</td>
+				    </tr>
+			    	<tr>
+			        <th style="width:30%">可用内存</th>
+		      		<td th:text="${#numbers.formatDecimal(useableMemoryMB,3,2)} +'M'">2000 MB</td>
+				    </tr>
+				  </tbody>
+					</table>
+				</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

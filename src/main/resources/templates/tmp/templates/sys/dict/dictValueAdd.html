@@ -1,0 +1,109 @@
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-CN">
+<head th:replace="common/layout :: common_header(~{::title},~{::link})">
+<title>新建用户</title>
+</head>
+<body>
+	<div class="main-container">
+		<div class="main-content-inner">
+			<div class="page-content">
+				<form class="form-horizontal" role="form" id="userAddForm"
+					method="post" th:action="@{/sys/dict/save}">
+					<input type="hidden" name="parentId" th:value="${dictTypeId}">  
+					<input type="hidden" name="type"  > 
+					<input type="hidden" name="description"  > 
+					<table
+						class="table table-bordered  table-condensed dataTables-example dataTable no-footer">
+						<tr>
+							<td class="width-15 active"><label
+								class="pull-right  control-label" for="ds_label">标签</label></td>
+							<td class="width-75 "><input class="form-control"
+								id="ds_label" name="label" type="text"
+								placeholder="" required /></td>
+
+
+						</tr>
+
+						<tr>
+							<td class="width-15 active"><label
+								class="pull-right  control-label" for="ds_value">键值</label></td>
+							<td class="width-35"><input class="form-control"
+								id="ds_value" name="value" type="text" placeholder="" required /></td>
+
+
+						</tr>
+						<tr>
+							<td class="width-15 active"><label
+								class="pull-right  control-label" for="ds_sort">排序</label></td>
+							<td class="width-35"><input class="form-control"
+								id="ds_sort" name="sort" type="text" value="50" placeholder="" required /></td>
+
+
+						</tr>
+						<tr>
+							<td class="width-15 active"><label
+								class="pull-right  control-label" for="ds_remarks">备注</label></td>
+							<td class="width-35"><textarea class="form-control"
+								id="ds_remarks" name="remarks" placeholder="" ></textarea></td>
+
+
+						</tr>
+
+					</table>
+					<div class="clearfix ">
+						<div class="center">
+							<button class="btn btn-info" type="submit" id="submitBtn">
+								<i class="ace-icon fa fa-check bigger-110"></i> 保存
+							</button>
+
+							&nbsp; &nbsp; &nbsp;
+							<button class="btn" type="button" id="closeWin">
+								<i class="ace-icon fa fa-del bigger-110"></i> 关闭
+							</button>
+						</div>
+					</div>
+
+				</form>
+				<!-- /.col -->
+			</div>
+
+		</div>
+		<!-- end main container -->
+	</div>
+
+	<div th:replace="common/commonJS"></div>
+
+	<script type="text/javascript">
+		var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+		//关闭iframe
+		$('#closeWin').click(function() {
+			top.layer.close(index);
+		});
+
+		$().ready(function() {
+			$("#userAddForm").validate({
+				submitHandler : function(form) {
+					//验证通过后 的js代码写在这里 
+
+					$(form).ajaxSubmit({
+						dataType : "json",
+						success : function(data) {
+							if (data == 1) {
+								top.layer.alert('保存成功')
+								top.layer.close(index);
+								top.getActiveTab()[0].contentWindow.dictValueRefresh();
+							} else {
+								top.layer.alert('保存失败')
+							}
+
+						},
+						error : function(xhr, status, error) {
+							top.layer.alert('操作失败');
+						}
+					});
+
+				}
+			});
+		});
+	</script>
+</body>
+</html>

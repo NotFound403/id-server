@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/layout :: common_header(~{::title},~{::link})">
+<title>调度任务管理</title>
+
+</head>
+<body>
+	<div class="main-container">
+		<div class="main-content-inner">
+			<div class="page-content">
+				<div class="row">
+					<div class="col-sm-12">
+						<div class="pull-left">
+							<button class="btn btn-primary btn-sm" data-toggle="tooltip"
+								data-placement="left" onclick="add()" title="添加">
+								<i class="fa fa-plus"></i> 添加
+							</button>
+
+						</div>
+						<div class="pull-right"></div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-xs-12">
+						<table id="treeTable"
+							class="table table-striped table-bordered table-condensed">
+							<thead>
+								<tr>
+									<th width="15%">任务名称</th>
+									<th width="10%">任务分组</th>
+									<th width="10%">任务描述</th>
+									<th width="10%">任务状态</th>
+									<th width="10%">任务表达式</th>
+									<th width="15%">创建时间</th>
+									<th width="30%">操作</th>
+								</tr>
+							</thead>
+							<tbody id="treeTableList">
+								<tr th:each="task:${list}">
+									<td th:text="${task.jobName}"></td>
+									<td th:text="${task.jobGroup}"></td>
+									<td th:text="${task.jobDescription}"></td>
+									<td th:text="${task.jobStatus == 'PAUSED'}?'暂停':'运行'"></td>
+									<td th:text="${task.cronExpression}"></td>
+									<td th:text="${task.createTime}"></td>
+									<td th:jobName="${task.jobName}"
+									th:jobGroup="${task.jobGroup}"
+									th:jobDescription="${task.jobDescription}"
+									th:jobStatus="${task.jobStatus}"
+									th:cronExpression="${task.cronExpression}"
+									>
+									<a href="#"  th:onclick="${task.jobStatus == 'PAUSED'}?'start(this)':'stop(this)'"><i
+											th:class="${task.jobStatus == 'PAUSED'}?'fa fa-play-circle-o':'fa fa-pause-circle'" th:text="${task.jobStatus == 'PAUSED'}?'恢复':'暂停'">暂停/恢复</i></a>
+											&nbsp;&nbsp;&nbsp;<a href="#" onclick="edit(this)"><i
+											class="fa fa-edit"></i> 修改</a> &nbsp;&nbsp;&nbsp; <a href="#"
+										onclick="del(this)"><i class="fa fa-trash"></i> 删除</a>
+										&nbsp;&nbsp;&nbsp;<a href="#"
+										onclick="runNow(this)"><i class="fa fa-play"></i> 立即运行一次</a>
+										&nbsp;&nbsp;&nbsp;</td>
+								</tr>
+
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<!-- end main container -->
+	</div>
+	<div style="display: none" class="page-content" id="jobForm">
+		<input type="hidden" id="isEdit" value="0" />
+		<div class="row ">
+
+			<form class="form-horizontal" role="form" method="post" id="editForm">
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right"
+						for="jobName"> 任务名称</label>
+
+					<div class="col-sm-9">
+						<input type="text" id="jobName" placeholder="填写执行的job类路径"
+							class="col-xs-10  " name="jobName" required>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right"
+						for="jobGroup"> 任务分组</label>
+
+					<div class="col-sm-9">
+						<input type="text" id="jobGroup" placeholder=""
+							class="col-xs-10  " name="jobGroup" required>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right"
+						for="cronExpression"> 执行表达式</label>
+
+					<div class="col-sm-9">
+						<input type="text" id="cronExpression" placeholder=""
+							class="col-xs-10  " name="cronExpression" required>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="col-sm-3 control-label no-padding-right"
+						for="jobDescription"> 描述</label>
+
+					<div class="col-sm-9">
+						<textarea id="jobDescription" placeholder="" class="col-xs-10  "
+							name="jobDescription"></textarea>
+					</div>
+				</div>
+			</form>
+
+		</div>
+
+	</div>
+
+	<div th:replace="common/commonJS"></div>
+	<script type="text/javascript">
+		function stop(obj){
+			jp.confirm("你确定要停止该定时任务吗？",function(){
+				var td=$(obj.parentNode);
+				 var jobName=td.attr("jobName");
+				 var jobGroup=td.attr("jobGroup");
+				 $.post(ctx+"schedule/pause",{"jobName":jobName,"jobGroup":jobGroup},function(result){
+					 layer.alert(result.message,function(index){
+						 if(result.code==0){
+							 	window.location.reload();
+								layer.closeAll();
+								
+							}
+						  layer.close(index);
+						});
+						
+				 });
+			})
+			
+		}
+		
+		function start(obj){
+			jp.confirm("你确定要启动该定时任务吗？",function(){
+				var td=$(obj.parentNode);
+				 var jobName=td.attr("jobName");
+				 var jobGroup=td.attr("jobGroup");
+				 $.post(ctx+"schedule/resume",{"jobName":jobName,"jobGroup":jobGroup},function(result){
+					 layer.alert(result.message,function(index){
+						 if(result.code==0){
+							 	window.location.reload();
+								layer.closeAll();
+								
+							}
+						  layer.close(index);
+						});
+						
+				 });
+			})
+		}
+		function del(obj){
+			jp.confirm("你确定要删除该定时任务吗？",function(){
+				var td=$(obj.parentNode);
+				 var jobName=td.attr("jobName");
+				 var jobGroup=td.attr("jobGroup");
+				 $.post(ctx+"schedule/remove",{"jobName":jobName,"jobGroup":jobGroup},function(result){
+					 layer.alert(result.message,function(index){
+						 if(result.code==0){
+							 	window.location.reload();
+								layer.closeAll();
+								
+							}
+						  layer.close(index);
+						});
+						
+				 });
+			})
+		}
+		//添加任务
+		function add() {
+			$("#isEdit").val("0");
+			layer.open({
+				title : '添加',
+				area : [ '660px', '350px' ],
+				type : 1,
+				maxmin : true,
+				content : $('#jobForm') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+				,
+				auto : true,
+				btn : [ '保存', '取消' ],
+				yes : function(index, layero) {
+					$("#editForm").submit();
+				},
+				btn2 : function(index, layero) {
+					//按钮【按钮二】的回调
+					//return false 开启该代码可禁止点击该按钮关闭
+				}
+			});
+		}
+		//修改任务
+		function edit(obj) {
+			$("#isEdit").val("1");
+			var td=$(obj.parentNode);
+			 var jobName=td.attr("jobName");
+			 var jobGroup=td.attr("jobGroup");
+			 var cronExpression=td.attr("cronExpression");
+			 var jobDescription=td.attr("jobDescription");
+			 $("#jobName").val(jobName);
+			 $("#jobGroup").val(jobGroup);
+			 $("#cronExpression").val(cronExpression);
+			 $("#jobDescription").val(jobDescription);
+			 $("#jobName").attr("readonly","readonly");
+			  $("#jobGroup").attr("readonly","readonly");
+			layer.open({
+				title : '添加',
+				area : [ '660px', '350px' ],
+				type : 1,
+				maxmin : true,
+				content : $('#jobForm') //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+				,
+				auto : true,
+				btn : [ '保存', '取消' ],
+				yes : function(index, layero) {
+					$("#editForm").submit();
+				},
+				btn2 : function(index, layero) {
+					//按钮【按钮二】的回调
+					//return false 开启该代码可禁止点击该按钮关闭
+				}
+			});
+		}
+		
+		/**
+		立即运行一次
+		**/
+		function runNow(obj){
+			jp.confirm("你确定要立即运行一次该定时任务吗？",function(){
+				var td=$(obj.parentNode);
+				 var jobName=td.attr("jobName");
+				 var jobGroup=td.attr("jobGroup");
+				 $.post(ctx+"schedule/runNow",{"jobName":jobName,"jobGroup":jobGroup},function(result){
+					 layer.alert(result.message,function(index){
+						 if(result.code==0){
+								layer.closeAll();
+							}
+						  layer.close(index);
+						});
+						
+				 });
+			})
+		}
+		$().ready(function() {
+			$("#editForm").validate({
+				submitHandler : function(form) {
+					
+					var queryString = $('#editForm').formSerialize();
+					var url=ctx+"schedule/add";
+					if($("#isEdit").val()==1){
+						url=ctx+"schedule/update";
+					}
+					$.post(url,queryString,function(result){
+						 layer.alert(result.message,function(index){
+							 if(result.code==0){
+								 	window.location.reload();
+									layer.closeAll();
+								}
+							  layer.close(index);
+							});
+						
+					});
+				}
+			});
+
+		});
+	</script>
+</body>
+</html>

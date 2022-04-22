@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/layout :: common_header(~{::title},~{::link})">
+<title>字典管理</title>
+<!-- 
+  additional css  -->
+
+</head>
+
+<body>
+	<div class="main-container">
+		<div class="main-content-inner">
+			<div class="page-content">
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<h3 class="panel-title">字典列表</h3>
+					</div>
+					<div class="panel-body">
+						<div class="row">
+							<div id="left" class="col-sm-12">
+								<!-- 搜索框 -->
+								<div class="accordion-group">
+									<div id="collapseTwo" class="accordion-body collapse">
+										<div class="accordion-inner">
+											<form id="searchForm"
+												class="form form-horizontal well clearfix">
+												
+												<div class="col-xs-12 col-sm-6 col-md-4">
+													<label class="label-item single-overflow pull-left"
+														title="描述">名称：</label> <input id="description"
+														name="description" class="form-control m-b" />
+												</div>
+												<div class="col-xs-12 col-sm-6 col-md-4">
+													<label class="label-item single-overflow pull-left"
+														title="类型：">编码：</label> <input id="type" name="type"
+														class="form-control m-b" />
+												</div>
+												<div class="col-xs-12 col-sm-6 col-md-4">
+													<div style="margin-top: 26px">
+														<button
+															class="btn btn-primary btn-rounded btn-outline btn-sm "
+															type="button" onclick="search()">
+															<i class="fa fa-search"></i> 查询
+														</button>
+														<button
+															class="btn btn-primary btn-rounded btn-outline btn-sm "
+															type="reset">
+															<i class="fa fa-refresh"></i> 重置
+														</button>
+													</div>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+								<div id="toolbar">
+									<button class="btn btn-primary btn-sm" data-toggle="tooltip"
+										data-placement="left" onclick="add()" title="添加">
+										<i class="fa fa-plus"></i> 添加
+									</button>
+									<button class="btn btn-success btn-sm" data-toggle="tooltip"
+										data-placement="left" onclick="edit()" id="edit" title="修改">
+										<i class="glyphicon glyphicon-edit"></i> 修改
+									</button>
+									<button class="btn btn-danger btn-sm" onclick="del()"
+										id="delete" data-toggle="tooltip" data-placement="top">
+										<i class="fa fa-trash-o"> 删除</i>
+									</button>
+									<a class="accordion-toggle btn btn-sm " data-toggle="collapse"
+										data-parent="#accordion2" href="#collapseTwo"> <i
+										class="fa fa-search"></i> 检索
+									</a>
+								</div>
+
+								<table id="usertable" data-toggle="table"
+									data-side-pagination="server" data-striped="true"
+									data-query-params="queryParams" data-pagination-loop="false"
+									data-page-number="1" data-data-field="list"
+									data-total-field="totalRow" data-id-field="id"
+									data-content-type="application/x-www-form-urlencoded"
+									data-pagination="true" data-method="post"
+									th:data-url="@{/sys/dict/query}">
+									<thead>
+										<tr>
+											<th class="center" data-checkbox="true"></th>
+											<th class="center" data-field="description">名称</th>
+											<th class="center" data-field="type">编码</th>
+											<th data-field="id" data-formatter="optFormatter">操作</th>
+										</tr>
+									</thead>
+								</table>
+
+							</div>
+							<div id="right" class="panel panel-default col-sm-6 "
+								style="display: none">
+								<div class="panel-heading">
+									<h3 class="panel-title">
+										<label>键值列表，所属类型: </label><font id="dictTypeLabel" color="red"></font><input
+											type="hidden" id="dictTypeId" />
+									</h3>
+								</div>
+								<div class="panel-body">
+									<div id="dictValueToolbar">
+										<button id="dictValueButton"
+											class="btn btn-outline btn-sm btn-primary" title="添加键值">
+											<i class="fa fa-plus-circle"></i> 添加键值
+										</button>
+									</div>
+									<!-- 表格 -->
+									<table id="dictValueTable" data-toolbar="#dictValueToolbar"
+										data-id-field="id">
+									</table>
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- /.col -->
+			</div>
+
+		</div>
+		<!-- end main container -->
+	</div>
+
+	<div th:replace="common/commonJS"></div>
+	<script>
+
+	 function queryParams(params){
+		 var temp = $("#searchForm").serializeJSON();
+		 temp.pageSize=params.limit;   //页面大小
+		 temp.pageNumber=(params.offset / params.limit) + 1;   //页码  
+		 temp.sort=params.sort;      //排序列名  
+		 temp.sortOrder=	 params.order; //排位命令（desc，asc）
+		 return temp; 
+	 }
+    function statusFormatter(value,row,index){
+    	if(value=="0"){
+    		return "<span class='label label-sm label-success'>启用</span>"
+    	}else{
+    		return "<span class='label label-sm label-warning'>禁用</span>";
+    	}
+    }
+    function optFormatter(value,row,index){
+    	return "<div class='hidden-sm hidden-xs btn-group'>"+
+    	"<button class='btn btn-xs btn-info' onclick='setDictValue("+row.id+",\""+row.description+"\")'>键值管理</button>"
+    	 
+    	+"</div>"
+    	
+    }
+    function setDictValue(id,type){
+    	$("#left").attr("class", "col-sm-6");
+		setTimeout(function(){
+			$("#right").fadeIn(500);
+		},500)
+		$("#dictTypeLabel").html(type);
+		$("#dictTypeId").val(id);
+		$('#dictValueTable').bootstrapTable("refresh",{query:{dictTypeId:id}})
+    }
+    function search(){
+    	$('#usertable').bootstrapTable('refresh');
+    }
+    function add(){
+    	jp.openWindow("新增"+'字典',"sys/dict/add","800px", "420px");
+    }
+    
+    function getIdSelections() {
+        return $.map($("#usertable").bootstrapTable('getSelections'), function (row) {
+            return row.id
+        });
+    }
+
+    function edit(id){
+    		if(!id){
+    			var selectRows=$('#usertable').bootstrapTable('getSelections');
+    	    	if(selectRows.length==0){
+    	    		jp.alert("未选择任何行");
+    	    	}else if(selectRows.length>1){
+    	    		jp.alert("只能修改一行");
+    	    	}
+  			  id = getIdSelections();
+  		  }
+    		jp.openWindow("修改"+'字典',ctx+"sys/dict/edit/"+id,"800px", "420px");	
+    	 
+    	
+    }
+    
+    function del(ids){
+    	var selectRows=$('#usertable').bootstrapTable('getSelections');
+    	if(selectRows.length==0){
+    		jp.alert("未选择任何行");
+    	 
+    	}else{
+    		 if(!ids){
+			    	ids =  getIdSelections();
+			    }
+
+    		jp.confirm('确定要删除选择的字典吗？', function (){
+    			 jp.loading();
+          	  	$.get(ctx+"sys/dict/deleteAll?ids=" +ids, function(data){
+          	  		if(data){
+          	  			search();
+         	  			jp.success("删除成功");
+         	  		}else{
+         	  			jp.error("删除失败");
+         	  		}
+          	  	})
+
+    		 }
+ 			
+ 		);
+    	}
+    }
+    function dictValueRefresh(){
+    	$('#dictValueTable').bootstrapTable('refresh');
+    }
+	 $(function () {
+    	$('#usertable').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
+                'check-all.bs.table uncheck-all.bs.table', function () {
+            $('#delete').prop('disabled', ! $('#usertable').bootstrapTable('getSelections').length);
+            $('#edit').prop('disabled', $('#usertable').bootstrapTable('getSelections').length!=1);
+        });
+    	
+     	$('#dictValueTable').bootstrapTable({
+			  //请求方法
+          method: 'get',
+          dataType: "json",
+           //是否显示行间隔色
+          striped: true,
+          //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）     
+          cache: false,    
+          //是否显示分页（*）  
+          pagination: false,   
+          //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
+          url: ctx+"sys/dict/getDictValue",
+          //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
+          //queryParamsType:'',   
+          ////查询参数,每次调用是会带上这个参数，可自定义                         
+          queryParams : function(params) {
+              return {dictTypeId:$("#dictTypeId").val()};
+          },
+          //分页方式：client客户端分页，server服务端分页（*）
+          sidePagination: "server",
+          columns: [{
+			        field: 'label',
+			        title: '标签'
+			    }, {
+			        field: 'value',
+			        title: '键值'
+			    },{
+			    	field: 'sort',
+			        title: '排序'
+			       
+			    }, {
+              field: 'operate',
+              title: '操作',
+              align: 'center',
+              events: {
+              	 'click .edit': function (e, value, row, index) {
+              		jp.openWindow("修改"+'键值',ctx+"sys/dict/dictValueEdit/"+row.id,"800px", "420px");	
+      		        },
+  		        'click .del': function (e, value, row, index) {
+  		        	
+  		        	jp.confirm('确认要删除键值吗？',function(){
+  		        		jp.loading();
+  		        		$.get(ctx+"sys/dict/deleteAll?ids=" +row.id, function(data){
+  		          	  		if(data){
+  		          	  			dictValueRefresh();
+  		         	  			jp.success("删除成功");
+  		         	  		}else{
+  		         	  			jp.error("删除失败");
+  		         	  		}
+  		          	  	})
+  		        	});
+  		        }
+  		    },
+              formatter:  function operateFormatter(value, row, index) {
+  		        return [
+  		        	
+						'<a href="#" class="edit" title="编辑" >[编辑] </a>',
+						
+  		        	
+						'<a href="#" class="del" title="删除" >[删除] </a>'
+						
+  		        ].join('');
+  		    }
+          }]
+			
+			});
+     	  if(navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i)){//如果是移动端
+			  $('#dictValueTable').bootstrapTable("toggleView");
+			}
+		  
+		  $("#dictValueButton").click(function(){
+				
+				jp.openWindow('添加键值', ctx+'sys/dict/dictValueAdd?dictTypeId=' + $("#dictTypeId").val(),'800px', '420px');
+			});
+		  
+		 
+		
+    	
+
+    });
+</script>
+</body>
+</html>

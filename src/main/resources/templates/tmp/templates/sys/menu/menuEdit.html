@@ -1,0 +1,207 @@
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-CN">
+<head th:replace="common/layout :: common_header(~{::title},~{::link})">
+<title>修改菜单</title>
+</head>
+<body>
+	<div class="main-container">
+		<div class="main-content-inner">
+			<div class="page-content">
+				<form class="form-horizontal" role="form" id="userAddForm"
+					method="post" th:action="@{/sys/menu/update}">
+					<input type="hidden" name="id" th:value="${menu.id}">
+					<input id="parentId" name="parentId"   type="hidden" th:value="${menu.parentId!=null}?${menu.parentId}:''" />
+					<table
+						class="table table-bordered  table-condensed dataTables-example dataTable no-footer">
+						<tr>
+							<td class="width-15 active"><label
+								class="pull-right control-label" for="parentName">上级菜单</label></td>
+							<td class="width-35">
+								<div class="input-group" style="width: 100%">
+									<input class="form-control" id="parentName" name="parentName"
+										type="text" th:value="${menu.parentName}" readonly="readonly" /> <span
+										class="input-group-btn">
+										<button type="button" id="areaButton"
+											class="btn   btn-primary  ">
+											<i class="fa fa-search"></i>
+										</button>
+										<button type="button" id="areaDelButton" class="close"
+											data-dismiss="alert"
+											style="position: absolute; top: 5px; right: 53px; z-index: 999; display: block;">×</button>
+									</span>
+								</div>
+							</td>
+
+							<td class="width-15 active"><label
+								class="pull-right  control-label" for="ds_name"><font
+									color="red">*</font>名称</label></td>
+							<td class="width-35"><input class="form-control"
+								id="ds_name" name="name" type="text" required th:value="${menu.name}"/></td>
+						</tr>
+						<tr>
+							<td class="width-15 active"><label
+								class="pull-right  control-label" for="ds_href">链接</label></td>
+							<td class="width-35"><input class="form-control"
+								id="ds_href" name="href" type="text"   th:value="${menu.href}"/></td>
+							<td class="width-15 active"><label
+								class="pull-right  control-label" for="ds_target">目标</label></td>
+							<td class="width-35"><input class="form-control"
+								id="ds_target" name="target" type="text" th:value="${menu.target}"/></td>
+						</tr>
+						<tr>
+							<td class="width-15 active"><label
+								class="pull-right  control-label" for="ds_icon">图标</label></td>
+							<td class="width-35"><input class="form-control"
+								id="ds_icon" name="icon" type="text" th:value="${menu.icon}"  /></td>
+							<td class="width-15 active"><label
+								class="pull-right  control-label" for="ds_type">菜单类型</label></td>
+							<td class="width-35"> <label
+								class="radio-inline"> <input th:field="*{menu.type}" type="radio"
+									name="type" id="type1" value="1"
+									checked> 菜单
+							</label> <label class="radio-inline"> <input type="radio" th:field="*{menu.type}"
+									name="type" id="type2" value="2">
+									按钮
+							</label></td>
+						</tr>
+						<tr>
+							<td class="width-15 active"><label
+								class="pull-right  control-label"  >可见</label></td>
+							<td class="width-35"> 
+								 <label
+								class="radio-inline"> <input type="radio"
+									name="isShow" id="isShow1" value="1" th:field="*{menu.isShow}"
+									checked> 显示
+							</label> <label class="radio-inline"> <input type="radio" th:field="*{menu.isShow}"
+									name="isShow" id="isShow2" value="0">
+									隐藏
+							</label>
+								</td>
+							<td class="width-15 active"><label
+								class="pull-right  control-label" for="ds_permission">权限标识</label></td>
+							<td class="width-35"><input class="form-control"
+								id="ds_permission" name="permission" type="text" th:value="${menu.permission}"/></td>
+						</tr>
+						<tr>
+							 <td class="width-15 active"><label
+								class="pull-right  control-label" for="ds_permission">排序</label></td>
+							<td class="width-35"><input class="form-control"
+								id="ds_sort" name="sort" type="text" th:value="${menu.sort}"/></td>
+							<td class="width-15 active"><label
+								class="pull-right  control-label" for="ds_remarks">备注</label></td>
+							<td class="width-35"><textarea class="form-control"
+									id="ds_remarks" name="remarks">[[${menu.remarks}]]</textarea></td>
+						</tr>
+
+					</table>
+					<div class="clearfix ">
+						<div class="center">
+							<button class="btn btn-info" type="submit" id="submitBtn">
+								<i class="ace-icon fa fa-check bigger-110"></i> 保存
+							</button>
+
+							&nbsp; &nbsp; &nbsp;
+							<button class="btn" type="button" id="closeWin">
+								<i class="ace-icon fa fa-del bigger-110"></i> 关闭
+							</button>
+						</div>
+					</div>
+
+
+				</form>
+				<!-- /.col -->
+			</div>
+
+		</div>
+		<!-- end main container -->
+	</div>
+
+	<div th:replace="common/commonJS"></div>
+	<script type="text/javascript">
+	$(document).ready(function(){
+	$("#areaButton, #parentName").click(function(){
+		// 是否限制选择，如果限制，设置为disabled
+		if ($("#areaButton").hasClass("disabled")){
+			return true;
+		}
+		// 正常打开	
+		top.layer.open({
+		    type: 2, 
+		    area: ['300px', '420px'],
+		    title:"选择父菜单",
+		    ajaxData:{selectIds: $("#areaId").val()},
+		    content: ctx+"sys/treeselect?url="+encodeURIComponent("sys/menu/treeData")+"&module=&checked=&extId=&isAll=&allowSearch=" ,
+		    btn: ['确定', '关闭']
+    	       ,yes: function(index, layero){ //或者使用btn1
+						var tree = layero.find("iframe")[0].contentWindow.tree;//h.find("iframe").contents();
+						var ids = [], names = [], nodes = [];
+						if ("" == "true"){
+							nodes = tree.get_checked(true);
+						}else{
+							nodes = tree.get_selected(true);
+						}
+						for(var i=0; i<nodes.length; i++) {//
+							ids.push(nodes[i].id);
+							names.push(nodes[i].text);//
+							break; // 如果为非复选框选择，则返回第一个选择  
+						}
+						$("#parentId").val(ids.join(",").replace(/u_/ig,""));
+						$("#parentName").val(names.join(","));
+						$("#parentName").focus();
+						top.layer.close(index);
+				    	       },
+    	cancel: function(index){ //或者使用btn2
+    	           //按钮【按钮二】的回调
+    	       }
+		}); 
+	
+	});
+	
+	$("#areaDelButton").click(function(){
+		// 是否限制选择，如果限制，设置为disabled
+		if ($("#areaButton").hasClass("disabled")){
+			return true;
+		}
+		// 清除	
+		$("#parentId").val("");
+		$("#parentName").val("");
+		$("#parentName").focus();
+	
+	});
+})
+</script>
+	<script type="text/javascript">
+	var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+	//关闭iframe
+	$('#closeWin').click(function(){
+	    top.layer.close(index);
+	});
+	    
+	 $().ready(function() {
+		    $("#userAddForm").validate({
+		    	submitHandler: function(form) { 
+	        		//验证通过后 的js代码写在这里 
+	        		
+		    		 $(form).ajaxSubmit({
+		                 dataType:"json",
+		                 success:function( data ){
+		                      if(data==1){
+		                    	  top.layer.alert('保存成功') 
+		                    	  top.layer.close(index);
+		                    	  top.getActiveTab()[0].contentWindow.refresh();
+		                      }else{
+		                    	  top.layer.alert('保存失败')  
+		                      }
+		                        
+		                    
+		                   },
+		                   error:function(xhr, status, error){
+		                	   top.layer.alert('操作失败');
+		                   }
+		                 });
+	         
+	        		}
+		    });
+		});
+	</script>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-CN">
+<head th:replace="common/layout :: common_header(~{::title},~{::link})">
+<title>新建用户</title>
+</head>
+<body>
+		<div class="main-container">
+		<div class="main-content-inner">
+			<div class="page-content">
+				<form class="form-horizontal" role="form" id="userAddForm"
+					method="post" >
+					<div class="col-xs-12">
+					
+							 <label>用户名称：</label>
+							 <input type="text" id="name">
+							  <label>登录名：</label>
+							 <input type="text" id="loginName">
+							<button class="btn btn-primary btn-rounded btn-outline btn-sm "
+							 type="button"	onclick="cha()">
+								<i class="fa fa-search"></i> 查询
+							</button>
+							<button class="btn btn-primary btn-rounded btn-outline btn-sm "
+								type="reset">
+								<i class="fa fa-refresh"></i> 重置
+							</button>
+					
+					</div>
+					<table id="roleAddTable" data-toolbar="#roleValueToolbar"
+										data-id-field="id">
+									</table>
+					<div class="clearfix ">
+						<div class="center">
+							<button class="btn btn-info" type="button"  id="submitBtn" onclick="saveAll()">
+								<i class="ace-icon fa fa-check bigger-110"></i> 保存
+							</button>
+
+							&nbsp; &nbsp; &nbsp;
+							<button class="btn" type="button" id="closeWin">
+								<i class="ace-icon fa fa-del bigger-110"></i> 关闭
+							</button>
+						</div>
+					</div>
+
+				</form>
+				<!-- /.col -->
+			</div>
+
+		</div>
+		<!-- end main container -->
+	</div>
+
+	<div th:replace="common/commonJS"></div>
+
+	<script type="text/javascript">
+	
+	
+	
+	
+	/**
+	*获取url参数
+	*/
+	function GetQueryString(name)
+	{
+	     var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+	     var r = window.location.search.substr(1).match(reg);
+	     if(r!=null)return  unescape(r[2]); return null;
+	}
+	
+	//刷新列表函数
+	function cha(){
+	 	$('#roleAddTable').bootstrapTable("refresh",{query:{roleTypeId:GetQueryString('roleTypeId')}})
+    }
+	
+	/*  function search(){
+	    	$('#roleAddTable').bootstrapTable('refresh');
+	    } */
+	
+	//获取选中项的id数组
+	function getIdSelections() {
+        return $.map($("#roleAddTable").bootstrapTable('getSelections'), function (row) {
+            return row.id
+        });
+    }
+	
+	//保存操作
+	function saveAll(){
+     	
+     	var roleTypeId=GetQueryString('roleTypeId');
+     	var selectRows=$("#roleAddTable").bootstrapTable('getSelections');
+     	if(selectRows.length==0){
+     		jp.alert("未选择任何行");
+     	 
+     	}else{
+     		var ids =  getIdSelections();
+     		jp.confirm('确定要保存选择的角色吗？', function (){
+     			 jp.loading();
+           	  	$.get(ctx+"sys/role/saveAll?ids=" +ids.join(',')+"&roleTypeId="+roleTypeId, function(data){
+           	  		if(data){
+          	  			jp.success("保存成功");
+          	  		var index = parent.layer.getFrameIndex(window.name);
+    				top.layer.close(index);
+    				 top.getActiveTab()[0].contentWindow.searchValue();
+          	  		}else{
+          	  			jp.error("保存失败");
+          	  		}
+           	  	})
+
+     		 }
+  			
+  		);
+     	}
+     }
+	//所有的函数不要放在$(function(){这个里面})，这个是页面加载完成才执行的操作，
+//而那个oncilck是页面加载的同时调用，因为你这个函数定义在他调用之前
+	 $(function () {
+		 $('#closeWin').click(function() {
+			 var index = parent.layer.getFrameIndex(window.name);
+				top.layer.close(index);
+			});
+	    	$('#roletable').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
+	                'check-all.bs.table uncheck-all.bs.table', function () {
+	           
+	        });
+	    	   		
+	    	    	
+	    	     	$('#roleAddTable').bootstrapTable({
+	    				  //请求方法
+	    	          method: 'get',
+	    	          dataType: "json",
+	    	           //是否显示行间隔色
+	    	          striped: true,
+	    	          //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）     
+	    	          cache: false,    
+	    	          //是否显示分页（*）  
+	    	          pagination: false,   
+	    	          //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
+	    	          url: ctx+"sys/user/queryUnselect",
+	    	          //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
+	    	          //queryParamsType:'',   
+	    	          ////查询参数,每次调用是会带上这个参数，可自定义                         
+	    	          queryParams : function(params) {
+	    	              return {roleTypeId:GetQueryString('roleTypeId'),name:$("#name").val(),loginName:$("#loginName").val()};
+	    	          },
+	    	          //分页方式：client客户端分页，server服务端分页（*）
+	    	          sidePagination: "server",
+	    	          columns: [{
+  				        checkbox:true,
+				    },{
+	    				        field: 'no',
+	    				        title: '工号'
+	    				    },{
+	    				        field: 'name',
+	    				        title: '用户名'
+	    				    },{
+	    				        field: 'loginName',
+	    				        title: '登陆名'
+	    				    },{
+	    				        field: 'companyId',
+	    				        title: '归属公司'
+	    				    },{
+	    				        field: 'officeId',
+	    				        title: '归属部门'
+	    				    }]
+	    				
+	    				});
+	    	     	  if(navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i)){//如果是移动端
+	    				  $('#roleAddTable').bootstrapTable("toggleView");
+	    				}
+
+	    });
+
+	</script>
+</body>
+</html>

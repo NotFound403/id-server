@@ -1,0 +1,216 @@
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-CN">
+<head th:replace="common/layout :: common_header(~{::title},~{::link})">
+<title>个人设置</title>
+<link rel="stylesheet" th:href="@{/ace/plugins/chosen/chosen.min.css}" />
+</head>
+<body>
+	<div class="main-container">
+		<div class="main-content-inner">
+			<div class="page-content">
+				<div class="page-header">
+					<h1>
+						个人信息查看 <small> </small>
+					</h1>
+				</div>
+
+				<div id="home">
+					<div class="row">
+						<div class="col-xs-12 col-sm-3 center">
+							<span class="profile-picture"> <img id="avatar"
+								onclick="fileSelect();" class="" alt="头像"
+								th:src="(${user.photo=='0'})?(@{/ace/avatars/profile-pic.jpg}):(@{/sys/showFile/}+${user.photo})"
+								style="display: block;" width="200px">
+							</span>
+							<div class="space space-4"></div>
+							<a href="#" class="btn btn-sm btn-block btn-success"  id="modifyAvatar"> <i
+								class="ace-icon fa fa-plus-circle bigger-120"></i> <span
+								class="bigger-110">修改头像</span>
+							</a>
+
+						</div>
+						<!-- /.col -->
+
+						<div class="col-xs-12 col-sm-9">
+							<h4 class="blue">
+								<span class="middle" th:text="${user.name}">Alex M. Doe</span>
+							</h4>
+
+							<div class="profile-user-info">
+								<div class="profile-info-row">
+									<div class="profile-info-name">登录名</div>
+
+									<div class="profile-info-value">
+										<span th:text="${user.loginName}">alexdoe</span>
+									</div>
+								</div>
+								<div class="profile-info-row">
+									<div class="profile-info-name">工号</div>
+
+									<div class="profile-info-value">
+										<span th:text="${user.no}">alexdoe</span>
+									</div>
+								</div>
+								<div class="profile-info-row">
+									<div class="profile-info-name">所属公司</div>
+
+									<div class="profile-info-value">
+										<span th:text="${user.companyName}">Netherlands</span>
+
+									</div>
+								</div>
+								<div class="profile-info-row">
+									<div class="profile-info-name">所属部门</div>
+
+									<div class="profile-info-value">
+										<span th:text="${user.officeName}">Netherlands</span>
+
+									</div>
+								</div>
+
+								<div class="profile-info-row">
+									<div class="profile-info-name">手机号码</div>
+
+									<div class="profile-info-value">
+										<span th:text="${user.phone}">138</span>
+									</div>
+								</div>
+
+								<div class="profile-info-row">
+									<div class="profile-info-name">邮箱</div>
+
+									<div class="profile-info-value">
+										<span th:text="${user.email}">2010/06/20</span>
+									</div>
+								</div>
+
+								<div class="profile-info-row">
+									<div class="profile-info-name">最后登录时间</div>
+
+									<div class="profile-info-value">
+										<span
+											th:text="${#dates.format(user.loginDate,'yyyy-MM-dd HH:mm:ss')}">3
+											hours ago</span>
+									</div>
+								</div>
+							</div>
+
+							<div class="hr hr-8 dotted"></div>
+
+
+						</div>
+						<!-- /.col -->
+					</div>
+					<!-- /.row -->
+				</div>
+				<!-- end page-content -->
+			</div>
+		</div>
+
+	</div>
+	<div th:replace="common/commonJS"></div>
+	
+	<script th:inline="javascript">
+	//another option is using modals
+	$('#modifyAvatar').on('click', function(){
+		var modal = 
+		'<div class="modal fade">\
+		  <div class="modal-dialog">\
+		   <div class="modal-content">\
+			<div class="modal-header">\
+				<button type="button" class="close" data-dismiss="modal">&times;</button>\
+				<h4 class="blue">修改头像</h4>\
+			</div>\
+			\
+			<form class="no-margin" id="avatarForm" enctype="multipart/form-data" method="post" action="/sys/user/modifyAvatar">\
+			 <div class="modal-body">\
+				<div class="space-4"></div>\
+				<div style="width:75%;margin-left:12%;"><input type="file" name="file" /></div>\
+			 </div>\
+			\
+			 <div class="modal-footer center">\
+				<button type="submit" class="btn btn-sm btn-success"><i class="ace-icon fa fa-check"></i> 提交</button>\
+				<button type="button" class="btn btn-sm" data-dismiss="modal"><i class="ace-icon fa fa-times"></i> 取消</button>\
+			 </div>\
+			</form>\
+		  </div>\
+		 </div>\
+		</div>';
+		
+		
+		var modal = $(modal);
+		modal.modal("show").on("hidden", function(){
+			modal.remove();
+		});
+
+		var working = false;
+
+		var form = modal.find('form:eq(0)');
+		var file = form.find('input[type=file]').eq(0);
+		file.ace_file_input({
+			style:'well',
+			btn_choose:'点击选择新头像',
+			btn_change:null,
+			no_icon:'ace-icon fa fa-picture-o',
+			thumbnail:'small',
+			before_remove: function() {
+				//don't remove/reset files while being uploaded
+				return !working;
+			},
+			allowExt: ['jpg', 'jpeg', 'png', 'gif'],
+			allowMime: ['image/jpg', 'image/jpeg', 'image/png', 'image/gif']
+		});
+
+		form.on('submit', function(){
+			if(!file.data('ace_input_files')) return false;
+			
+			//file.ace_file_input('disable');
+			form.find('button').attr('disabled', 'disabled');
+			form.find('.modal-body').append("<div class='center'><i class='ace-icon fa fa-spinner fa-spin bigger-150 orange'></i></div>");
+			
+			var deferred = new $.Deferred;
+			 $(form).ajaxSubmit({
+                 dataType:"json",
+                 success:function( result ){
+                      if(result.code==0){
+                    	  deferred.resolve(result.data);
+                      }else{
+                    	  top.layer.alert('修改失败')  
+                    	  deferred.resolve();
+                      }
+                        
+                    
+                   },
+                   error:function(xhr, status, error){
+                	   top.layer.alert('操作失败');
+                	   deferred.resolve();
+                   }
+                 });
+			working = true;
+			deferred.done(function(data) {
+				form.find('button').removeAttr('disabled');
+				form.find('input[type=file]').ace_file_input('enable');
+				form.find('.modal-body > :last-child').remove();
+				
+				modal.modal("hide");
+
+				//var thumb = file.next().find('img').data('thumb');
+				 if(data)
+					$('#avatar').get(0).src = ctx+"sys/showFile/"+data;
+
+				working = false;
+			});
+			
+			
+			/* setTimeout(function(){
+				deferred.resolve();
+			} , parseInt(Math.random() * 800 + 800));
+ */
+			return false;
+		});
+				
+	});
+	
+	</script>
+	
+</body>
+</html>

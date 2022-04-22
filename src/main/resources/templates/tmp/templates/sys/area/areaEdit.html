@@ -1,0 +1,170 @@
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-CN">
+<head th:replace="common/layout :: common_header(~{::title},~{::link})">
+<title>修改区域</title>
+</head>
+<body>
+	<div class="main-container">
+		<div class="main-content-inner">
+			<div class="page-content">
+
+				<form class="form-horizontal" role="form" id="areaEditForm" th:action="@{/sys/area/update}" method="post"
+					 >
+					<input type="hidden" name="id" th:value="${sysArea.id}">
+					<input id="p_areaId" name="parentId"   type="hidden" th:value="${sysArea.parentId}"/>
+					<table
+						class="table table-bordered  table-condensed dataTables-example dataTable no-footer">
+						<tr>
+							<td class="width-15 active"><label class="pull-right control-label"
+								for="parentName">上级区域</label></td>
+							<td class="width-35">
+								<div class="input-group" style="width: 100%">
+									<input class="form-control" id="parentName" name="parentName"
+										type="text" th:value="${sysArea.parentName}" readonly="readonly"/> <span
+										class="input-group-btn">
+										<button type="button" id="areaButton"
+											class="btn   btn-primary  ">
+											<i class="fa fa-search"></i>
+										</button>
+										 <button type="button" id="areaDelButton" class="close" data-dismiss="alert" style="position: absolute; top: 5px; right: 53px; z-index: 999; display: block;">×</button>
+									</span>
+								</div>
+							</td>
+
+							<td class="width-15 active"><label class="pull-right  control-label"
+								for="ds_name"><font color="red">*</font>区域名称</label></td>
+							<td class="width-35"><input class="form-control"
+								id="ds_name" name="name" type="text" th:value="${sysArea.name}"
+								required /></td>
+						</tr>
+						<tr>
+							<td class="width-15 active"><label class="pull-right  control-label"
+								for="ds_code"><font color="red">*</font>区域编码:</label></td>
+							<td class="width-35"><input class="form-control"
+								id="ds_code" name="code" type="text" th:value="${sysArea.code}"
+								required /></td>
+							<td class="width-15 active"><label class="  control-label"
+								for="ds_type">区域类型</label></td>
+							<td class="width-35">
+							<dict:select code="areaType"  name="type" value="${sysArea.type}"  class="form-control" id="ds_type"></dict:select> 
+							</td>
+						</tr>
+						<tr>
+							<td class="width-15 active"><label class="pull-right  control-label"
+								for="ds_remarks">备注</label></td>
+							<td class="width-35"><textarea class="form-control"
+									id="ds_remarks" name="remarks" >[[${sysArea.remarks}]]</textarea>
+							</td>
+						</tr>
+					</table>
+
+
+					<div class="clearfix ">
+						<div class="center">
+							<button class="btn btn-info" type="submit" id="submitBtn">
+								<i class="ace-icon fa fa-check bigger-110"></i> 保存
+							</button>
+
+							&nbsp; &nbsp; &nbsp;
+							<button class="btn" type="button" id="closeWin">
+								<i class="ace-icon fa fa-del bigger-110"></i> 关闭
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+			<!-- /.col -->
+		</div>
+
+	</div>
+	<!-- end main container -->
+
+
+	<div th:replace="common/commonJS"></div>
+	<script type="text/javascript">
+$(document).ready(function(){
+	$("#areaButton, #parentName").click(function(){
+		// 是否限制选择，如果限制，设置为disabled
+		if ($("#areaButton").hasClass("disabled")){
+			return true;
+		}
+		// 正常打开	
+		top.layer.open({
+		    type: 2, 
+		    area: ['300px', '420px'],
+		    title:"选择区域",
+		    ajaxData:{selectIds: $("#areaId").val()},
+		    content: ctx+"sys/treeselect?url="+encodeURIComponent("sys/area/treeData")+"&module=&checked=&extId=&isAll=&allowSearch=" ,
+		    btn: ['确定', '关闭']
+    	       ,yes: function(index, layero){ //或者使用btn1
+						var tree = layero.find("iframe")[0].contentWindow.tree;//h.find("iframe").contents();
+						var ids = [], names = [], nodes = [];
+						if ("" == "true"){
+							nodes = tree.get_checked(true);
+						}else{
+							nodes = tree.get_selected(true);
+						}
+						for(var i=0; i<nodes.length; i++) {//
+							ids.push(nodes[i].id);
+							names.push(nodes[i].text);//
+							break; // 如果为非复选框选择，则返回第一个选择  
+						}
+						$("#p_areaId").val(ids.join(",").replace(/u_/ig,""));
+						$("#parentName").val(names.join(","));
+						$("#parentName").focus();
+						top.layer.close(index);
+				    	       },
+    	cancel: function(index){ //或者使用btn2
+    	           //按钮【按钮二】的回调
+    	       }
+		}); 
+	
+	});
+	
+	$("#areaDelButton").click(function(){
+		// 是否限制选择，如果限制，设置为disabled
+		if ($("#areaButton").hasClass("disabled")){
+			return true;
+		}
+		// 清除	
+		$("#p_areaId").val("");
+		$("#parentName").val("");
+		$("#parentName").focus();
+	
+	});
+})
+</script>
+	<script type="text/javascript">
+		var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+		//关闭iframe
+		$('#closeWin').click(function() {
+			top.layer.close(index);
+		});
+
+		$().ready(function() {
+			$("#areaEditForm").validate({
+				submitHandler : function(form) {
+					//验证通过后 的js代码写在这里 
+
+					$(form).ajaxSubmit({
+						dataType : "json",
+						success : function(data) {
+							if (data == 1) {
+								top.layer.alert('保存成功')
+								top.layer.close(index);
+								top.getActiveTab()[0].contentWindow.refresh();
+							} else {
+								top.layer.alert('保存失败')
+							}
+
+						},
+						error : function(xhr, status, error) {
+							top.layer.alert('操作失败');
+						}
+					});
+
+				}
+			});
+		});
+	</script>
+</body>
+</html>

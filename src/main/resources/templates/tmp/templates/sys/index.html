@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-CN">
+<head th:replace="common/layout :: common_header(~{::title},~{::link})">
+<title th:text="${global.fullname}">icec-admin</title>
+</head>
+
+<body class="no-skin">
+	<!-- #section:basics/navbar.layout -->
+	<div id="navbar" class="navbar navbar-default          ace-save-state">
+		<div class="navbar-container ace-save-state" id="navbar-container">
+			<!-- #section:basics/sidebar.mobile.toggle -->
+			<button type="button" class="navbar-toggle menu-toggler pull-left"
+				id="menu-toggler" data-target="#sidebar">
+				<span class="sr-only">Toggle sidebar</span> <span class="icon-bar"></span>
+
+				<span class="icon-bar"></span> <span class="icon-bar"></span>
+			</button>
+
+			<!-- /section:basics/sidebar.mobile.toggle -->
+			<div class="navbar-header pull-left">
+				<!-- #section:basics/navbar.layout.brand -->
+				<a href="#" class="navbar-brand"> <small th:text="${global.fullname}">icec-admin</small>
+				</a>
+
+				<!-- /section:basics/navbar.layout.brand -->
+
+				<!-- #section:basics/navbar.toggle -->
+
+				<!-- /section:basics/navbar.toggle -->
+			</div>
+
+			<!-- #section:basics/navbar.dropdown -->
+			<div class="navbar-buttons navbar-header pull-right"
+				role="navigation">
+				<ul class="nav ace-nav">
+					<!-- #section:basics/navbar.user_menu -->
+					<li class="white dropdown-modal">当前版本：<small th:text="${global.version}">版本号</small></li>
+					<li class="light-blue dropdown-modal"><a
+						data-toggle="dropdown" href="#" class="dropdown-toggle"> <img
+							class="nav-user-photo" th:src="(${user.photo=='0'})?(@{/resource/avatars/profile-pic.jpg}):(@{/sys/showFile/}+${user.photo})"
+							alt="" /> <span class="user-info"> <small>欢迎</small>
+								<span th:text="${user.Name}"></span>
+						</span> <i class="ace-icon fa fa-caret-down"></i>
+					</a>
+
+						<ul
+							class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+							<li><a th:href="@{/sys/user/userSetting}"
+								data-index="userSetting" class="J_menuItem"> <i
+									class="ace-icon fa  fa-user"></i> 个人设置
+							</a></li>
+
+							<li><a th:href="@{/sys/user/modifyPasswd}"
+								data-index="passwordSetting" class="J_menuItem"> <i
+									class="ace-icon fa fa-cog"></i> 修改密码
+							</a></li>
+
+							<li class="divider"></li>
+
+							<li><a th:href="@{/sys/logout}"> <i
+									class="ace-icon fa fa-power-off"></i> 登出
+							</a></li>
+						</ul></li>
+
+					<!-- /section:basics/navbar.user_menu -->
+				</ul>
+			</div>
+
+			<!-- /section:basics/navbar.dropdown -->
+		</div>
+		<!-- /.navbar-container -->
+	</div>
+
+	<!-- /section:basics/navbar.layout -->
+	<div class="main-container ace-save-state" id="main-container">
+		<script type="text/javascript">
+			try {
+				ace.settings.loadState('main-container')
+			} catch (e) {
+			}
+		</script>
+
+		<!-- #section:basics/sidebar -->
+		<div id="sidebar"
+			class="sidebar                  responsive                    ace-save-state">
+			<script type="text/javascript">
+				try {
+					ace.settings.loadState('sidebar')
+				} catch (e) {
+				}
+			</script>
+
+			<div th:replace="sys/sidebar_nav"></div>
+			 
+			<!-- /.nav-list -->
+			<!-- #section:basics/sidebar.layout.minimize -->
+			<div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
+				<i id="sidebar-toggle-icon"
+					class="ace-icon fa fa-angle-double-left ace-save-state"
+					data-icon1="ace-icon fa fa-angle-double-left"
+					data-icon2="ace-icon fa fa-angle-double-right"></i>
+			</div>
+
+			<!-- /section:basics/sidebar.layout.minimize -->
+		</div>
+		<!-- /section:basics/sidebar -->
+		<div class="main-content">
+			<div class="main-content-inner">
+				<!-- #section:basics/content.breadcrumbs -->
+				<div class="breadcrumbs" id="breadcrumbs">
+					<div class="content-tabs">
+						<button class="roll-nav roll-left J_tabLeft">
+							<i class="fa fa-backward"></i>
+						</button>
+						<nav class="page-tabs J_menuTabs">
+							<div class="page-tabs-content">
+								<a href="javascript:;" class="active J_menuTab"
+									data-id="/home">首页</a>
+							</div>
+						</nav>
+						<button class="roll-nav roll-right J_tabRight">
+							<i class="fa fa-forward"></i>
+						</button>
+						<div class="btn-group roll-nav roll-right">
+							<button class="dropdown J_tabClose" data-toggle="dropdown">
+								关闭操作<span class="caret"></span>
+
+							</button>
+							<ul role="menu" class="dropdown-menu dropdown-menu-right">
+								<li class="J_tabShowActive"><a>定位当前选项卡</a></li>
+								<li class="divider"></li>
+								<li class="J_tabCloseAll"><a>关闭全部选项卡</a></li>
+								<li class="J_tabCloseOther"><a>关闭其他选项卡</a></li>
+							</ul>
+						</div>
+						<a href="#" class="roll-nav roll-right J_tabFullScreen" title="全屏"><i class="fa fa-fw"></i>全屏</a>
+					</div>
+				</div>
+
+				<div class="J_mainContent" id="content-main" style="height: 100%;">
+					<iframe class="J_iframe" name="iframe0" width="100%" height="100%"
+						th:src="@{/home}" frameborder="0" allowFullScreen="true"
+						data-id="/home" seamless=""></iframe>
+				</div>
+			</div>
+		</div>
+		<!-- /.main-content -->
+		<!-- <div class="footer">
+			<div class="footer-inner">
+				#section:basics/footer
+				<div class="footer-content">
+					<span class="bigger-120" th:text="${global.poweredby}"> ©2018 loongsec   </span>
+
+				</div>
+
+				/section:basics/footer
+			</div>
+		</div> -->
+		<a href="#" id="btn-scroll-up"
+			class="btn-scroll-up btn btn-sm btn-inverse"> <i
+			class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
+		</a>
+	</div>
+	<!-- /.main-container -->
+	<!--使用公有js-->
+	<div th:replace="common/commonJS"></div>
+    <!--每个页面自己的js-->
+    <script th:src="@{/resource/plugins/common/contabs.js}"></script> 
+ <!-- /section:basics/sidebar.layout.minimize -->
+<script type="text/javascript">
+	try {
+		ace.settings.check('sidebar', 'collapsed')
+	} catch (e) {
+	}
+	$(".nav-list a").on("click", function() {
+		var _this = this;
+		$(".nav-list li").removeClass("active");
+		$(this).parent().addClass("active");
+		$(this).parent().has('ul').removeClass("active");
+
+		$(this).parents("li").has('ul').removeClass("active");
+	});
+	
+	function refresh(){
+		//保持session 不过期
+		$.post(ctx+"refreshSession") 
+	}
+	setInterval(refresh, 1000*60*10);
+	$(".J_tabFullScreen").on("click",function(){
+		 var docElm = getActiveTab()[0];
+		 fullScreen(docElm)
+	});
+	/* 全屏启动方法 */
+	function fullScreen(el) {  
+	     var rfs = el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullScreen,  
+	         wscript;  
+	    
+	     if(typeof rfs != "undefined" && rfs) {  
+	         rfs.call(el);  
+	         return;  
+	     }  
+	    
+	     if(typeof window.ActiveXObject != "undefined") {  
+	         wscript = new ActiveXObject("WScript.Shell");  
+	         if(wscript) {  
+	             wscript.SendKeys("{F11}");  
+	         }  
+	     }  
+	  }  
+	   
+
+	// 退出全屏功能
+	  function exitFullScreen(el) {  
+	     var el= document,  
+	         cfs = el.cancelFullScreen || el.webkitCancelFullScreen || el.mozCancelFullScreen || el.exitFullScreen,  
+	         wscript;  
+	    
+	     if (typeof cfs != "undefined" && cfs) {  
+	       cfs.call(el);  
+	       return;  
+	     }  
+	    
+	     if (typeof window.ActiveXObject != "undefined") {  
+	         wscript = new ActiveXObject("WScript.Shell");  
+	         if (wscript != null) {  
+	             wscript.SendKeys("{F11}");    
+	         }  
+	   }  
+	  } 
+</script>
+</body>
+</html>

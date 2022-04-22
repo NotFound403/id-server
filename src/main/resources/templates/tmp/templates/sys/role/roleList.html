@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/layout :: common_header(~{::title},~{::link})">
+<title>角色管理</title>
+ <!-- 
+  additional css  -->
+
+</head>
+ 
+<body>
+	<div class="main-container">
+		<div class="main-content-inner">
+			<div class="page-content">
+			<div class="panel panel-info">
+					<div class="panel-heading">
+						<h3 class="panel-title">角色列表</h3>
+					</div>
+			<div class="panel-body">
+				<div id="left" class="row">
+					<div class="col-xs-12">
+						<form action="" class="form-inline" id="userForm">
+							 <label>角色名称：</label>
+							 <input type="text" id="name" name="name">
+							
+							<button class="btn btn-primary btn-rounded btn-outline btn-sm "
+							 type="button"	onclick="search()">
+								<i class="fa fa-search"></i> 查询
+							</button>
+							<button class="btn btn-primary btn-rounded btn-outline btn-sm "
+								type="reset">
+								<i class="fa fa-refresh"></i> 重置
+							</button>
+						</form>
+					</div>
+					
+					<div class="col-sm-12">
+						<div class="pull-left">
+							<button class="btn btn-primary btn-sm" data-toggle="tooltip"
+								data-placement="left" onclick="add()" title="添加">
+								<i class="fa fa-plus"></i> 添加
+							</button>
+							<button class="btn btn-success btn-sm" data-toggle="tooltip"
+								data-placement="left" onclick="edit()" id="edit" title="修改">
+								<i class="glyphicon glyphicon-edit"></i> 修改
+							</button>
+							<button class="btn btn-danger btn-sm" onclick="del()" id="delete"
+								data-toggle="tooltip" data-placement="top">
+								<i class="fa fa-trash-o"> 删除</i>
+							</button>
+							 
+
+						</div>
+						<div class="pull-right"></div>
+					</div>
+					
+					<div class="col-xs-12">
+					
+						<table id="roletable"  data-toggle="table" data-side-pagination="server" 
+						data-striped="true"  data-query-params="queryParams" data-pagination-loop="false"
+               			data-page-number="1" data-data-field="list" data-total-field="totalRow"
+               			data-content-type="application/x-www-form-urlencoded" data-click-to-select="true"
+               			data-pagination="true" data-method="post"  th:data-url="@{/sys/role/query}"  >
+               			<thead>
+										<tr>
+											<th class="center" data-checkbox="true"  > </th>
+											<th   data-field="id"   > ID</th>
+											<th class="center" data-field="name">角色名称</th>
+											<th data-field="enname">角色编码</th>
+											<th data-field="officeName">归属机构</th>
+											<th class="hidden-480" data-field="useable" data-formatter="statusFormatter">状态</th>
+											<th data-field="id" data-formatter="optFormatter">操作</th>
+										</tr>
+									</thead>
+						</table>
+					</div>
+					
+				</div>
+				
+				<div id="right" class="panel panel-default col-sm-6 " style="display:none">
+								<div class="panel-heading">
+									<h3 class="panel-title">
+										<label>角色名称: </label><font id="roleNameLabel" color="red"></font><input
+											type="hidden" id="roleTypeId" />
+									</h3>
+								</div>
+								<div class="panel-body">
+									<div id="roleValueToolbar">
+										<button id="roleValueButton"
+											class="btn btn-outline btn-sm btn-primary" title="添加用户">
+											<i class="fa fa-plus-circle"></i> 添加用户
+										</button>
+									</div>
+									<!-- 表格 -->
+									<table id="roleValueTable" data-toolbar="#roleValueToolbar"
+										data-id-field="id">
+									</table>
+
+								</div>
+							</div>
+				
+				
+				</div>
+				</div>
+				<!-- /.col -->
+			</div>
+
+		</div>
+		<!-- end main container -->
+	</div>
+
+<div th:replace="common/commonJS"></div>
+	 <script>
+
+	 function queryParams(params){
+		 //这个函数直接返回需要发送的后台的js数组。
+		 var temp = $("#userForm").serializeJSON(); //获取id为。。的form的里面的值
+		 temp.pageSize=params.limit;   //页面大小
+		 temp.pageNumber=(params.offset / params.limit) + 1;   //页码  
+		 temp.sort=params.sort;      //排序列名  
+		 temp.sortOrder=	 params.order; //排位命令（desc，asc）
+		 return temp; 
+	 }
+	
+    function statusFormatter(value,row,index){
+    	if(value=="1"){
+    		return "<span class='label label-sm label-success'>可用</span>"
+    	}else{
+    		return "<span class='label label-sm label-warning'>禁用</span>";
+    	}
+    }
+    function optFormatter(value,row,index){
+    	return "<div class='hidden-sm hidden-xs btn-group'>"+
+    	"<button class='btn btn-xs btn-info' onclick='edit("+value+")'>修改</button>"
+    	+"<button class='btn btn-xs btn-danger' onclick='auth("+value+")'>权限设置</button>"
+    	+"<button class='btn btn-xs btn-danger'onclick='setRoleValue("+row.id+",\""+row.name+"\")'>分配用户</button>"
+    	+"</div>"
+    	
+    }
+    function setRoleValue(id,name){
+    	$("#left").attr("class", "col-sm-6");
+		setTimeout(function(){
+		$("#right").fadeIn(500);
+		},500)
+		$("#roleNameLabel").html(name);
+		$("#roleTypeId").val(id);
+	 	$('#roleValueTable').bootstrapTable("refresh",{query:{roleTypeId:id}})
+    }
+    function search(){
+  		//点击查询首先进入之歌函数，执行列表刷新操作
+    	$('#roletable').bootstrapTable('refresh');
+    }
+    function searchValue(){
+    	$('#roleValueTable').bootstrapTable('refresh');
+    }
+    function add(){
+    	jp.openWindow("新增"+'角色',"sys/role/add","800px", "360px");
+    }
+    
+    function getIdSelections() {
+        return $.map($("#roletable").bootstrapTable('getSelections'), function (row) {
+            return row.id
+        });
+    }
+
+    function edit(id){
+    		if(!id){
+    			var selectRows=$('#roletable').bootstrapTable('getSelections');
+    	    	if(selectRows.length==0){
+    	    		jp.alert("未选择任何行");
+    	    	}else if(selectRows.length>1){
+    	    		jp.alert("只能修改一行");
+    	    	}
+  			  id = getIdSelections();
+  		  }
+    		jp.openWindow("修改"+'角色',ctx+"sys/role/edit/"+id,"800px", "360px");	
+    		  
+    	
+    }
+    function auth(id){
+		jp.openDialog('菜单权限', ctx+'sys/role/auth?roleId=' + id,'350px', '700px');
+	}
+    function del(ids){
+    	//layer.confirm("确定要删除吗"){}
+    	var selectRows=$('#roletable').bootstrapTable('getSelections');
+    	if(selectRows.length==0){
+    		jp.alert("未选择任何行");
+    	 
+    	}else{
+    		 if(!ids){
+			    	ids =  getIdSelections();
+			    }
+
+    		jp.confirm('确定要删除选择的角色吗？', function (){
+    			 jp.loading();
+          	  	$.get(ctx+"sys/role/deleteAll?ids=" +ids, function(data){
+          	  		if(data){
+          	  			$('#roletable').bootstrapTable('refresh');
+         	  			jp.success("删除成功");
+         	  		}else{
+         	  			jp.error("删除失败");
+         	  		}
+          	  	})
+
+    		 }
+ 			
+ 		);
+    	}
+    }
+
+     	 function roleValueRefresh(){
+    	    	$('#roleValueTable').bootstrapTable('refresh');
+    	    } 
+    
+	 $(function () {
+    	$('#roletable').on('check.bs.table uncheck.bs.table load-success.bs.table ' +
+                'check-all.bs.table uncheck-all.bs.table', function () {
+            $('#delete').prop('disabled', ! $('#roletable').bootstrapTable('getSelections').length);
+            $('#edit').prop('disabled', $('#roletable').bootstrapTable('getSelections').length!=1);
+        });
+    	   		
+    	    	
+    	     	$('#roleValueTable').bootstrapTable({
+    				  //请求方法
+    	          method: 'get',
+    	          dataType: "json",
+    	           //是否显示行间隔色
+    	          striped: true,
+    	          //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）     
+    	          cache: false,    
+    	          //是否显示分页（*）  
+    	          pagination: false,   
+    	          //这个接口需要处理bootstrap table传递的固定参数,并返回特定格式的json数据  
+    	          url: ctx+"sys/role/getRoleValue",
+    	          //默认值为 'limit',传给服务端的参数为：limit, offset, search, sort, order Else
+    	          //queryParamsType:'',   
+    	          ////查询参数,每次调用是会带上这个参数，可自定义                         
+    	          queryParams : function(params) {
+    	              return {roleTypeId:$("#roleTypeId").val()};
+    	          },
+    	          //分页方式：client客户端分页，server服务端分页（*）
+    	          sidePagination: "server",
+    	          columns: [{
+    				        field: 'name',
+    				        title: '用户名'
+    				    }, {
+    	              field: 'operate',
+    	              title: '操作',
+    	              align: 'center',
+    	              events: {
+    	              	 'click .delRole': function (e, value, row, index) {
+    	         //     		jp.openWindow("修改"+'用户',ctx+"sys/user/edit/"+row.id,"800px", "420px");
+    	           //   		jp.confirm('确定要删除选择的角色吗？',ctx+"sys/user/delRole/"+row.id,roleTypeId);
+    	              		
+    	            		jp.confirm('确定要删除选择的角色吗？', function (){
+    	           			 jp.loading();
+    	                 	  	$.get(ctx+"sys/user/delRole?userId="+row.id+"&roleId="+$("#roleTypeId").val(), function(data){
+    	                 	  		if(data){
+    	                 	  			$('#roleValueTable').bootstrapTable('refresh');
+    	                	  			jp.success("删除成功");
+    	                	  		}else{
+    	                	  			jp.error("删除失败");
+    	                	  		}
+    	                 	  	})
+
+    	           		 })	 		
+    	      		        },
+    	  		      
+    	  		    },
+    	              formatter:  function operateFormatter(value, row, index) {
+    	  		        return [
+    	  		        	
+    							'<a href="#" class="delRole" title="删除" >[删除] </a>'
+    							
+    	  		        ].join('');
+    	  		    }
+    	          }]
+    				
+    				});
+    	     	  if(navigator.userAgent.match(/(iPhone|iPod|Android|ios)/i)){//如果是移动端
+    				  $('#roleValueTable').bootstrapTable("toggleView");
+    				}
+    			  
+    			  $("#roleValueButton").click(function(){
+    					jp.openWindow('添加用户', ctx+'sys/role/roleValueAdd?roleTypeId=' + $("#roleTypeId").val(),'800px', '500px');
+    				});
+    	
+   	
+    });
+</script>
+</body>
+</html>

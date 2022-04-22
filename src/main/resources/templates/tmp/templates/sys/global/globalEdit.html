@@ -1,0 +1,134 @@
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-CN">
+<head th:replace="common/layout :: common_header(~{::title},~{::link})">
+<title>系统设置--修改</title>
+
+</head>
+<body>
+	<div class="main-container">
+		<div class="main-content-inner">
+			<div class="page-content">
+
+				<div class="tabbable">
+					<ul class="nav nav-tabs padding-16 ">
+						<li class="active"><a data-toggle="tab" href="#baseinfo">
+								<i class="blue  "></i> <span class="">基本信息</span>
+						</a></li>
+						<li class=" "><a data-toggle="tab" href="#inbox"> <i
+								class="blue  "></i> <span class="">自定义</span>
+						</a></li>
+					</ul>
+					<div class="tab-content no-border ">
+						<div id="baseinfo" class="tab-pane in active">
+							<div class="row">
+								<div class="col-xs-12">
+									<form class="form-horizontal" id="globalForm" role="form"
+										method="post" th:action="@{/sys/global/update}">
+										<div class="form-group">
+											<label class="   control-label no-padding-right"><em
+												class="required">*</em>名称</label>
+											<div class=" ">
+												<input type="text" name="name" th:value="${global.name}"
+													maxlength="100"
+													class="col-xs-10 col-sm-10 form-control required ">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="  control-label">全称</label>
+											<div class=" ">
+												<input type="text" name="fullname"
+													th:value="${global.fullname}" maxlength="100"
+													class=" col-xs-10 col-sm-10 form-control">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="  control-label">版权</label>
+											<div class=" ">
+												<input type="text" name="poweredby"
+													th:value="${global.poweredby}" maxlength="100"
+													class=" col-xs-10 col-sm-10 form-control">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="  control-label">版本</label>
+											<div class=" ">
+												<input type="text" name="version"
+													th:value="${global.version}" maxlength="100"
+													class=" col-xs-10 col-sm-10 form-control">
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="  control-label">Logo</label>
+											<div class=" ">
+												<span class="profile-picture"> <img id="logo"
+													onclick="fileSelect();" class="" alt="logo"
+													th:src="(${global.logo == 0})?(@{/mystatic/images/icec.png}):(@{/sys/showFile/}+${global.logo})"
+													style="display: block;" width="60">
+												</span><input type="file" id="photoImg" accept="image/*"
+													name="file" onchange="fileSelected();"
+													style="display: none;"> <input type="button"
+													onclick="fileSelect()" value="选择"> 
+
+												 
+											</div>
+										</div>
+										<div class="clearfix form-actions">
+											<div class="col-md-offset-1 col-md-9">
+												<button class="btn btn-info" type="submit">
+													<i class="ace-icon fa fa-check bigger-110"></i> 保存
+												</button>
+
+											</div>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+						<div id="inbox" class="tab-pane in  ">未定义</div>
+					</div>
+
+				</div>
+
+
+				<!-- end page-content -->
+			</div>
+		</div>
+
+	</div>
+	<div th:replace="common/commonJS"></div>
+	<script type="text/javascript">
+	 function fileSelect() {
+	       $("#photoImg").click(); 
+	   }
+		 
+	   function fileSelected(selectedFile) {
+	   	 var docObj=document.getElementById("photoImg");
+	     // 文件选择后触发次函数
+	   	if(docObj.files &&docObj.files[0]){
+	   		$("#logo").attr("src", window.URL.createObjectURL(docObj.files[0]));
+	   	 } 
+	  	 return true;
+	   }
+		$().ready(function() {
+			$("#globalForm").validate({
+				submitHandler : function(form) {
+					//验证通过后 的js代码写在这里 
+					$(form).ajaxSubmit({
+						dataType : "json",
+						success : function(data) {
+							if (data.code == 0) {
+								top.layer.alert('保存成功')
+							} else {
+								top.layer.alert('保存失败')
+							}
+						},
+						error : function(xhr, status, error) {
+							top.layer.alert('操作失败');
+						}
+					});
+
+				}
+			});
+		});
+	</script>
+</body>
+</html>
