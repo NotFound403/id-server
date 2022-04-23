@@ -138,17 +138,15 @@
                     }
                 }
             }],
-            onLoadSuccess: function (data) {
+            onLoadSuccess: function () {
                 $("[data-toggle='tooltip']").tooltip();
             }
         });
 
         // 操作按钮
         function btnGroup() {
-            let html =
-                '<a href="#!" class="btn btn-xs btn-default m-r-5 edit-btn" title="编辑" data-toggle="tooltip"><i class="mdi mdi-pencil"></i></a>' +
+            return '<a href="#!" class="btn btn-xs btn-default m-r-5 edit-btn" title="编辑" data-toggle="tooltip"><i class="mdi mdi-pencil"></i></a>' +
                 '<a href="#!" class="btn btn-xs btn-default del-btn" title="删除" data-toggle="tooltip"><i class="mdi mdi-window-close"></i></a>';
-            return html;
         }
 
         // 操作方法 - 编辑
@@ -179,7 +177,11 @@
 </div>
 <form id="client-add-form"  action="#!" method="post" style="display: none" class="form-horizontal">
   <div class="form-row col-md-12">
-      <div class="form-row row-cols-2">
+ <!--     <div class="form-row row-cols-2">-->
+      <div class="form-group col-md-6">
+          <label for="clientName">客户端名称</label>
+          <input type="text" class="form-control" id="clientName" name="clientName" value="" placeholder="请输入oauth2客户端名称" />
+      </div>
           <div class="form-group col-md-6">
               <label for="type">栏目</label>
               <div class="form-controls">
@@ -191,11 +193,7 @@
                   </select>
               </div>
           </div>
-          <div class="form-group col-md-6">
-              <label for="title">标题</label>
-              <input type="text" class="form-control" id="title" name="title" value="" placeholder="请输入标题" />
-          </div>
-      </div>
+<!--      </div>-->
 
       <div class="form-group col-md-12">
           <label for="seo_keywords">关键词</label>
@@ -207,8 +205,8 @@
       </div>
 
       <div class="form-group col-md-12">
-          <button type="submit" class="btn btn-primary ajax-post" target-form="add-form">确 定</button>
-          <button type="button" class="btn btn-default" onclick="javascript:history.back(-1);return false;">返 回</button>
+          <button type="submit" class="btn btn-primary">确 定</button>
+          <button type="button" class="btn btn-default">取 消</button>
       </div>
   </div>
 </form>

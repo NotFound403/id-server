@@ -19,7 +19,9 @@ import org.springframework.security.oauth2.server.authorization.config.ClientSet
 import org.springframework.security.oauth2.server.authorization.config.TokenSettings;
 
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 @SpringBootTest
 class IdServerApplicationTests {
@@ -30,6 +32,13 @@ class IdServerApplicationTests {
 
     @Test
     void contextLoads() {
+        for (int i = 0; i < 25; i++) {
+            RegisteredClient registeredClient = createRegisteredClient();
+
+
+           jpaRegisteredClientRepository.save(registeredClient);
+
+        }
         Page<OAuth2Client> page = jpaRegisteredClientRepository.page(PageRequest.of(0, 10, Sort.sort(Client.class)
                 .by(Client::getClientIdIssuedAt).descending()));
 
@@ -40,14 +49,14 @@ class IdServerApplicationTests {
     private static RegisteredClient createRegisteredClient() {
         return RegisteredClient.withId(UUID.randomUUID().toString())
 //               客户端ID和密码
-                .clientId("felord")
+                .clientId(UUID.randomUUID().toString())
 //               此处为了避免频繁启动重复写入仓库
 //                .id(id)
 //                client_secret_basic    客户端需要存明文   服务器存密文
                 .clientSecret(PasswordEncoderFactories.createDelegatingPasswordEncoder()
                         .encode("secret"))
 //                名称 可不定义
-                .clientName("felord")
+                .clientName("felord"+ new Random().nextInt(3))
 //                授权方法
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
 //                授权类型
@@ -72,10 +81,5 @@ class IdServerApplicationTests {
                 .clientSettings(ClientSettings.builder()
                         .requireAuthorizationConsent(true).build())
                 .build();
-    }
-
-    public static void main(String[] args) {
-        OAuth2Client oAuth2Client = OAuth2Client.fromRegisteredClient(createRegisteredClient());
-        System.out.println("oAuth2Client = " + oAuth2Client);
     }
 }
