@@ -40,10 +40,10 @@
 <footer th:include="layout/footer::th_footer(~{::script})">
     <script type="text/javascript">
 
-        $('#btn_add').on('click',function () {
+        $('#btn_add').on('click', function () {
             layer.open({
                 type: 1,
-                shadeClose: false, //点击遮罩关闭
+                shadeClose: true, //点击遮罩关闭
                 content: $('#client-add-form'),
             });
         })
@@ -66,7 +66,7 @@
 
                 if (response.code === 200) {
                     var rows = response.data.content;
-                    var total = response.data.totalPages
+                    var total = response.data.totalElements;
                     return {"rows": rows, "total": total}
                 }
                 return {};
@@ -175,40 +175,43 @@
 <div class="card">
 
 </div>
-<form id="client-add-form"  action="#!" method="post" style="display: none" class="form-horizontal">
-  <div class="form-row col-md-12">
- <!--     <div class="form-row row-cols-2">-->
-      <div class="form-group col-md-6">
-          <label for="clientName">客户端名称</label>
-          <input type="text" class="form-control" id="clientName" name="clientName" value="" placeholder="请输入oauth2客户端名称" />
-      </div>
-          <div class="form-group col-md-6">
-              <label for="type">栏目</label>
-              <div class="form-controls">
-                  <select name="type" class="form-control" id="type">
-                      <option value="1">小说</option>
-                      <option value="2">古籍</option>
-                      <option value="3">专辑</option>
-                      <option value="4">自传</option>
-                  </select>
-              </div>
-          </div>
-<!--      </div>-->
+<form id="client-add-form" action="/client/add" method="post" style="display: none" class="form-horizontal">
+    <div class="form-row col-md-12">
+        <!--     <div class="form-row row-cols-2">-->
+        <div class="form-group col-md-12">
+            <label for="clientName">客户端名称</label>
+            <input type="text" class="form-control" id="clientName" name="clientName" value=""
+                   placeholder="请输入oauth2客户端名称"/>
+        </div>
+        <div class="form-group col-md-12">
+            <label for="clientAuthenticationMethods">客户端授权方式</label>
+            <div class="form-controls">
+                <select name="clientAuthenticationMethods" class="form-control" id="clientAuthenticationMethods">
+                    <option value="client_secret_basic">CLIENT_SECRET_BASIC</option>
+                    <option value="client_secret_post">CLIENT_SECRET_POST</option>
+                    <option value="client_secret_jwt">CLIENT_SECRET_JWT</option>
+                    <option value="private_key_jwt">PRIVATE_KEY_JWT</option>
+                    <option value="none">NONE</option>
+                </select>
+            </div>
+        </div>
+        <!--      </div>-->
 
-      <div class="form-group col-md-12">
-          <label for="seo_keywords">关键词</label>
-          <input type="text" class="form-control" id="seo_keywords" name="seo_keywords" value="" placeholder="关键词" />
-      </div>
-      <div class="form-group col-md-12">
-          <label for="seo_description">描述</label>
-          <textarea class="form-control" id="seo_description" name="seo_description" rows="5" value="" placeholder="描述"></textarea>
-      </div>
+        <div class="form-group col-md-12">
+            <label for="redirectUris">重定向URI</label>
+            <input type="text" class="form-control" id="redirectUris" name="redirectUris"  value="a,b,c" placeholder="请输入重定向URI"/>
+        </div>
+        <div class="form-group col-md-12">
+            <label for="seo_description">描述</label>
+            <textarea class="form-control" id="seo_description" name="seo_description" rows="5" value=""
+                      placeholder="描述"></textarea>
+        </div>
 
-      <div class="form-group col-md-12">
-          <button type="submit" class="btn btn-primary">确 定</button>
-          <button type="button" class="btn btn-default">取 消</button>
-      </div>
-  </div>
+        <div class="form-group col-md-12">
+            <button type="submit" class="btn btn-primary">确 定</button>
+            <button type="button" class="btn btn-default">取 消</button>
+        </div>
+    </div>
 </form>
 
 </html>

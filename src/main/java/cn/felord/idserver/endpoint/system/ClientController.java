@@ -1,6 +1,8 @@
 package cn.felord.idserver.endpoint.system;
 
 import cn.felord.idserver.advice.BaseController;
+import cn.felord.idserver.advice.Rest;
+import cn.felord.idserver.advice.RestBody;
 import cn.felord.idserver.dto.OAuth2Client;
 import cn.felord.idserver.entity.Client;
 import cn.felord.idserver.service.JpaRegisteredClientRepository;
@@ -10,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -36,15 +39,13 @@ public class ClientController extends BaseController {
         return "client/list";
     }
 
-    /**
-     * Add string.
-     *
-     * @return the string
-     */
-    @GetMapping("/add")
-    public String add() {
-        return "client/add";
+    @PostMapping("/add")
+    @ResponseBody
+    public Rest<?> add(OAuth2Client oAuth2Client){
+        System.out.println("oAuth2Client = " + oAuth2Client);
+        return RestBody.ok();
     }
+
 
     /**
      * Page page.

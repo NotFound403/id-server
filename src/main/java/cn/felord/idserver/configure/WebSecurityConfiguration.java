@@ -26,7 +26,7 @@ public class WebSecurityConfiguration {
      */
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests().anyRequest().anonymous()
+        http.csrf().disable().authorizeRequests().anyRequest().anonymous()
                 .and()
                 .formLogin().loginPage("/login").permitAll()
                 .and()
