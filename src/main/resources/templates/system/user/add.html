@@ -36,18 +36,17 @@
                                type="text">
                     </div>
                 </div>
-<!--                todo 密码处理-->
                 <div class="layui-form-item">
                     <label class="layui-form-label layui-form-required">邮箱</label>
                     <div class="layui-input-block">
-                        <input autocomplete="off" class="layui-input" name="email" placeholder="请输入邮箱"
+                        <input autocomplete="off" class="layui-input" name="email" lay-verify="required|email" placeholder="请输入邮箱"
                                type="text">
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label layui-form-required">电话</label>
                     <div class="layui-input-block">
-                        <input autocomplete="off" class="layui-input" name="phoneNumber" placeholder="请输入电话"
+                        <input autocomplete="off" class="layui-input" name="phoneNumber" lay-verify="required" placeholder="请输入电话"
                                type="text">
                     </div>
                 </div>
