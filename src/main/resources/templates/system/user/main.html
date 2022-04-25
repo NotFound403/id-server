@@ -75,8 +75,8 @@
 </script>
 
 <script id="user-enable" type="text/html">
-    <input type="checkbox" name="enable" value="{{d.userId}}" lay-skin="switch" lay-text="启用|禁用"
-           lay-filter="user-enable" {{ d.enable== true ? 'checked' : '' }} />
+    <input type="checkbox" name="enabled" value="{{d.userId}}" lay-skin="switch" lay-text="启用|禁用"
+           lay-filter="user-enable" {{ d.enabled== true ? 'checked' : '' }} />
 </script>
 
 <script id="user-sex" type="text/html">
@@ -105,24 +105,26 @@
         let popup = layui.popup;
         let common = layui.common;
 
-        let MODULE_PATH = "/system/user/";
+
 
         let cols = [
             [
                 {type: 'checkbox'},
                 {title: '账号', field: 'username', align: 'center'},
                 {title: '姓名', field: 'realName', align: 'center', width: 110},
+                {title: '昵称', field: 'nickName', align: 'center', width: 110},
                 {title: '性别', field: 'gender', align: 'center', templet: '#user-sex', width: 60},
-                // {title: '电话', field: 'phone', align: 'center'},
-                // {title: '启用', field: 'enable', align: 'center', templet: '#user-enable', width: 120},
-                // {title: '注册时间', field: 'createTime', align: 'center'},
+                {title: '电话', field: 'phoneNumber', align: 'center'},
+                {title: '邮箱', field: 'email', align: 'center'},
+                {title: '启用', field: 'enabled', align: 'center', templet: '#user-enable', width: 120},
+                {title: '注册时间', field: 'createTime', align: 'center'},
                 {title: '操作', toolbar: '#user-bar', align: 'center', width: 180}
             ]
         ]
 
         table.render({
             elem: '#user-table',
-            url: MODULE_PATH + 'data',
+            url: '/system/user/data',
             page: true,
             cols: cols,
             skin: 'line',
@@ -241,7 +243,7 @@
                 title: '新增',
                 shade: 0.1,
                 area: ['550px', '550px'],
-                content: MODULE_PATH + 'add'
+                content:'/system/user/add'
             });
         }
 
@@ -251,7 +253,7 @@
                 title: '修改',
                 shade: 0.1,
                 area: ['550px', '500px'],
-                content: MODULE_PATH + 'edit?userId=' + obj.data['userId']
+                content: '/system/user/edit?userId=' + obj.data['userId']
             });
         }
 
@@ -261,7 +263,7 @@
                 title: '修改用户密码',
                 shade: 0.1,
                 area: ['550px', '200px'],
-                content: MODULE_PATH + 'editpasswordadmin?userId=' + obj.data['userId']
+                content:'/system/user/editpasswordadmin?userId=' + obj.data['userId']
             });
         }
 
@@ -270,7 +272,7 @@
                 layer.close(index);
                 let loading = layer.load();
                 $.ajax({
-                    url: MODULE_PATH + "remove/" + obj.data['userId'],
+                    url: '/system/user/remove/' + obj.data['userId'],
                     dataType: 'json',
                     type: 'delete',
                     success: function (result) {
@@ -297,7 +299,7 @@
                 layer.close(index);
                 let loading = layer.load();
                 $.ajax({
-                    url: MODULE_PATH + "batchRemove/" + ids,
+                    url:'/system/user/batchRemove/' + ids,
                     dataType: 'json',
                     type: 'delete',
                     success: function (result) {

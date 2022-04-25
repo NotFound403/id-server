@@ -1,7 +1,6 @@
 package cn.felord.idserver.entity;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
@@ -15,26 +14,13 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
-public class UserInfo {
+public class Role {
     @Id
-    private String userId;
+    private String id;
 
-    private String username;
+    private String roleName;
 
-    private String secret;
-
-    private String nickName;
-
-    private String realName;
-
-    private String phoneNumber;
-
-    private String avatarUrl;
-
-    private String email;
-
-    private Boolean gender;
+    private String roleContent;
 
     private Instant createTime;
 
@@ -50,8 +36,8 @@ public class UserInfo {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        UserInfo userInfo = (UserInfo) o;
-        return userId != null && Objects.equals(userId, userInfo.userId);
+        Role role = (Role) o;
+        return id != null && Objects.equals(id, role.id);
     }
 
     @Override

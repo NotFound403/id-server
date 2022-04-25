@@ -32,12 +32,13 @@ public class WebSecurityConfiguration {
         SimpleAuthenticationEntryPoint authenticationEntryPoint = new SimpleAuthenticationEntryPoint();
 
         AuthenticationEntryPointFailureHandler authenticationFailureHandler = new AuthenticationEntryPointFailureHandler(authenticationEntryPoint);
-        http.csrf().disable().headers().frameOptions().sameOrigin()
+        http.csrf().disable()
+                .headers().frameOptions().sameOrigin()
                 .and()
                 .authorizeRequests().anyRequest().authenticated()
-                .and()
-                .exceptionHandling()
-                .authenticationEntryPoint(authenticationEntryPoint)
+                /*  .and()
+                  .exceptionHandling()
+                  .authenticationEntryPoint(authenticationEntryPoint)*/
                 .and()
                 .formLogin().loginPage("/login")
                 .successHandler(new RedirectLoginAuthenticationSuccessHandler())
