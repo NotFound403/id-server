@@ -1,12 +1,13 @@
 package cn.felord.idserver.entity;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.time.Instant;
 import java.util.Objects;
@@ -15,9 +16,10 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
 public class UserInfo {
     @Id
+    @GenericGenerator(name = "uuid-hex", strategy = "uuid.hex")
+    @GeneratedValue(generator = "uuid-hex")
     private String userId;
 
     private String username;

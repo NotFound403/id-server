@@ -3,8 +3,10 @@ package cn.felord.idserver.entity;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 /**
@@ -19,6 +21,8 @@ import javax.persistence.Id;
 @ToString
 public class SystemSettings {
     @Id
+    @GenericGenerator(name = "uuid-hex", strategy = "uuid.hex")
+    @GeneratedValue(generator = "uuid-hex")
     private String id;
     private String systemName;
     private String copyright;

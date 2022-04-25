@@ -10,7 +10,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @AllArgsConstructor
 @Controller
-@RequestMapping("/client")
 public class ClientController extends BaseController {
     private JpaRegisteredClientRepository clientRepository;
 
@@ -31,7 +29,7 @@ public class ClientController extends BaseController {
      *
      * @return the string
      */
-    @GetMapping("/list")
+    @GetMapping("/system/client/list")
     public String index() {
         return "client/list";
     }
@@ -41,7 +39,7 @@ public class ClientController extends BaseController {
      *
      * @return the string
      */
-    @GetMapping("/add")
+    @GetMapping("/system/client/add")
     public String add() {
         return "client/add";
     }
@@ -53,7 +51,7 @@ public class ClientController extends BaseController {
      * @param limit the limit
      * @return the page
      */
-    @GetMapping("/pagination")
+    @GetMapping("/system/client/data")
     @ResponseBody
     public Page<OAuth2Client> page(@RequestParam Integer page, @RequestParam Integer limit) {
         return clientRepository.page(PageRequest.of(page, limit, Sort.sort(Client.class)

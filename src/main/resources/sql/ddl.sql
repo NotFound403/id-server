@@ -1,3 +1,11 @@
+CREATE TABLE system_settings
+(
+    id          VARCHAR(255) NOT NULL,
+    system_name VARCHAR(255) NULL,
+    copyright   VARCHAR(255) NULL,
+    CONSTRAINT pk_systemsettings PRIMARY KEY (id)
+);
+
 create table authorization
 (
     id                            varchar(100)                        not null
@@ -64,28 +72,23 @@ create table menu
     href      varchar(255) null
 );
 
-create table oauth2_scope
-(
-    scope_id    varchar(100)            not null,
-    client_id   varchar(100)            not null,
-    scope       varchar(100)            not null
-        primary key,
-    description varchar(400) default '' null
-);
-
 create table role
 (
     role_id      varchar(64)          not null comment '角色ID'
         primary key,
-    role_name    varchar(32)          null comment '角色名称',
-    role_content varchar(500)         null comment '备注',
+    client_id    varchar(64)          not null comment '所属客户端',
+    role_name    varchar(32)          not null comment '角色名称',
+    role_content varchar(500)         not null comment '备注',
     create_time  datetime             null comment '创建时间',
     create_id    varchar(64)          null comment '创建人ID',
     update_time  datetime             null comment '修改时间',
     update_id    varchar(64)          null comment '修改人ID',
-    enabled      tinyint(1) default 1 null comment '删除状态（1-正常，0-删除）'
+    enabled      tinyint(1) default 1 null comment '删除状态（1-正常，0-删除）',
+    constraint role_client_udx
+        unique (client_id, role_name)
 )
     comment '角色权限表';
+
 
 create table user_info
 (

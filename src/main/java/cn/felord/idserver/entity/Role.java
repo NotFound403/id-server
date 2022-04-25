@@ -16,7 +16,9 @@ import java.util.Objects;
 @ToString
 public class Role {
     @Id
-    private String id;
+    private String roleId;
+
+    private String clientId;
 
     private String roleName;
 
@@ -37,7 +39,7 @@ public class Role {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Role role = (Role) o;
-        return id != null && Objects.equals(id, role.id);
+        return roleId != null && Objects.equals(roleId, role.roleId);
     }
 
     @Override

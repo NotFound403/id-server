@@ -4,10 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
@@ -20,7 +22,10 @@ import java.util.Objects;
 @ToString
 public class Menu {
     @Id
+    @GenericGenerator(name = "uuid-hex", strategy = "uuid.hex")
+    @GeneratedValue(generator = "uuid-hex")
     private String id;
+
     @Column(name="parent_id",insertable = false,updatable = false)
     private String parentId;
 
@@ -37,9 +42,6 @@ public class Menu {
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name="parent_id",insertable = false,updatable = false)
     private List<Menu> children;
-
-
-
 
     @Override
     public boolean equals(Object o) {

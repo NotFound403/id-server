@@ -19,14 +19,18 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.time.Instant;
 import java.util.Objects;
 
 /**
+ * The type Client.
+ *
  * @author Steve Riesenberg
  */
 @Entity
@@ -35,6 +39,8 @@ import java.util.Objects;
 @ToString
 public class Client {
     @Id
+    @GenericGenerator(name = "uuid-hex", strategy = "uuid.hex")
+    @GeneratedValue(generator = "uuid-hex")
     private String id;
     private String clientId;
     private Instant clientIdIssuedAt;

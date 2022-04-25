@@ -1,7 +1,7 @@
 package cn.felord.idserver.endpoint.oauth2;
 
-import cn.felord.idserver.entity.OAuth2Scope;
-import cn.felord.idserver.service.OAuth2Service;
+import cn.felord.idserver.entity.Role;
+import cn.felord.idserver.service.RoleService;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsent;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
@@ -29,14 +29,14 @@ import java.util.Set;
 public class AuthorizationConsentController {
     private final RegisteredClientRepository registeredClientRepository;
     private final OAuth2AuthorizationConsentService authorizationConsentService;
-    private final OAuth2Service scopeService;
+    private final RoleService roleService;
 
     public AuthorizationConsentController(RegisteredClientRepository registeredClientRepository,
                                           OAuth2AuthorizationConsentService authorizationConsentService,
-                                          OAuth2Service scopeService) {
+                                          RoleService roleService) {
         this.registeredClientRepository = registeredClientRepository;
         this.authorizationConsentService = authorizationConsentService;
-        this.scopeService = scopeService;
+        this.roleService = roleService;
     }
 
     /**
@@ -63,15 +63,15 @@ public class AuthorizationConsentController {
         Set<String> authorizedScopes = currentAuthorizationConsent != null ?
                 currentAuthorizationConsent.getScopes() : Collections.emptySet();
 
-        Set<OAuth2Scope> scopesToApproves = new HashSet<>();
-        Set<OAuth2Scope> previouslyApprovedScopesSet = new HashSet<>();
+        Set<Role> scopesToApproves = new HashSet<>();
+        Set<Role> previouslyApprovedScopesSet = new HashSet<>();
 
         String[] scopes = StringUtils.delimitedListToStringArray(scope, " ");
 
-        Set<OAuth2Scope> oAuth2Scopes = scopeService.findByNames(clientId, Arrays.asList(scopes));
+        Set<Role> oAuth2Scopes = roleService.findByNames(clientId, Arrays.asList(scopes));
 
               oAuth2Scopes.forEach(oAuth2Scope -> {
-                  if (authorizedScopes.contains(oAuth2Scope.getScope())) {
+                  if (authorizedScopes.contains(oAuth2Scope.getRoleName())) {
                       previouslyApprovedScopesSet.add(oAuth2Scope);
                   } else {
                       scopesToApproves.add(oAuth2Scope);
