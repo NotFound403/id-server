@@ -1,19 +1,15 @@
 package cn.felord.idserver;
 
 import cn.felord.idserver.entity.OAuth2Client;
-import cn.felord.idserver.entity.Menu;
+import cn.felord.idserver.entity.OAuth2Scope;
 import cn.felord.idserver.repository.OAuth2ClientRepository;
-import cn.felord.idserver.repository.MenuRepository;
 import cn.felord.idserver.service.JpaRegisteredClientRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
@@ -21,40 +17,56 @@ import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.config.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.config.TokenSettings;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.Collections;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 
+/**
+ * @author felord.cn
+ * @since 1.0.0
+ */
 @SpringBootTest
-class IdServerApplicationTests {
+public class OAuth2ClientTests {
     @Autowired
-    OAuth2ClientRepository OAuth2ClientRepository;
+    private JpaRegisteredClientRepository registeredClientRepository;
     @Autowired
-    MenuRepository menuRepository;
-    @Autowired
-    JpaRegisteredClientRepository jpaRegisteredClientRepository;
+    private OAuth2ClientRepository oAuth2ClientRepository;
+
+    private ObjectMapper objectMapper= new ObjectMapper().registerModules(new JavaTimeModule());
+
+
 
     @Test
-    void contextLoads() throws JsonProcessingException {
+    @Transactional
+    public void addOAuth2Client() {
 
-        Page<OAuth2Client> page = jpaRegisteredClientRepository.page(PageRequest.of(0, 10, Sort.sort(OAuth2Client.class)
-                .by(OAuth2Client::getClientIdIssuedAt).descending()));
-
+        registeredClientRepository.save(createRegisteredClient());
     }
 
     @Test
-    public void menu() throws JsonProcessingException {
+    public void findClient() throws JsonProcessingException {
+        RegisteredClient registeredClient = registeredClientRepository.findByClientId("e68e46a0-d81b-4012-8b14-266d8fb14931");
 
-        Menu probe = new Menu();
-        probe.setParentId("0");
-        List<Menu> all = menuRepository.findAll(Example.of(probe));
+        String json = objectMapper.writeValueAsString(registeredClient);
 
-
-        String s = new ObjectMapper().writeValueAsString(all);
-        System.out.println("s = " + s);
-
+        System.out.println("json = " + json);
     }
+
+    @Test
+    public void updateClient(){
+        String clientId = "e68e46a0-d81b-4012-8b14-266d8fb14931";
+        RegisteredClient registeredClient = registeredClientRepository.findByClientId(clientId);
+        OAuth2Client oAuth2Client = OAuth2Client.fromRegisteredClient(registeredClient);
+        oAuth2Client.setClientName("felord");
+        Set<OAuth2Scope> scopes = oAuth2Client.getScopes();
+        OAuth2Scope oAuth2Scope = scopes.stream().findFirst().get();
+        oAuth2Client.setScopes(Collections.singleton(oAuth2Scope));
+        registeredClientRepository.save(oAuth2Client.toRegisteredClient());
+    }
+
 
 
 
@@ -68,7 +80,7 @@ class IdServerApplicationTests {
                 .clientSecret(PasswordEncoderFactories.createDelegatingPasswordEncoder()
                         .encode("secret"))
 //                名称 可不定义
-                .clientName("felord"+ new Random().nextInt(3))
+                .clientName("felord" + new Random().nextInt(3))
 //                授权方法
                 .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
 //                授权类型
@@ -94,4 +106,5 @@ class IdServerApplicationTests {
                         .requireAuthorizationConsent(true).build())
                 .build();
     }
+
 }
