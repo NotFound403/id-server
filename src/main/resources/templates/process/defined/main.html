@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('流程定义列表')"/>
+</head>
+<body class="pear-container">
+<div class="layui-card">
+    <div class="layui-card-body">
+        <form action="" class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">定义名称</label>
+                <div class="layui-input-inline">
+                    <input class="layui-input" name="name" placeholder="" type="text">
+                </div>
+                <button class="pear-btn pear-btn-md pear-btn-primary" lay-filter="model-query" lay-submit>
+                    <i class="layui-icon layui-icon-search"></i>
+                    查询
+                </button>
+                <button class="pear-btn pear-btn-md" type="reset">
+                    <i class="layui-icon layui-icon-refresh"></i>
+                    重置
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="layui-card">
+    <div class="layui-card-body">
+        <table id="model-table" lay-filter="model-table"></table>
+    </div>
+</div>
+
+<script id="barDemo" type="text/html">
+    <a class="pear-btn pear-btn-sm pear-btn-danger" lay-event="del"><i class="layui-icon layui-icon-delete"></i></a>
+</script>
+
+<script id="xml" type="text/html">
+    <a download="{{d.bpmn}}"
+       href='/process/defined/resource?definedId={{d.deploymentId}}&resourceName={{d.bpmn}}'>{{d.bpmn}}</a>
+</script>
+
+<script id="png" type="text/html">
+    <a lay-event="png">{{d.png}}</a>
+</script>
+
+<th:block th:include="include :: footer"/>
+<script>
+    layui.use(['table', 'layer', 'jquery', 'form'], function () {
+        let layer = layui.layer;
+        let table = layui.table;
+        let $ = layui.jquery;
+        let form = layui.form;
+
+        table.render({
+            elem: '#model-table'
+            , method: 'get'
+            , url: '/process/defined/data'
+            , title: '模型列表'
+            , skin: 'line'
+            , toolbar: false
+            , page: true
+            , cols: [
+                [
+                    {type: 'checkbox'}
+                    , {field: 'id', title: '流程编号', sort: true, width: 150}
+                    , {field: 'name', title: '流程名称', width: 120}
+                    , {field: 'key', title: '流程标识', sort: true, width: 120}
+                    , {field: 'version', title: '流程版本', sort: true, width: 120}
+                    , {field: 'bpmn', title: '资源文件', templet: '#xml', sort: true}
+                    , {field: 'png', title: '流程图片', templet: '#png', sort: true}
+                    , {field: 'deploymentId', title: '部署 ID', sort: true, width: 120}
+                    , {title: '操作', align: 'center', toolbar: '#barDemo', width: 100}
+                ]
+            ]
+        });
+
+        table.on('tool(model-table)', function (obj) {
+            let layEvent = obj.event;
+            if (layEvent === 'del') {
+                window.remove(obj);
+            } else if (layEvent === 'xml') {
+                window.xml(obj);
+            } else if (layEvent === 'png') {
+                window.png(obj);
+            }
+        });
+
+        form.on('submit(model-query)', function (data) {
+            table.reload('model-table', {where: data.field})
+            return false;
+        });
+
+        window.png = function (obj) {
+            layer.open({
+                type: 1,
+                title: 'png',
+                shade: 0.1,
+                area: ['80%', '80%'],
+                content: '<img src="/process/defined/resource?definedId=' + obj.data.deploymentId + '&resourceName=' + obj.data.png + '">'
+            });
+        }
+
+        window.remove = function (obj) {
+            layer.confirm('确认删除该流程图吗', function (index) {
+                let loading = layer.load();
+                $.ajax({
+                    url: '/process/defined/remove/' + obj.data.deploymentId,
+                    dataType: 'json',
+                    type: 'delete',
+                    success: function (data) {
+                        layer.close(loading);
+                        if (data.success) {
+                            layer.msg(data.msg, {icon: 1, time: 1000}, function () {
+                                obj.del();
+                                layer.close(index);
+                            })
+                        } else {
+                            layer.msg(data.msg, {icon: 2, time: 1000});
+                        }
+                    }
+                })
+            });
+        }
+    });
+</script>
+</body>
+</html>

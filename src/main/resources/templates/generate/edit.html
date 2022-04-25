@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('修改生成配置')"/>
+    <link rel="stylesheet" th:href="@{/admin/css/other/generate.css}"/>
+</head>
+<body class="pear-container">
+<form action="" class="layui-form" lay-filter="form-generate" th:object="${table}">
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="layui-row layui-col-space10">
+                <div class="layui-col-md6">
+                    <div class="layui-card">
+                        <div class="layui-card-header">基础信息</div>
+                        <div class="layui-card-body" style="height: 450px;">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label"><span class="required-msg ">*</span>名称：</label>
+                                <div class="layui-input-block">
+                                    <input class="layui-input" lay-verType="tips" lay-verify="required" maxlength="200"
+                                           name="tableName" placeholder="请输入表名称" th:field="*{tableName}"
+                                           type="text"/>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label"><span class="required-msg ">*</span>描述：</label>
+                                <div class="layui-input-block">
+                                    <input class="layui-input" lay-verType="tips" lay-verify="required" maxlength="500"
+                                           name="tableComment" placeholder="请输入表描述" th:field="*{tableComment}"
+                                           type="text"/>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label"><span class="required-msg ">*</span>实体：</label>
+                                <div class="layui-input-block">
+                                    <input class="layui-input" lay-verType="tips" lay-verify="required" maxlength="100"
+                                           name="tableComment" placeholder="请输入实体类名称" th:field="*{className}"
+                                           type="text"/>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label" title="用作类描述，例如 用户"><span class="required-msg ">*</span>功能：</label>
+                                <div class="layui-input-block">
+                                    <input class="layui-input" lay-verType="tips" lay-verify="required" maxlength="50"
+                                           name="functionName" placeholder="请输入生成功能名" th:field="*{functionName}"
+                                           type="text"/>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label"><span class="required-msg ">*</span>作者：</label>
+                                <div class="layui-input-block">
+                                    <input class="layui-input" lay-verType="tips" lay-verify="required" maxlength="50"
+                                           name="functionAuthor" placeholder="请输入作者" th:field="*{functionAuthor}"
+                                           type="text"/>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">备注：</label>
+                                <div class="layui-input-block">
+                                    <textarea autocomplete="off" class="layui-textarea" maxlength="500" name="remark"
+                                              rows="5" th:field="*{remark}"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md6">
+                    <div class="layui-card">
+                        <div class="layui-card-header">高级配置</div>
+                        <div class="layui-card-body" style="height: 450px;overflow: auto">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label"><span class="required-msg ">*</span>生成模板：</label>
+                                <div class="layui-input-block">
+                                    <select id="tplCategory" lay-filter="tpl" name='tplCategory'>
+                                        <option th:field="*{tplCategory}" value="crud">单表（增删改查）</option>
+                                        <option th:field="*{tplCategory}" value="tree">树表（增删改查）</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-form-item tree-field layui-hide">
+                                <label class="layui-form-label" title="可理解为功能英文名，例如 user"><span
+                                        class="required-msg ">*</span>主键字段：</label>
+                                <div class="layui-input-block">
+                                    <input class="layui-input" maxlength="50" name="treeCode" placeholder="请输入树表字段"
+                                           th:field="*{treeCode}" type="text"/>
+                                </div>
+                            </div>
+                            <div class="layui-form-item tree-field layui-hide">
+                                <label class="layui-form-label" title="可理解为功能英文名，例如 user"><span
+                                        class="required-msg ">*</span>父级字段：</label>
+                                <div class="layui-input-block">
+                                    <input class="layui-input" maxlength="50" name="treeParentCode" placeholder="请输入树表字段"
+                                           th:field="*{treeParentCode}" type="text"/>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label" title="生成在哪个java包下，例如 com.ruoyi.project.system"><span
+                                        class=" required-msg ">*</span>基本路径：</label>
+                                <div class="layui-input-block">
+                                    <input class="layui-input" lay-verType="tips" lay-verify="required" maxlength="100"
+                                           name="packageName" placeholder="请输入生成包路径" th:field="*{packageName}"
+                                           type="text"/>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label" title="可理解为子系统名，例如 system"><span
+                                        class="required-msg ">*</span>模块名称：</label>
+                                <div class="layui-input-block">
+                                    <input class="layui-input" lay-verType="tips" lay-verify="required" maxlength="30"
+                                           name="moduleName" placeholder="请输入生成模块名" th:field="*{moduleName}"
+                                           type="text"/>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label" title="可理解为功能英文名，例如 user"><span
+                                        class="required-msg ">*</span>业务名称：</label>
+                                <div class="layui-input-block">
+                                    <input class="layui-input" lay-verType="tips" lay-verify="required" maxlength="50"
+                                           name="businessName" placeholder="请输入生成业务名" th:field="*{businessName}"
+                                           type="text"/>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label" title="分配到指定菜单下，例如 系统管理"><span
+                                        class="required-msg ">*</span>上级菜单：</label>
+                                <div class="layui-input-block">
+                                    <ul class="dtree" data-id="-1" id="selectParent" name="parentMenuId"></ul>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label" title="默认为zip压缩包下载，也可以自定义生成路径"><span
+                                        class="required-msg ">*</span>生成方式：</label>
+                                <div class="layui-input-block">
+                                    <input name="genType" th:field="*{genType}" title="zip压缩包" type="radio" value="0"/>
+                                    <input name="genType" th:field="*{genType}" title="自定义路径" type="radio" value="1"/>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label" title="填写磁盘绝对路径，若不填写，则生成到当前Web项目下"><span
+                                        class="required-msg ">*</span>生成路径：</label>
+                                <div class="layui-input-block">
+                                    <input class="layui-input" id="genPath" maxlength="200" name="genPath"
+                                           placeholder="请输入项目路径" th:field="*{genPath}" type="text">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md12">
+                    <div class="layui-card">
+                        <div class="layui-card-header">属性配置</div>
+                        <div class="layui-card-body">
+                            <input name="tableId" th:field="*{tableId}" type="hidden"/>
+                            <table id="table_gen_column"></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="button-container">
+            <button class="pear-btn pear-btn-sm pear-btn-primary" id="btn-save" lay-filter="btn-save" lay-submit>保存
+            </button>
+            <button class="pear-btn pear-btn-sm close" type="button">关闭</button>
+        </div>
+    </div>
+</form>
+<th:block th:include="include :: footer"/>
+<script th:inline="javascript">
+    let prefix = "/generate";
+
+    layui.use(['dtree', 'common', 'table', 'form', 'layer'], function () {
+
+        let $ = layui.jquery,
+            common = layui.common,
+            form = layui.form,
+            dtree = layui.dtree,
+            layer = layui.layer,
+            table = layui.table;
+
+        form.render();
+
+        form.on('submit(btn-save)', function (data) {
+            $.ajax({
+                cache: false,
+                type: "post",
+                url: prefix + "/edit",
+                data: data.field,
+                async: false,
+                success: function (data) {
+                    if (data.code == 200) {
+                        layer.msg(data.msg, {icon: 1, time: 1000});
+                    } else {
+                        layer.msg(data.msg, {icon: 2, time: 1000});
+                    }
+                }
+            });
+            return false;
+        });
+
+        $(".close").click(function () {
+            parent.layui.tab.delCurrentTabByElem('content', function (id) {
+            })
+        })
+
+        form.on('select(tpl)', function (data) {
+            isTree(data.value)
+        })
+
+        function isTree(tpl) {
+            if (tpl === 'crud') {
+                $(".tree-field").addClass("layui-hide");
+            } else {
+                $(".tree-field").removeClass("layui-hide");
+            }
+        }
+
+        isTree([[${table.tplCategory}]])
+
+        dtree.renderSelect({
+            elem: "#selectParent",
+            url: "/system/power/selectParent",
+            method: 'get',
+            skin: 'layui',
+            selectInputName: {nodeId: "parentMenuId", context: "parentMenuName"},
+            dataFormat: "list",
+            response: {treeId: "powerId", parentId: "parentId", title: "powerName"},
+            selectInitVal: [[${table.parentMenuId}]]
+        });
+
+        table.render({
+            elem: '#table_gen_column',
+            url: prefix + "/column/list",
+            where: {
+                tableId: $.trim($('#tableId').val())
+            },
+            skin: 'line',
+            page: false,
+            done: function () {
+                form.render('select');
+                $('.layui-table-cell>input.layui-input[type="text"]').parent().css('padding', '0px 5px');
+            },
+            cols: new Array([{
+                title: '序号',
+                width: 50,
+                templet: function (row) {
+                    let index = row.LAY_INDEX - 1;
+                    let columnIdHtml = common.sprintf("<input type='hidden' name='columns[%s].columnId' value='%s'>", index,
+                        row.columnId);
+                    let sortHtml = common.sprintf(
+                        "<input type='hidden' name='columns[%s].sort' value='%s' id='columns_sort_%s'>", index, row.sort, row.columnId
+                    );
+                    return columnIdHtml + sortHtml + (index++);
+                }
+            }, {
+                field: 'columnName',
+                title: '字段列名'
+            }, {
+                field: 'columnComment',
+                title: '字段描述',
+                align: 'center',
+                templet: function (row) {
+                    let index = row.LAY_INDEX - 1;
+                    let html = common.sprintf(
+                        "<input class='layui-input' type='text' name='columns[%s].columnComment' value='%s'>", index, row.columnComment
+                    );
+                    return html;
+                }
+            }, {
+                field: 'columnType',
+                title: '物理类型',
+                width: 120
+            }, {
+                field: 'javaType',
+                title: 'Java类型',
+                align: 'center',
+                width: 100,
+                templet: function (row) {
+                    let index = row.LAY_INDEX - 1;
+                    let javaType = row.javaType;
+                    let html = '<select name="columns[' + index + '].javaType">' +
+                        '<option value="Long" ' + (javaType === "Long" ? ' selected' : '') + '>Long</option>' +
+                        '<option value="String" ' + (javaType === "String" ? ' selected' : '') + '>String</option>' +
+                        '<option value="Integer" ' + (javaType === "Integer" ? ' selected' : '') + '>Integer</option>' +
+                        '<option value="Double" ' + (javaType === "Double" ? ' selected' : '') + '>Double</option>' +
+                        '<option value="BigDecimal" ' + (javaType === "BigDecimal" ? ' selected' : '') + '>BigDecimal</option>' +
+                        '<option value="Date" ' + (javaType === "Date" ? ' selected' : '') + '>Date</option>' +
+                        '<option value="Boolean" ' + (javaType === "Boolean" ? ' selected' : '') + '>Boolean</option>' +
+                        '</select>';
+                    return html;
+                }
+            }, {
+                field: 'javaField',
+                title: 'Java属性',
+                align: 'center',
+                width: 150,
+                templet: function (row) {
+                    let index = row.LAY_INDEX - 1;
+                    let html = common.sprintf(
+                        "<input class='layui-input' type='text' name='columns[%s].javaField' value='%s' lay-verify='required' lay-verType='tips'>",
+                        index, row.javaField);
+                    return html;
+                }
+            }, {
+                field: 'isInsert',
+                title: '插入',
+                align: 'center',
+                width: 60,
+                templet: function (row) {
+                    let index = row.LAY_INDEX - 1;
+                    let isCheck = row.isInsert == 1 ? 'checked' : '';
+                    let html = common.sprintf("<input type='checkbox' name='columns[%s].isInsert' value='1' %s>", index,
+                        isCheck);
+                    return html;
+                }
+            }, {
+                field: 'isEdit',
+                title: '编辑',
+                align: 'center',
+                width: 60,
+                templet: function (row) {
+                    let index = row.LAY_INDEX - 1;
+                    let isCheck = row.isEdit == 1 ? 'checked' : '';
+                    let html = common.sprintf("<input type='checkbox' name='columns[%s].isEdit' value='1' %s>", index,
+                        isCheck);
+                    return html;
+                }
+            }, {
+                field: 'isQuery',
+                title: '查询',
+                align: 'center',
+                width: 60,
+                templet: function (row) {
+                    let index = row.LAY_INDEX - 1;
+                    let isCheck = row.isQuery == 1 ? 'checked' : '';
+                    let html = common.sprintf("<input type='checkbox' name='columns[%s].isQuery' value='1' %s>", index,
+                        isCheck);
+                    return html;
+                }
+            }, {
+                field: 'isList',
+                title: '列表',
+                align: 'center',
+                width: 60,
+                templet: function (row) {
+                    let index = row.LAY_INDEX - 1;
+                    let isCheck = row.isList == 1 ? 'checked' : '';
+                    let html = common.sprintf("<input type='checkbox' name='columns[%s].isList' value='1' %s>", index,
+                        isCheck);
+                    return html;
+                }
+            }, {
+                field: 'isRequired',
+                title: '必填',
+                align: 'center',
+                width: 60,
+                templet: function (row) {
+                    let index = row.LAY_INDEX - 1;
+                    let isCheck = row.isRequired == 1 ? 'checked' : '';
+                    let html = common.sprintf("<input type='checkbox' name='columns[%s].isRequired' value='1' %s>", index,
+                        isCheck);
+                    return html;
+                }
+            }, {
+                field: 'queryType',
+                title: '查询方式',
+                align: 'center',
+                width: 80,
+                templet: function (row) {
+                    let index = row.LAY_INDEX - 1;
+                    let queryType = row.queryType;
+                    let html = '<select name=\'columns[' + index + '].queryType\'>\n' +
+                        '<option value="EQ" ' + (queryType === "EQ" ? ' selected' : '') + '>=</option>\n' +
+                        '<option value="NE" ' + (queryType === "NE" ? ' selected' : '') + '>!=</option>\n' +
+                        '<option value="GT" ' + (queryType === "GT" ? ' selected' : '') + '>></option>\n' +
+                        '<option value="GTE" ' + (queryType === "GTE" ? ' selected' : '') + '>>=</option>\n' +
+                        '<option value="LT" ' + (queryType === "LT" ? ' selected' : '') + '><</option>\n' +
+                        '<option value="LTE" ' + (queryType === "LTE" ? ' selected' : '') + '><=</option>\n' +
+                        '<option value="LIKE" ' + (queryType === "LIKE" ? ' selected' : '') + '>Like</option>\n' +
+                        '<option value="BETWEEN" ' + (queryType === "BETWEEN" ? ' selected' : '') + '>Between</option>\n' +
+                        '</select>';
+                    return html;
+                }
+            }, {
+                field: 'htmlType',
+                title: '显示类型',
+                align: 'center',
+                width: 100,
+                templet: function (row) {
+                    let index = row.LAY_INDEX - 1;
+                    let htmlType = row.htmlType;
+                    let html = '<select name=\'columns[' + index + '].htmlType\'>\n' +
+                        '<option value="input" ' + (htmlType === "input" ? ' selected' : '') + '>文本框</option>\n' +
+                        '<option value="textarea" ' + (htmlType === "textarea" ? ' selected' : '') + '>文本域</option>\n' +
+                        '<option value="select" ' + (htmlType === "select" ? ' selected' : '') + '>下拉框</option>\n' +
+                        '<option value="radio" ' + (htmlType === "radio" ? ' selected' : '') + '>单选框</option>\n' +
+                        '<option value="checkbox" ' + (htmlType === "checkbox" ? ' selected' : '') + '>复选框</option>\n' +
+                        '<option value="datetime" ' + (htmlType === "datetime" ? ' selected' : '') + '>日期控件</option>\n' +
+                        '<option value="upload" ' + (htmlType === "upload" ? ' selected' : '') + '>上传控件</option>\n' +
+                        '</select>';
+                    return html;
+                }
+            }, {
+                field: 'dictType',
+                title: '字典类型',
+                align: 'center',
+                width: 100,
+                templet: function (row) {
+                    let index = row.LAY_INDEX - 1;
+                    let dictType = row.dictType;
+                    let html = common.sprintf("<select name='columns[%s].dictType' value='%s' id='columns_dict_%s'>", index,
+                        row.dictType, row.columnId);
+                    $.ajax({
+                        type: 'get',
+                        url: '/system/dictType/list',
+                        async: false,
+                        dataType: 'json',
+                        success: function (res) {
+                            if (res.code == 0) {
+                                html += '<option value="input" >空</option>';
+                                $.each(res.data, function (i, item) {
+                                    html += '<option value="' + item.typeCode + '" ' + (dictType === item.typeCode ? ' selected' : '') + '>' + item
+                                        .typeName + '</option>\n';
+                                });
+                            }
+                        }
+                    });
+                    html += '</select>';
+                    return html;
+                }
+            }])
+        });
+    });
+</script>
+</body>
+</html>

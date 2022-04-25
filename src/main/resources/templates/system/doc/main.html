@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('系统配置列表')"/>
+</head>
+<body class="pear-container">
+<div class="layui-card">
+    <div class="layui-card-body">
+        <iframe frameborder="0" id="show-iframe" name="showHere" scrolling="auto" src="/swagger-ui.html"
+                width="100%"></iframe>
+        <!-- Document Html -->
+    </div>
+</div>
+</body>
+<th:block th:include="include :: footer"/>
+<script>
+    const oIframe = document.getElementById("show-iframe");
+    const deviceHeight = document.documentElement.clientHeight - 60;
+    oIframe.style.height = deviceHeight + "px";
+</script>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('用户新增')"/>
+</head>
+<body>
+<form class="layui-form">
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="main-container">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">账号</label>
+                    <div class="layui-input-block">
+                        <input autocomplete="off" class="layui-input" lay-verify="required" name="username" placeholder="请输入标题"
+                               type="text">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">姓名</label>
+                    <div class="layui-input-block">
+                        <input autocomplete="off" class="layui-input" lay-verify="required" name="realName" placeholder="请输入标题"
+                               type="text">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">邮箱</label>
+                    <div class="layui-input-block">
+                        <input autocomplete="off" class="layui-input" name="email" placeholder="请输入标题"
+                               type="text">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">密码</label>
+                    <div class="layui-input-block">
+                        <input autocomplete="off" class="layui-input" lay-verify="required" name="password" placeholder="请输入标题"
+                               type="text">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">电话</label>
+                    <div class="layui-input-block">
+                        <input autocomplete="off" class="layui-input" name="phone" placeholder="请输入标题"
+                               type="text">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">性别</label>
+                    <div class="layui-input-block">
+                        <input name="sex" title="男" type="radio" value="0">
+                        <input checked name="sex" title="女" type="radio" value="1">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">部门</label>
+                    <div class="layui-input-block">
+                        <ul class="dtree" data-id="0" id="selectParent" name="deptId"></ul>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">角色</label>
+                    <div class="layui-input-block">
+                        <input lay-skin="primary" name="roleIds" th:each="sysRole:${sysRoles}"
+                               th:title="${sysRole.roleName}" th:value="${sysRole.roleId}" type="checkbox">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="button-container">
+            <button class="pear-btn pear-btn-primary pear-btn-sm" lay-filter="user-save" lay-submit="" type="submit">
+                <i class="layui-icon layui-icon-ok"></i>
+                提交
+            </button>
+            <button class="pear-btn pear-btn-sm" type="reset">
+                <i class="layui-icon layui-icon-refresh"></i>
+                重置
+            </button>
+        </div>
+    </div>
+</form>
+<th:block th:include="include :: footer"/>
+<script>
+    layui.use(['form', 'jquery', 'dtree'], function () {
+        let form = layui.form;
+        let $ = layui.jquery;
+        let dtree = layui.dtree;
+
+        dtree.renderSelect({
+            elem: "#selectParent",
+            url: "/system/dept/tree",
+            method: 'get',
+            selectInputName: {nodeId: "deptId", context: "deptName"},
+            skin: "layui",
+            dataFormat: "list",
+            response: {treeId: "deptId", parentId: "parentId", title: "deptName"},
+            selectInitVal: "1"
+        });
+
+        form.on('submit(user-save)', function (data) {
+            let roleIds = "";
+            $('input[type=checkbox]:checked').each(function () {
+                roleIds += $(this).val() + ",";
+            });
+            roleIds = roleIds.substr(0, roleIds.length - 1);
+            data.field.roleIds = roleIds;
+
+            $.ajax({
+                url: '/system/user/save',
+                data: JSON.stringify(data.field),
+                dataType: 'json',
+                contentType: 'application/json',
+                type: 'post',
+                success: function (result) {
+                    if (result.success) {
+                        layer.msg(result.msg, {icon: 1, time: 1000}, function () {
+                            parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
+                            parent.layui.table.reload("user-table");
+                        });
+                    } else {
+                        layer.msg(result.msg, {icon: 2, time: 1000});
+                    }
+                }
+            })
+            return false;
+        });
+    })
+</script>
+<script>
+</script>
+</body>
+</html>

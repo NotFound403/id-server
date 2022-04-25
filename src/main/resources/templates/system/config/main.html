@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('系统配置列表')"/>
+</head>
+<body class="pear-container">
+
+<div class="layui-card">
+    <div class="layui-card-body">
+        <form action="" class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">配置名称</label>
+                <div class="layui-input-inline">
+                    <input class="layui-input" name="configName" placeholder="" type="text">
+                </div>
+                <label class="layui-form-label">配置标识</label>
+                <div class="layui-input-inline">
+                    <input class="layui-input" name="configCode" placeholder="" type="text">
+                </div>
+                <button class="pear-btn pear-btn-md pear-btn-primary" lay-filter="config-query" lay-submit>
+                    <i class="layui-icon layui-icon-search"></i>
+                    查询
+                </button>
+                <button class="pear-btn pear-btn-md" type="reset">
+                    <i class="layui-icon layui-icon-refresh"></i>
+                    重置
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="layui-card">
+    <div class="layui-card-body">
+        <table id="config-table" lay-filter="config-table"></table>
+    </div>
+</div>
+</body>
+
+<script id="config-toolbar" type="text/html">
+    <button sec:authorize="hasPermission('/system/config/add','sys:config:add')"
+            class="pear-btn pear-btn-primary pear-btn-md" lay-event="add">
+        <i class="layui-icon layui-icon-add-1"></i>
+        新增
+    </button>
+    <button sec:authorize="hasPermission('/system/config/remove','sys:config:remove')" class="pear-btn pear-btn-md"
+            lay-event="batchRemove">
+        <i class="layui-icon layui-icon-delete"></i>
+        删除
+    </button>
+</script>
+
+<script id="user-bar" type="text/html">
+    <button sec:authorize="hasPermission('/system/dept/edit','sys:dept:edit')"
+            class="pear-btn pear-btn-primary pear-btn-sm" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>
+    </button>
+    <button sec:authorize="hasPermission('/system/dept/remove','sys:dept:remove')"
+            class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i class="layui-icon layui-icon-delete"></i>
+    </button>
+</script>
+
+<script id="user-createTime" type="text/html">
+    {{layui.util.toDateString(d.createTime, 'yyyy-MM-dd')}}
+</script>
+
+<th:block th:include="include :: footer"/>
+<script>
+    layui.use(['table', 'form', 'jquery', 'common', 'popup'], function () {
+        let table = layui.table;
+        let form = layui.form;
+        let $ = layui.jquery;
+        let common = layui.common;
+        let popup = layui.popup;
+
+        let MODULE_PATH = "/system/config/";
+
+        let cols = [
+            [
+                {type: 'checkbox'},
+                {title: '配置名称', field: 'configName', align: 'center', width: 120},
+                {title: '类型', field: 'configType', align: 'center'},
+                {title: '配置值', field: 'configValue', align: 'center'},
+                {title: '具体描述', field: 'remark', align: 'center'},
+                {title: '创建时间', field: 'createTime', align: 'center', templet: '#user-createTime'},
+                {title: '操作', toolbar: '#user-bar', align: 'center', width: 130}
+            ]
+        ]
+
+        table.render({
+            elem: '#config-table',
+            url: MODULE_PATH + 'data',
+            page: true,
+            cols: cols,
+            skin: 'line',
+            toolbar: '#config-toolbar',
+            defaultToolbar: [{
+                title: '刷新',
+                layEvent: 'refresh',
+                icon: 'layui-icon-refresh',
+            }, 'filter', 'print', 'exports']
+        });
+
+        table.on('tool(config-table)', function (obj) {
+            if (obj.event === 'remove') {
+                window.remove(obj);
+            } else if (obj.event === 'edit') {
+                window.edit(obj);
+            }
+        });
+
+        table.on('toolbar(config-table)', function (obj) {
+            if (obj.event === 'add') {
+                window.add();
+            } else if (obj.event === 'refresh') {
+                window.refresh();
+            } else if (obj.event === 'batchRemove') {
+                window.batchRemove(obj);
+            }
+        });
+
+        form.on('submit(config-query)', function (data) {
+            window.refresh(data.field);
+            return false;
+        });
+
+        window.add = function () {
+            layer.open({
+                type: 2,
+                title: '新增',
+                shade: 0.1,
+                area: ['550px', '500px'],
+                content: MODULE_PATH + 'add'
+            });
+        }
+
+        window.edit = function (obj) {
+            layer.open({
+                type: 2,
+                title: '修改',
+                shade: 0.1,
+                area: ['550px', '500px'],
+                content: MODULE_PATH + 'edit?configId=' + obj.data['configId']
+            });
+        }
+
+        window.remove = function (obj) {
+            layer.confirm('确定要删除该配置', {icon: 3, title: '提示'}, function (index) {
+                layer.close(index);
+                let loading = layer.load();
+                $.ajax({
+                    url: MODULE_PATH + "remove/" + obj.data['configId'],
+                    dataType: 'json',
+                    type: 'delete',
+                    success: function (result) {
+                        layer.close(loading);
+                        if (result.success) {
+                            popup.success(result.msg, function () {
+                                table.reload('config-table');
+                            });
+                        } else {
+                            popup.failure(result.msg);
+                        }
+                    }
+                })
+            });
+        }
+
+        window.batchRemove = function (obj) {
+            let ids = common.checkField(obj, 'configId');
+            if (common.isEmpty(ids)) {
+                popup.warning("未选中数据");
+                return false;
+            }
+            layer.confirm('确定要删除选中配置', {icon: 3, title: '提示'}, function (index) {
+                layer.close(index);
+                let loading = layer.load();
+                $.ajax({
+                    url: MODULE_PATH + "batchRemove/" + ids,
+                    dataType: 'json',
+                    type: 'delete',
+                    success: function (result) {
+                        layer.close(loading);
+                        if (result.success) {
+                            popup.success(result.msg, function () {
+                                table.reload('config-table');
+                            });
+                        } else {
+                            popup.failure(result.msg);
+                        }
+                    }
+                });
+            });
+        }
+
+        window.refresh = function (param) {
+            table.reload('config-table', {where: param});
+        }
+    })
+</script>
+</html>

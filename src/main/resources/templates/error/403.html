@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('403')"/>
+    <link rel="stylesheet" th:href="@{/admin/css/other/error.css}"/>
+</head>
+<body>
+<div class="content">
+    <img alt="" src="../../admin/images/403.svg">
+    <div class="content-r">
+        <h1>403</h1>
+        <p>抱歉，你无权访问该页面</p>
+        <button class="pear-btn pear-btn-primary">返回首页</button>
+    </div>
+</div>
+<th:block th:include="include :: footer"/>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>日志详情</title>
+    <th:block th:include="include :: header('日志详情')"/>
+</head>
+<body>
+<div>
+    <div>
+        <div>
+            <pre id="json-render"></pre>
+        </div>
+    </div>
+</div>
+</body>
+<th:block th:include="include :: footer"/>
+<script>
+    function show(info) {
+        layui.use(['json'], function () {
+            layui.json.view('#json-render', info);
+        })
+    }
+</script>
+</html>

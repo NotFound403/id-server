@@ -1,11 +1,14 @@
 package cn.felord.idserver.configure;
 
+import cn.felord.idserver.handler.RedirectLoginAuthenticationSuccessHandler;
+import cn.felord.idserver.handler.SimpleAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationEntryPointFailureHandler;
 
 /**
  * The Web security configuration.
@@ -26,9 +29,19 @@ public class WebSecurityConfiguration {
      */
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests().anyRequest().anonymous()
+        SimpleAuthenticationEntryPoint authenticationEntryPoint = new SimpleAuthenticationEntryPoint();
+
+        AuthenticationEntryPointFailureHandler authenticationFailureHandler = new AuthenticationEntryPointFailureHandler(authenticationEntryPoint);
+        http.csrf().disable().headers().frameOptions().sameOrigin()
                 .and()
-                .formLogin().loginPage("/login").permitAll()
+                .authorizeRequests().anyRequest().authenticated()
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(authenticationEntryPoint)
+                .and()
+                .formLogin().loginPage("/login")
+                .successHandler(new RedirectLoginAuthenticationSuccessHandler())
+                .failureHandler(authenticationFailureHandler).permitAll()
                 .and()
                 .oauth2ResourceServer().jwt();
         return http.build();
@@ -38,11 +51,13 @@ public class WebSecurityConfiguration {
     @Bean
     WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web.ignoring()
-                .antMatchers("/resources/**")
-                .antMatchers("/css/**")
-                .antMatchers("/fonts/**")
-                .antMatchers("/js/**")
-                .antMatchers("/images/**")
-                .antMatchers("/static/**");
+                .antMatchers("/component/**")
+                .antMatchers("/pear.config.json")
+                .antMatchers("/pear.config.yml")
+                .antMatchers("/admin/css/**")
+                .antMatchers("/admin/fonts/**")
+                .antMatchers("/admin/js/**")
+                .antMatchers("/admin/images/**")
+                .antMatchers("/favicon.ico");
     }
 }

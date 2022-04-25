@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('日志列表')"/>
+</head>
+<body class="pear-container">
+
+<div class="layui-card">
+    <div class="layui-card-body">
+        <div class="layui-tab layui-tab-card">
+            <ul class="layui-tab-title">
+                <li class="layui-this">登录日志</li>
+                <li>操作日志</li>
+            </ul>
+            <div class="layui-tab-content">
+                <div class="layui-tab-item layui-show">
+                    <table id="log-login-table" lay-filter="log-login-table" style="margin-top: 10px;"></table>
+                </div>
+                <div class="layui-tab-item">
+                    <table id="log-operate-table" lay-filter="log-operate-table" style="margin-top: 10px;"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<script id="log-status" type="text/html">
+    {{#if (d.success == true) { }}
+    <span style="color: green">成功</span>
+    {{# }else if(d.success == false){ }}
+    <span style="color: red">失败</span>
+    {{# } }}
+</script>
+
+<script id="log-bar" type="text/html">
+    <button class="pear-btn pear-btn-sm pear-btn-primary" lay-event="details">
+        <i class="pear-icon pear-icon-edit"></i>
+    </button>
+</script>
+
+<script id="log-createTime" type="text/html">
+    {{layui.util.toDateString(d.createTime,  "yyyy-MM-dd HH:mm:ss")}}
+</script>
+
+<th:block th:include="include :: footer"/>
+<script>
+    layui.use(['table', 'form', 'jquery', 'element', 'util'], function () {
+        let table = layui.table;
+        let form = layui.form;
+
+        let MODULE_PATH = "/system/log/";
+
+        let cols = [
+            [
+                {title: '模块', field: 'title', align: 'center'},
+                {title: '请求方式', field: 'requestMethod', align: 'center'},
+                {title: '接口', field: 'method', align: 'center'},
+                {title: '浏览器', field: 'browser', align: 'center'},
+                {title: '操作地址', field: 'operateAddress', align: 'center'},
+                {title: '操作系统', field: 'systemOs', align: 'center'},
+                {title: '访问时间', field: 'createTime', templet: '#log-createTime', align: 'center'},
+                {title: '操作人', field: 'operateName', align: 'center'},
+                {title: '访问状态', templet: '#log-status', align: 'center'},
+                {title: '操作', templet: '#log-bar', align: 'center', width: 120}
+            ]
+        ]
+
+        table.render({
+            elem: '#log-operate-table',
+            url: MODULE_PATH + 'operateLog',
+            page: true,
+            cols: cols,
+            skin: 'line',
+            toolbar: false
+        });
+
+        table.render({
+            elem: '#log-login-table',
+            url: MODULE_PATH + 'loginLog',
+            page: true,
+            cols: cols,
+            skin: 'line',
+            toolbar: false
+        });
+
+        form.on('submit(dict-type-query)', function (data) {
+            table.reload('dict-type-table', {where: data.field})
+            return false;
+        });
+
+        table.on('tool(log-operate-table)', function (obj) {
+            if (obj.event === 'details') {
+                window.info(obj);
+            }
+        });
+
+        table.on('tool(log-login-table)', function (obj) {
+            if (obj.event === 'details') {
+                window.info(obj);
+            }
+        });
+
+        window.info = function (obj) {
+            layer.open({
+                type: 2,
+                title: '详细信息',
+                shade: 0,
+                area: ['400px', '400px'],
+                content: MODULE_PATH + "info",
+                success: function (layero) {
+                    let iframeWin = window[layero.find('iframe')[0]['name']];
+                    iframeWin.show(obj.data);
+                }
+            });
+        }
+    })
+</script>
+</html>

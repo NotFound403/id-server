@@ -36,4 +36,16 @@ public class LoginController {
     public String index() {
         return "index";
     }
+
+
+    /**
+     * Home string.
+     *
+     * @return the string
+     */
+    @GetMapping("/console")
+    public String home(){
+        return "console/console";
+    }
+
 }

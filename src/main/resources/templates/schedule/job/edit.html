@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('定时任务修改')"/>
+</head>
+<body>
+<form action="" class="layui-form">
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="main-container">
+                <div class="layui-form-item layui-hide">
+                    <label class="layui-form-label">运行类</label>
+                    <div class="layui-input-block">
+                        <input autocomplete="off" class="layui-input" lay-verify="title" name="jobId"
+                               placeholder="运行类" th:value="${scheduleJob.jobId}" type="text">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">任务名称</label>
+                    <div class="layui-input-block">
+                        <input autocomplete="off" class="layui-input" lay-verify="title" name="jobName"
+                               placeholder="运行类" th:value="${scheduleJob.jobName}" type="text">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">运行类</label>
+                    <div class="layui-input-block">
+                        <input autocomplete="off" class="layui-input" lay-verify="title" name="beanName"
+                               placeholder="运行类" th:value="${scheduleJob.beanName}" type="text">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">参数</label>
+                    <div class="layui-input-block">
+                        <input autocomplete="off" class="layui-input" lay-verify="title" name="params"
+                               placeholder="执行表达式" th:value="${scheduleJob.params}" type="text">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">表达式</label>
+                    <div class="layui-input-block">
+                        <input autocomplete="off" class="layui-input" lay-verify="title"
+                               name="cronExpression" placeholder="执行表达式" th:value="${scheduleJob.cronExpression}" type="text">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">状态</label>
+                    <div class="layui-input-block">
+                        <input name="status" th:checked="${scheduleJob.status eq '0'}" title="运行" type="radio"
+                               value="0">
+                        <input checked name="status" th:checked="${scheduleJob.status eq '1'}" title="挂起" type="radio"
+                               value="1">
+                    </div>
+                </div>
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">描述</label>
+                    <div class="layui-input-block">
+                        <textarea class="layui-textarea" name="remark" placeholder="任务描述"
+                                  th:text="${scheduleJob.remark}"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="button-container">
+            <button class="pear-btn pear-btn-primary pear-btn-sm" lay-filter="job-save" lay-submit="" type="submit">
+                <i class="layui-icon layui-icon-ok"></i>
+                提交
+            </button>
+            <button class="pear-btn pear-btn-sm" type="reset">
+                <i class="layui-icon layui-icon-refresh"></i>
+                重置
+            </button>
+        </div>
+    </div>
+</form>
+<th:block th:include="include :: footer"/>
+<script>
+    layui.use(['form', 'jquery'], function () {
+        let form = layui.form;
+        let $ = layui.jquery;
+
+        form.on('submit(job-save)', function (data) {
+            $.ajax({
+                url: '/schedule/job/update',
+                data: JSON.stringify(data.field),
+                dataType: 'json',
+                contentType: 'application/json',
+                type: 'put',
+                success: function (result) {
+                    if (result.success) {
+                        layer.msg(result.msg, {icon: 1, time: 1000}, function () {
+                            parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
+                            parent.layui.table.reload("job-table");
+                        });
+                    } else {
+                        layer.msg(result.msg, {icon: 2, time: 1000});
+                    }
+                }
+            });
+            return false;
+        });
+    })
+</script>
+<script>
+</script>
+</body>
+</html>

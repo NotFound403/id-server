@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('在线列表')"/>
+</head>
+<body class="pear-container">
+<div class="layui-card">
+    <div class="layui-card-body">
+        <form action="" class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">用户名</label>
+                <div class="layui-input-inline">
+                    <input class="layui-input" name="username" placeholder="" type="text">
+                </div>
+                <button class="pear-btn pear-btn-md pear-btn-primary" lay-filter="online-query" lay-submit>
+                    <i class="layui-icon layui-icon-search"></i>
+                    查询
+                </button>
+                <button class="pear-btn pear-btn-md" type="reset">
+                    <i class="layui-icon layui-icon-refresh"></i>
+                    重置
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="layui-card">
+    <div class="layui-card-body">
+        <table id="online-table" lay-filter="online-table"></table>
+    </div>
+</div>
+</body>
+
+<script id="online-bar" type="text/html">
+    <button sec:authorize="hasPermission('/system/online/remove','sys:online:remove')"
+            class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove">
+        <i class="pear-icon pear-icon-ashbin"></i>
+    </button>
+</script>
+
+<script id="online-state" type="text/html">
+    <span class="pear-text">
+        在线
+    </span>
+</script>
+
+<th:block th:include="include :: footer"/>
+<script>
+    layui.use(['table', 'form', 'jquery', 'popup'], function () {
+        let table = layui.table;
+        let form = layui.form;
+        let $ = layui.jquery;
+        let popup = layui.popup;
+
+        let MODULE_PATH = "/system/online/";
+
+        let cols = [
+            [
+                {type: 'checkbox'},
+                {title: '用户名', field: 'realName', align: 'center', width: 100},
+                {title: '账号', field: 'username', align: 'center'},
+                {title: '状态', field: 'username', align: 'center', templet: '#online-state'},
+                {title: '在线时长', field: 'onlineTime', align: 'center'},
+                {title: '登录时间', field: 'lastTime', align: 'center'},
+                {title: '操作', toolbar: '#online-bar', align: 'center', width: 100}
+            ]
+        ]
+
+        table.render({
+            elem: '#online-table',
+            url: MODULE_PATH + 'data',
+            page: true,
+            cols: cols,
+            skin: 'line',
+            toolbar: false
+        });
+
+        table.on('tool(online-table)', function (obj) {
+            if (obj.event === 'remove') {
+                window.remove(obj);
+            }
+        });
+
+        form.on('submit(online-query)', function (data) {
+            table.reload('online-table', {where: data.field})
+            return false;
+        });
+
+        window.remove = function (obj) {
+            layer.confirm('确定要踢出该用户', {icon: 3, title: '提示'}, function (index) {
+                layer.close(index);
+                let loading = layer.load();
+                $.ajax({
+                    url: MODULE_PATH + "remove/" + obj.data['userId'],
+                    dataType: 'json',
+                    type: 'delete',
+                    success: function (result) {
+                        layer.close(loading);
+                        if (result.success) {
+                            popup.success(result.msg, function () {
+                                obj.del();
+                            });
+                        } else {
+                            popup.failure(result.msg);
+                        }
+                    }
+                })
+            });
+        }
+
+        window.refresh = function () {
+            table.reload('online-table');
+        }
+    })
+</script>
+</html>

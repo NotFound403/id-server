@@ -1,12 +1,20 @@
 package cn.felord.idserver;
 
+import cn.felord.idserver.advice.RestBody;
 import cn.felord.idserver.dto.OAuth2Client;
 import cn.felord.idserver.entity.Client;
+import cn.felord.idserver.entity.Menu;
 import cn.felord.idserver.repository.ClientRepository;
+import cn.felord.idserver.repository.MenuRepository;
 import cn.felord.idserver.service.JpaRegisteredClientRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -21,30 +29,40 @@ import org.springframework.security.oauth2.server.authorization.config.TokenSett
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 @SpringBootTest
 class IdServerApplicationTests {
     @Autowired
     ClientRepository clientRepository;
     @Autowired
+    MenuRepository menuRepository;
+    @Autowired
     JpaRegisteredClientRepository jpaRegisteredClientRepository;
 
     @Test
-    void contextLoads() {
-        for (int i = 0; i < 25; i++) {
-            RegisteredClient registeredClient = createRegisteredClient();
+    void contextLoads() throws JsonProcessingException {
 
-
-           jpaRegisteredClientRepository.save(registeredClient);
-
-        }
         Page<OAuth2Client> page = jpaRegisteredClientRepository.page(PageRequest.of(0, 10, Sort.sort(Client.class)
                 .by(Client::getClientIdIssuedAt).descending()));
 
-        List<OAuth2Client> content = page.getContent();
-        System.out.println("content = " + content);
+        String s = new ObjectMapper().registerModules(new Jdk8Module(),new JavaTimeModule()).writeValueAsString(RestBody.okData(page));
+        System.out.println("s = " + RestBody.okData(s));
     }
+
+    @Test
+    public void menu() throws JsonProcessingException {
+
+        Menu probe = new Menu();
+        probe.setParentId("0");
+        List<Menu> all = menuRepository.findAll(Example.of(probe));
+
+
+        String s = new ObjectMapper().writeValueAsString(all);
+        System.out.println("s = " + s);
+
+    }
+
+
 
     private static RegisteredClient createRegisteredClient() {
         return RegisteredClient.withId(UUID.randomUUID().toString())
