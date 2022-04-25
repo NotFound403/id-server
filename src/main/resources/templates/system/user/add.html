@@ -73,12 +73,12 @@
         let $ = layui.jquery;
 
         form.on('submit(user-save)', function (data) {
-            let roleIds = "";
-            $('input[type=checkbox]:checked').each(function () {
-                roleIds += $(this).val() + ",";
-            });
-            roleIds = roleIds.substr(0, roleIds.length - 1);
-            data.field.roleIds = roleIds;
+            // let roleIds = "";
+            // $('input[type=checkbox]:checked').each(function () {
+            //     roleIds += $(this).val() + ",";
+            // });
+            // roleIds = roleIds.substr(0, roleIds.length - 1);
+            // data.field.roleIds = roleIds;
 
             $.ajax({
                 url: '/system/user/save',
