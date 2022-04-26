@@ -75,7 +75,6 @@ public class OAuth2ClientTests {
 //               客户端ID和密码
                 .clientId(UUID.randomUUID().toString())
 //               此处为了避免频繁启动重复写入仓库
-//                .id(id)
 //                client_secret_basic    客户端需要存明文   服务器存密文
                 .clientSecret(PasswordEncoderFactories.createDelegatingPasswordEncoder()
                         .encode("secret"))

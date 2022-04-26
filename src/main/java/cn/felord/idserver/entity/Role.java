@@ -40,6 +40,8 @@ public class Role {
 
     private String roleContent;
 
+    private String description;
+
     private Boolean enabled;
 
     @CreatedDate
