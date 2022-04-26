@@ -7,6 +7,9 @@ spring:
     name: id-server
   jpa:
     show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
 logging:
   level:
     org.springframework.web: trace

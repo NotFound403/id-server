@@ -5,16 +5,14 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
-import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -44,29 +42,23 @@ public class OAuth2Client implements Serializable {
     //todo
     private Instant clientSecretExpiresAt;
     private String clientName;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", referencedColumnName = "client_id", insertable = false, updatable = false)
-    @NotFound(action = NotFoundAction.IGNORE)
     private Set<ClientAuthMethod> clientAuthenticationMethods;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", referencedColumnName = "client_id", insertable = false, updatable = false)
-    @NotFound(action = NotFoundAction.IGNORE)
     private Set<OAuth2GrantType> authorizationGrantTypes;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", referencedColumnName = "client_id", insertable = false, updatable = false)
-    @NotFound(action = NotFoundAction.IGNORE)
     private Set<RedirectUri> redirectUris;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", referencedColumnName = "client_id", insertable = false, updatable = false)
-    @NotFound(action = NotFoundAction.IGNORE)
     private Set<OAuth2Scope> scopes;
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", referencedColumnName = "client_id", insertable = false, updatable = false)
-    @NotFound(action = NotFoundAction.IGNORE)
     private OAuth2ClientSettings clientSettings;
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", referencedColumnName = "client_id", insertable = false, updatable = false)
-    @NotFound(action = NotFoundAction.IGNORE)
     private OAuth2TokenSettings tokenSettings;
 
     /**
@@ -75,9 +67,11 @@ public class OAuth2Client implements Serializable {
      * @return the registered client
      */
     public RegisteredClient toRegisteredClient() {
-        Assert.notEmpty(clientAuthenticationMethods, "clientAuthenticationMethods must not be empty");
-        Assert.notEmpty(authorizationGrantTypes, "authorizationGrantTypes must not be empty");
-        Assert.notEmpty(scopes, "scopes must not be empty");
+
+        Set<ClientAuthMethod> clientAuthMethods = clientAuthenticationMethods == null ? Collections.emptySet() : clientAuthenticationMethods;
+        Set<OAuth2GrantType> oAuth2GrantTypes = authorizationGrantTypes == null ? Collections.emptySet() : authorizationGrantTypes;
+        Set<RedirectUri> uris = redirectUris == null ? Collections.emptySet() : redirectUris;
+        Set<OAuth2Scope> oAuth2Scopes = scopes == null ? Collections.emptySet() : scopes;
 
         RegisteredClient.Builder builder = RegisteredClient.withId(Optional.ofNullable(this.id).orElse(UUID.randomUUID().toString()))
                 .clientId(Optional.ofNullable(this.clientId).orElse(UUID.randomUUID().toString()))
@@ -85,17 +79,17 @@ public class OAuth2Client implements Serializable {
                 .clientSecretExpiresAt(this.clientSecretExpiresAt)
                 .clientName(this.clientName)
                 .clientAuthenticationMethods(clientAuthenticationMethodSet ->
-                        clientAuthenticationMethodSet.addAll(clientAuthenticationMethods.stream()
+                        clientAuthenticationMethodSet.addAll(clientAuthMethods.stream()
                                 .map(ClientAuthMethod::toAuthenticationMethod)
                                 .collect(Collectors.toSet())))
                 .authorizationGrantTypes(authorizationGrantTypeSet ->
-                        authorizationGrantTypeSet.addAll(authorizationGrantTypes.stream()
+                        authorizationGrantTypeSet.addAll(oAuth2GrantTypes.stream()
                                 .map(OAuth2GrantType::toGrantType)
                                 .collect(Collectors.toSet())))
-                .redirectUris(redirectUriSet -> redirectUriSet.addAll(redirectUris.stream()
+                .redirectUris(redirectUriSet -> redirectUriSet.addAll(uris.stream()
                         .map(RedirectUri::getRedirectUri)
                         .collect(Collectors.toSet())))
-                .scopes(scopeSet -> scopeSet.addAll(scopes.stream()
+                .scopes(scopeSet -> scopeSet.addAll(oAuth2Scopes.stream()
                         .map(OAuth2Scope::getScope)
                         .collect(Collectors.toSet())))
                 .clientSettings(this.clientSettings.toClientSettings())

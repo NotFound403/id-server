@@ -1,11 +1,15 @@
 package cn.felord.idserver.endpoint.system;
 
 import cn.felord.idserver.advice.BaseController;
+import cn.felord.idserver.advice.Rest;
+import cn.felord.idserver.advice.RestBody;
 import cn.felord.idserver.entity.Menu;
 import cn.felord.idserver.service.JpaMenuService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
@@ -22,13 +26,46 @@ public class MenuController extends BaseController {
     private final JpaMenuService jpaMenuService;
 
     /**
+     * Main string.
+     *
+     * @return the string
+     */
+    @GetMapping("/system/menu/main")
+    public String main() {
+        return "/system/menu/main";
+    }
+
+    /**
+     * Add string.
+     *
+     * @return the string
+     */
+    @GetMapping("/system/menu/add")
+    public String add() {
+        return "/system/menu/add";
+    }
+
+    /**
+     * Add rest.
+     *
+     * @param menu the menu
+     * @return the rest
+     */
+    @PostMapping("/system/menu/add")
+    public Rest<?> add(@RequestBody Menu menu){
+         jpaMenuService.save(menu);
+      return RestBody.ok("操作成功");
+    }
+
+    /**
      * 查询菜单
      *
      * @return the list
      */
     @GetMapping("/system/menu/data")
     @ResponseBody
-    public List<Menu> menuList(){
+    public List<Menu> menuList() {
         return jpaMenuService.findByRoot();
     }
+
 }

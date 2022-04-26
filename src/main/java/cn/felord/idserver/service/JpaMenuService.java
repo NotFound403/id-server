@@ -19,6 +19,11 @@ public class JpaMenuService implements MenuService {
     private static final String ROOT_ID = "0";
 
     @Override
+    public Menu save(Menu menu) {
+        return menuRepository.save(menu);
+    }
+
+    @Override
     public List<Menu> findByRoot() {
         Menu probe = new Menu();
         probe.setParentId(ROOT_ID);

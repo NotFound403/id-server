@@ -4,6 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Column;
@@ -26,7 +29,7 @@ public class Menu {
     @GeneratedValue(generator = "uuid-hex")
     private String id;
 
-    @Column(name="parent_id",insertable = false,updatable = false)
+    @Column(name = "parent_id", updatable = false)
     private String parentId;
 
     private String title;
@@ -39,8 +42,10 @@ public class Menu {
 
     private String href;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name="parent_id",insertable = false,updatable = false)
+    @OneToMany(fetch = FetchType.LAZY)
+    @BatchSize(size = 30)
+    @Fetch(value = FetchMode.SELECT)
+    @JoinColumn(name = "parent_id", insertable = false, updatable = false)
     private List<Menu> children;
 
     @Override

@@ -70,6 +70,6 @@ public class UserController extends BaseController {
     @PostMapping("/system/user/add")
     public Rest<?> add(UserInfo userInfo) {
         userInfoRepository.save(userInfo);
-        return RestBody.ok("新增成功");
+        return RestBody.ok("操作成功");
     }
 }
