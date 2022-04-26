@@ -25,3 +25,13 @@
 @import url("module/card.css");
 @import url("module/tab.css");
 @import url("module/tag.css");
+
+.layui-form-required:before {
+    content: "*";
+    display: inline-block;
+    font-family: SimSun;
+    margin-right: 4px;
+    font-size: 14px;
+    line-height: 1;
+    color: #ed4014
+}

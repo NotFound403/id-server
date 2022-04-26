@@ -9,60 +9,45 @@
         <div class="main-container">
             <div class="main-container">
                 <div class="layui-form-item">
-                    <label class="layui-form-label">账号</label>
+                    <label class="layui-form-label layui-form-required">账号</label>
                     <div class="layui-input-block">
                         <input autocomplete="off" class="layui-input" lay-verify="required" name="username" placeholder="请输入账号"
                                type="text">
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">姓名</label>
+                    <label class="layui-form-label layui-form-required">姓名</label>
                     <div class="layui-input-block">
                         <input autocomplete="off" class="layui-input" lay-verify="required" name="realName" placeholder="请输入姓名"
                                type="text">
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">昵称</label>
+                    <label class="layui-form-label layui-form-required">昵称</label>
                     <div class="layui-input-block">
                         <input autocomplete="off" class="layui-input" lay-verify="required" name="nickName" placeholder="请输入昵称"
                                type="text">
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">密码</label>
+                    <label class="layui-form-label layui-form-required">secret</label>
                     <div class="layui-input-block">
-                        <input autocomplete="off" class="layui-input" lay-verify="required" name="password" placeholder="请输入密码"
-                               type="text">
-                    </div>
-                </div>
-<!--                todo 密码处理-->
-                <div class="layui-form-item">
-                    <label class="layui-form-label">邮箱</label>
-                    <div class="layui-input-block">
-                        <input autocomplete="off" class="layui-input" name="email" placeholder="请输入邮箱"
+                        <input autocomplete="off" class="layui-input" lay-verify="required" name="secret" placeholder="请输入secret"
                                type="text">
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">电话</label>
+                    <label class="layui-form-label layui-form-required">邮箱</label>
                     <div class="layui-input-block">
-                        <input autocomplete="off" class="layui-input" name="phoneNumber" placeholder="请输入电话"
+                        <input autocomplete="off" class="layui-input" name="email" lay-verify="required|email" placeholder="请输入邮箱"
                                type="text">
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">性别</label>
+                    <label class="layui-form-label layui-form-required">电话</label>
                     <div class="layui-input-block">
-                        <input name="gender" title="男" type="radio" value="0">
-                        <input checked name="gender" title="女" type="radio" value="1">
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">角色</label>
-                    <div class="layui-input-block">
-                        <input lay-skin="primary" name="roleIds" th:each="sysRole:${sysRoles}"
-                               th:title="${sysRole.roleName}" th:value="${sysRole.roleId}" type="checkbox">
+                        <input autocomplete="off" class="layui-input" name="phoneNumber" lay-verify="required" placeholder="请输入电话"
+                               type="text">
                     </div>
                 </div>
             </div>
@@ -83,29 +68,17 @@
 </form>
 <th:block th:include="include :: footer"/>
 <script>
-    layui.use(['form', 'jquery', 'dtree'], function () {
+    layui.use(['form', 'jquery'], function () {
         let form = layui.form;
         let $ = layui.jquery;
-        let dtree = layui.dtree;
-
-        dtree.renderSelect({
-            elem: "#selectParent",
-            url: "/system/dept/tree",
-            method: 'get',
-            selectInputName: {nodeId: "deptId", context: "deptName"},
-            skin: "layui",
-            dataFormat: "list",
-            response: {treeId: "deptId", parentId: "parentId", title: "deptName"},
-            selectInitVal: "1"
-        });
 
         form.on('submit(user-save)', function (data) {
-            let roleIds = "";
-            $('input[type=checkbox]:checked').each(function () {
-                roleIds += $(this).val() + ",";
-            });
-            roleIds = roleIds.substr(0, roleIds.length - 1);
-            data.field.roleIds = roleIds;
+            // let roleIds = "";
+            // $('input[type=checkbox]:checked').each(function () {
+            //     roleIds += $(this).val() + ",";
+            // });
+            // roleIds = roleIds.substr(0, roleIds.length - 1);
+            // data.field.roleIds = roleIds;
 
             $.ajax({
                 url: '/system/user/save',
