@@ -22,6 +22,21 @@ public interface MenuService {
     Menu save(Menu menu);
 
     /**
+     * 修改 菜单
+     *
+     * @param menu 菜单
+     */
+    void update(Menu menu);
+
+    /**
+     * 通过 id 查询 菜单
+     *
+     * @param id id
+     * @return 菜单
+     */
+    Menu findById(String id);
+
+    /**
      * Find by root list.
      *
      * @return the list
