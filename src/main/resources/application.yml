@@ -10,6 +10,7 @@ spring:
     generate-ddl: true
     hibernate:
       ddl-auto: update
+    open-in-view: false
 logging:
   level:
     org.springframework.web: trace
