@@ -1,10 +1,17 @@
-package cn.felord.idserver.dto;
+package cn.felord.idserver.entity;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.security.oauth2.core.OAuth2TokenFormat;
 import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 import org.springframework.security.oauth2.server.authorization.config.TokenSettings;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import java.io.Serializable;
 import java.time.Duration;
 import java.util.Optional;
 
@@ -15,8 +22,15 @@ import java.util.Optional;
  * @see TokenSettings
  * @since 1.0.0
  */
-@Data
-public class OAuth2TokenSettings {
+@Entity
+@Getter
+@Setter
+@ToString
+@Table(name = "oauth2_token_settings")
+public class OAuth2TokenSettings implements Serializable {
+    @Id
+    @Column(name = "client_id", insertable = false, updatable = false)
+    private String clientId;
     private Duration accessTokenTimeToLive;
     private String tokenFormat;
     private boolean reuseRefreshTokens = true;

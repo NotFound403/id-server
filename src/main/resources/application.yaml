@@ -1,12 +1,10 @@
 server:
   port: 9000
 spring:
+  profiles:
+    active: dev
   application:
     name: id-server
-  datasource:
-    url: jdbc:mysql://localhost:3306/id_server_database
-    username: root
-    password: 123456
   jpa:
     show-sql: true
 logging:

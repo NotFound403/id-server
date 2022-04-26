@@ -4,7 +4,7 @@
 
 ## 概念
 一些概念
-### client 
+### OAuth2Client 
 
 **客户端**指的是**OAuth2 Client**，但又不单单是一个**OAuth2 Client**，连**id server**本身都是一个**客户端**。
 #### role
@@ -18,6 +18,6 @@
 ##### 规则
 - 一个客户端下`role`是唯一的。
 - 只有生效的`role`才起作用。
-- 在`client`中的`scope`必须在`role`中定义。
-- 在`role`中定义的角色不一定会在`client`中。
-- 用户授权的`role`必须在`client`中声明以及用户必须持有该`role`。
+- 在`OAuth2Client`中的`scope`必须在`role`中定义。
+- 在`role`中定义的角色不一定会在`OAuth2Client`中。
+- 用户授权的`role`必须在`OAuth2Client`中声明以及用户必须持有该`role`。

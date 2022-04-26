@@ -1,8 +1,7 @@
 package cn.felord.idserver.endpoint.system;
 
 import cn.felord.idserver.advice.BaseController;
-import cn.felord.idserver.dto.OAuth2Client;
-import cn.felord.idserver.entity.Client;
+import cn.felord.idserver.entity.OAuth2Client;
 import cn.felord.idserver.service.JpaRegisteredClientRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -54,7 +53,7 @@ public class ClientController extends BaseController {
     @GetMapping("/system/client/data")
     @ResponseBody
     public Page<OAuth2Client> page(@RequestParam Integer page, @RequestParam Integer limit) {
-        return clientRepository.page(PageRequest.of(page, limit, Sort.sort(Client.class)
-                .by(Client::getClientIdIssuedAt).descending()));
+        return clientRepository.page(PageRequest.of(page, limit, Sort.sort(OAuth2Client.class)
+                .by(OAuth2Client::getClientIdIssuedAt).descending()));
     }
 }
