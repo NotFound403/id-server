@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('系统设置')"/>
+    <style>
+        .main-container .layui-form-item {
+            margin-top: 5px !important;
+            margin-bottom: 5px !important;
+        }
+    </style>
+</head>
+<body>
+<form action="" class="layui-form">
+    <div class="mainBox" style="background-color: whitesmoke">
+        <div class="main-container">
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <div class="layui-tab layui-tab-brief">
+                        <ul class="layui-tab-title">
+                            <li class="layui-this">邮箱设置</li>
+                        </ul>
+                        <div class="layui-tab-content">
+                            <div class="layui-tab-item layui-show" style="padding-top: 30px;padding-bottom: 50px;">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">主机</label>
+                                    <div class="layui-input-block">
+                                        <input class="layui-input" name="mailHost" placeholder="请输入主机地址"
+                                               th:value="${setup.mailHost}" type="text">
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">端口</label>
+                                    <div class="layui-input-block">
+                                        <input class="layui-input" name="mailPort" placeholder="请输入开放端口"
+                                               th:value="${setup.mailPort}" type="text">
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">来源</label>
+                                    <div class="layui-input-block">
+                                        <input class="layui-input" name="mailFrom" placeholder="请输入来源"
+                                               th:value="${setup.mailFrom}" type="text">
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">用户</label>
+                                    <div class="layui-input-block">
+                                        <input class="layui-input" name="mailUser" placeholder="请输入用户"
+                                               th:value="${setup.mailUser}" type="text">
+                                    </div>
+                                </div>
+                                <br/>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">密码</label>
+                                    <div class="layui-input-block">
+                                        <input class="layui-input" name="mailPass" placeholder="请输入密码"
+                                               th:value="${setup.mailPass}" type="text">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="button-container">
+            <button class="pear-btn pear-btn-primary pear-btn-sm" lay-filter="setup-save" lay-submit="" type="submit">
+                保存
+            </button>
+            <button class="pear-btn pear-btn-default pear-btn-sm" type="reset">
+                重置
+            </button>
+        </div>
+    </div>
+</form>
+</body>
+<th:block th:include="include :: footer"/>
+<script>
+    layui.use(['element', 'form', 'popup', 'jquery'], function () {
+        let form = layui.form;
+        let popup = layui.popup;
+        let $ = layui.jquery;
+
+        form.on('submit(setup-save)', function (data) {
+            $.ajax({
+                url: '/system/setup/save',
+                data: JSON.stringify(data.field),
+                dataType: 'json',
+                contentType: 'application/json',
+                type: 'put',
+                success: function (result) {
+                    if (result.success) {
+                        popup.success(result.msg, function () {
+                            window.location.reload();
+                        });
+                    } else {
+                        popup.failure(result.msg);
+                    }
+                }
+            });
+            return false;
+        });
+    })
+</script>
+</html>

@@ -1,84 +1,116 @@
 <!DOCTYPE html>
-<html lang="zh" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="layout/head::th_head(~{::title},~{},~{},~{})">
-    <title>首页</title>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('Pear Admin 开发平台')"/>
+    <link href="admin/css/loader.css" rel="stylesheet"/>
+    <link href="admin/css/admin.css" rel="stylesheet"/>
 </head>
-<body>
-<div class="lyear-layout-web">
-    <div class="lyear-layout-container">
-        <!--左侧导航-->
-        <aside th:replace="layout/aside::th_aside"></aside>
-        <!--End 左侧导航-->
-        <!--头部信息-->
-        <header th:replace="layout/header::th_header"></header>
-        <!--End 头部信息-->
-        <!--页面主要内容-->
-        <main class="lyear-layout-content">
-            <div class="container-fluid p-t-15">
-
-                <div class="row">
-                    <div class="col-md-6 col-xl-3">
-                        <div class="card bg-primary text-white">
-                            <div class="card-body clearfix">
-                                <div class="flex-box">
-                                    <span class="img-avatar img-avatar-48 bg-translucent"><i
-                                            class="mdi mdi-currency-cny fs-22"></i></span>
-                                    <span class="fs-22 lh-22">102,125.00</span>
-                                </div>
-                                <div class="text-right">今日收入</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 col-xl-3">
-                        <div class="card bg-danger text-white">
-                            <div class="card-body clearfix">
-                                <div class="flex-box">
-                                    <span class="img-avatar img-avatar-48 bg-translucent"><i
-                                            class="mdi mdi-account fs-22"></i></span>
-                                    <span class="fs-22 lh-22">920,000</span>
-                                </div>
-                                <div class="text-right">用户总数</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 col-xl-3">
-                        <div class="card bg-success text-white">
-                            <div class="card-body clearfix">
-                                <div class="flex-box">
-                                    <span class="img-avatar img-avatar-48 bg-translucent"><i
-                                            class="mdi mdi-arrow-down-bold fs-22"></i></span>
-                                    <span class="fs-22 lh-22">34,005,000</span>
-                                </div>
-                                <div class="text-right">下载总量</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 col-xl-3">
-                        <div class="card bg-purple text-white">
-                            <div class="card-body clearfix">
-                                <div class="flex-box">
-                                    <span class="img-avatar img-avatar-48 bg-translucent"><i
-                                            class="mdi mdi-comment-outline fs-22"></i></span>
-                                    <span class="fs-22 lh-22">153 条</span>
-                                </div>
-                                <div class="text-right">新增留言</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-
-                </div>
-            </div>
-        </main>
-        <!--End 页面主要内容-->
+<!-- 结 构 代 码 -->
+<body class="layui-layout-body pear-admin">
+<!-- 布 局 框 架 -->
+<div class="layui-layout layui-layout-admin">
+    <!-- 顶 部 样 式 -->
+    <div class="layui-header">
+        <!-- 菜 单 顶 部 -->
+        <div class="layui-logo">
+            <!-- 图 标 -->
+            <img class="logo"/>
+            <!-- 标 题 -->
+            <span class="title"></span>
+        </div>
+        <!-- 顶 部 左 侧 功 能 -->
+        <ul class="layui-nav layui-layout-left">
+            <li class="collaspe layui-nav-item"><a class="layui-icon layui-icon-shrink-right" href="#"></a></li>
+            <li class="refresh layui-nav-item"><a class="layui-icon layui-icon-refresh-1" href="#" loading=600></a></li>
+        </ul>
+        <!-- 多 系 统 菜 单 -->
+        <div class="layui-layout-control" id="control"></div>
+        <!-- 顶 部 右 侧 菜 单 -->
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item layui-hide-xs"><a class="fullScreen layui-icon layui-icon-screen-full"
+                                                        href="#"></a></li>
+            <li class="layui-nav-item layui-hide-xs"><a class="layui-icon layui-icon-website"
+                                                        href="http://www.pearadmin.com"></a></li>
+            <li class="layui-nav-item layui-hide-xs message"></li>
+            <li class="layui-nav-item user">
+                <!-- 头 像 -->
+                <a class="layui-icon layui-icon-username" href="javascript:;"></a>
+                <!-- 功 能 菜 单 -->
+                <dl class="layui-nav-child">
+                    <dd><a user-menu-id="5555" user-menu-title="基本资料" user-menu-url="/system/user/center">基本资料</a></dd>
+                    <dd><a class="logout" href="javascript:void(0);">注销登录</a></dd>
+                </dl>
+            </li>
+            <!-- 主 题 配 置 -->
+            <li class="layui-nav-item setting"><a class="layui-icon layui-icon-more-vertical" href="#"></a></li>
+        </ul>
+    </div>
+    <!-- 侧 边 区 域 -->
+    <div class="layui-side layui-bg-black">
+        <!-- 菜 单 顶 部 -->
+        <div class="layui-logo">
+            <!-- 图 标 -->
+            <img class="logo"/>
+            <!-- 标 题 -->
+            <span class="title"></span>
+        </div>
+        <!-- 菜 单 内 容 -->
+        <div class="layui-side-scroll">
+            <div id="sideMenu"></div>
+        </div>
+    </div>
+    <!-- 视 图 页 面 -->
+    <div class="layui-body">
+        <!-- 内 容 页 面 -->
+        <div id="content"></div>
+    </div>
+    <!-- 遮 盖 层 -->
+    <div class="pear-cover"></div>
+    <!-- 加 载 动 画 -->
+    <div class="loader-main">
+        <!-- 动 画 对 象 -->
+        <div class="loader"></div>
     </div>
 </div>
-<footer th:include="layout/footer::th_footer(~{})">
+<!-- 移 动 端 便 捷 操 作 -->
+<div class="pear-collasped-pe collaspe">
+    <a class="layui-icon layui-icon-shrink-right" href="#"></a>
+</div>
+<!-- 依 赖 脚 本 -->
+<th:block th:include="include :: footer"/>
+<script th:inline="javascript">
+    layui.use(['admin', 'jquery', 'layer', 'popup'], function () {
+        let admin = layui.admin;
+        let $ = layui.jquery;
+        let layer = layui.layer;
+        let popup = layui.popup;
 
-</footer>
+        // 框架初始化时会读取 根目录下 pear.config.yml 文件作为初始化配置
+        // 你可以通过 admin.setConfigPath 方法修改配置文件位置
+        // 你可以通过 admin.setConfigType 方法修改配置文件类型
+        admin.setConfigType("yml");
+        admin.setConfigPath("pear.config.yml");
+        admin.render();
+
+        // 注销实现
+        admin.logout(function () {
+            let loading = layer.load();
+            $.ajax({
+                url: '/logout',
+                dataType: 'json',
+                type: 'post',
+                success: function (result) {
+                    layer.close(loading);
+                    if (result.success) {
+                        popup.success(result.msg, function () {
+                            location.href = "/";
+                        });
+                        return true;
+                    }
+                }
+            })
+        })
+    })
+</script>
 </body>
 </html>

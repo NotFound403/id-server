@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('定时任务列表')"/>
+</head>
+<body class="pear-container">
+<div class="layui-card">
+    <div class="layui-card-body">
+        <form action="" class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">任务名称</label>
+                <div class="layui-input-inline">
+                    <input class="layui-input" name="jobName" placeholder="" type="text">
+                </div>
+                <button class="pear-btn pear-btn-md pear-btn-primary" lay-filter="job-query" lay-submit>
+                    <i class="layui-icon layui-icon-search"></i>
+                    查询
+                </button>
+                <button class="pear-btn pear-btn-md" type="reset">
+                    <i class="layui-icon layui-icon-refresh"></i>
+                    重置
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="layui-card">
+    <div class="layui-card-body">
+        <table id="job-table" lay-filter="job-table"></table>
+    </div>
+</div>
+</body>
+<script id="job-toolbar" type="text/html">
+    <button sec:authorize="hasPermission('/schedule/job/add','sch:job:add')"
+            class="pear-btn pear-btn-primary pear-btn-md" lay-event="add">
+        <i class="layui-icon layui-icon-add-1"></i>
+        新增
+    </button>
+    <button sec:authorize="hasPermission('/schedule/job/remove','sch:job:remove')" class="pear-btn pear-btn-md"
+            lay-event="batchRemove">
+        <i class="layui-icon layui-icon-delete"></i>
+        删除
+    </button>
+    <button class="pear-btn pear-btn-md" lay-event="runLog">
+        <i class="layui-icon layui-icon-file"></i>
+        日志
+    </button>
+</script>
+<script id="job-bar" type="text/html">
+    {{#if (d.status == 0) { }}
+    <button sec:authorize="hasPermission('/schedule/job/pause','sch:job:pause')"
+            class="pear-btn pear-btn-warming pear-btn-sm" lay-event="pause"><i class="layui-icon layui-icon-pause"></i>
+    </button>
+    {{# }else if(d.status == 1){ }}
+    <button sec:authorize="hasPermission('/schedule/job/resume','sch:job:resume')"
+            class="pear-btn pear-btn-warming pear-btn-sm" lay-event="resume"><i class="layui-icon layui-icon-play"></i>
+    </button>
+    {{# } }}
+    <button sec:authorize="hasPermission('/schedule/job/run','sch:job:run')"
+            class="pear-btn pear-btn-success pear-btn-sm" lay-event="run"><i class="layui-icon layui-icon-release"></i>
+    </button>
+    <button sec:authorize="hasPermission('/schedule/job/edit','sch:job:edit')"
+            class="pear-btn pear-btn-primary pear-btn-sm" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>
+    </button>
+    <button sec:authorize="hasPermission('/schedule/job/remove','sch:job:remove')"
+            class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i class="layui-icon layui-icon-delete"></i>
+    </button>
+</script>
+<script id="job-status" type="text/html">
+    {{#if (d.status == 0) { }}
+    <span>运行中</span>
+    {{# }else if(d.status == 1){ }}
+    <span>已挂起</span>
+    {{# } }}
+</script>
+<th:block th:include="include :: footer"/>
+<script>
+    layui.use(['table', 'form', 'jquery', 'common', 'popup'], function () {
+        let table = layui.table;
+        let form = layui.form;
+        let $ = layui.jquery;
+        let common = layui.common;
+        let popup = layui.popup;
+
+        let MODULE_PATH = "/schedule/job/";
+
+        let cols = [
+            [
+                {type: 'checkbox'},
+                {title: '名称', field: 'jobName', align: 'center', width: 100},
+                {title: '运行类', field: 'beanName', align: 'center'},
+                {title: '参数', field: 'params', align: 'center'},
+                {title: '表达式', field: 'cronExpression', align: 'center'},
+                {title: '状态', field: 'status', align: 'center', templet: '#job-status'},
+                {title: '描述', field: 'remark', align: 'center'},
+                {title: '操作', toolbar: '#job-bar', align: 'center', width: 220}
+            ]
+        ]
+
+        table.render({
+            elem: '#job-table',
+            url: MODULE_PATH + 'data',
+            page: true,
+            cols: cols,
+            skin: 'line',
+            toolbar: '#job-toolbar',
+            defaultToolbar: [{
+                title: '刷新',
+                layEvent: 'refresh',
+                icon: 'layui-icon-refresh',
+            }, 'filter', 'print', 'exports']
+        });
+
+        table.on('tool(job-table)', function (obj) {
+            if (obj.event === 'remove') {
+                window.remove(obj);
+            } else if (obj.event === 'edit') {
+                window.edit(obj);
+            } else if (obj.event === 'pause') {
+                window.pause(obj);
+            } else if (obj.event === 'resume') {
+                window.resume(obj);
+            } else if (obj.event === 'run') {
+                window.run(obj);
+            }
+        });
+
+        table.on('toolbar(job-table)', function (obj) {
+            if (obj.event === 'add') {
+                window.add();
+            } else if (obj.event === 'refresh') {
+                window.refresh();
+            } else if (obj.event === 'batchRemove') {
+                window.batchRemove(obj);
+            } else if (obj.event === 'runLog') {
+                window.runLog();
+            }
+        });
+
+        form.on('submit(job-query)', function (data) {
+            table.reload('job-table', {where: data.field})
+            return false;
+        });
+
+        window.add = function () {
+            layer.open({
+                type: 2,
+                title: '新增',
+                shade: 0.1,
+                area: ['500px', '500px'],
+                content: MODULE_PATH + 'add'
+            });
+        }
+
+        window.edit = function (obj) {
+            layer.open({
+                type: 2,
+                title: '修改',
+                shade: 0.1,
+                area: ['500px', '500px'],
+                content: MODULE_PATH + 'edit?jobId=' + obj.data['jobId']
+            });
+        }
+
+        window.runLog = function () {
+            layer.open({
+                type: 2,
+                title: '运行日志',
+                shade: 0.1,
+                area: ['100%', '100%'],
+                content: '/schedule/log/main'
+            });
+        }
+
+        window.pause = function (obj) {
+            let loading = layer.load();
+            $.ajax({
+                url: '/schedule/job/pause?jobId=' + obj.data['jobId'],
+                dataType: 'json',
+                contentType: 'application/json',
+                type: 'put',
+                success: function (result) {
+                    layer.close(loading);
+                    if (result.success) {
+                        popup.success(result.msg, function () {
+                            table.reload("job-table");
+                        });
+                    } else {
+                        popup.failure(result.msg);
+                    }
+                }
+            })
+        }
+
+        window.resume = function (obj) {
+            let loading = layer.load();
+            $.ajax({
+                url: '/schedule/job/resume?jobId=' + obj.data['jobId'],
+                dataType: 'json',
+                contentType: 'application/json',
+                type: 'put',
+                success: function (result) {
+                    layer.close(loading);
+                    if (result.success) {
+                        popup.success(result.msg, function () {
+                            table.reload("job-table");
+                        });
+                    } else {
+                        popup.failure(result.msg);
+                    }
+                }
+            })
+        }
+
+        window.run = function (obj) {
+            let loading = layer.load();
+            $.ajax({
+                url: '/schedule/job/run?jobId=' + obj.data['jobId'],
+                dataType: 'json',
+                contentType: 'application/json',
+                type: 'put',
+                success: function (result) {
+                    layer.close(loading);
+                    if (result.success) {
+                        popup.success(result.msg);
+                    } else {
+                        popup.failure(result.msg);
+                    }
+                }
+            })
+        }
+
+        window.remove = function (obj) {
+            layer.confirm('确定要删除该任务', {icon: 3, title: '提示'}, function (index) {
+                layer.close(index);
+                let loading = layer.load();
+                $.ajax({
+                    url: MODULE_PATH + "remove/" + obj.data['jobId'],
+                    dataType: 'json',
+                    type: 'delete',
+                    success: function (result) {
+                        layer.close(loading);
+                        if (result.success) {
+                            layer.msg(result.msg, {icon: 1, time: 1000}, function () {
+                                obj.del();
+                            });
+                        } else {
+                            layer.msg(result.msg, {icon: 2, time: 1000});
+                        }
+                    }
+                })
+            });
+        }
+
+        window.batchRemove = function (obj) {
+            let ids = common.checkField(obj, 'jobId');
+            if (common.isEmpty(ids)) {
+                popup.warning("未选中数据");
+                return false;
+            }
+            layer.confirm('确定要删除选中任务', {icon: 3, title: '提示'}, function (index) {
+                layer.close(index);
+                let loading = layer.load();
+                $.ajax({
+                    url: MODULE_PATH + "batchRemove/" + ids,
+                    dataType: 'json',
+                    type: 'delete',
+                    success: function (result) {
+                        layer.close(loading);
+                        if (result.success) {
+                            layer.msg(result.msg, {icon: 1, time: 1000}, function () {
+                                table.reload('user-table');
+                            });
+                        } else {
+                            layer.msg(result.msg, {icon: 2, time: 1000});
+                        }
+                    }
+                })
+            });
+        }
+
+        window.refresh = function (param) {
+            table.reload('job-table');
+        }
+    })
+</script>
+</html>

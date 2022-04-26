@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('代码生成导入')"/>
+</head>
+<body class="pear-container">
+<div class="layui-card">
+    <div class="layui-card-body">
+        <form class="layui-form  search-form" id="searchForm">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">表名称</label>
+                    <div class="layui-input-inline">
+                        <input autocomplete="off" class="layui-input" name="tableName" placeholder="" type="text">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">表描述</label>
+                    <div class="layui-input-inline">
+                        <input autocomplete="off" class="layui-input" name="tableComment" placeholder="" type="text">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button class="pear-btn pear-btn-primary pear-btn-md" data-type="reload" id="form-search" lay-filter="form-search"
+                            lay-submit type="button"><i class="layui-icon">&#xe615;</i>搜索
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="layui-card">
+    <div class="layui-card-body">
+        <table id="table_import" lay-filter="table_import"></table>
+    </div>
+</div>
+<th:block th:include="include :: footer"/>
+<script>
+    let prefix = "/generate";
+    layui.use(['common', 'form', 'jquery', 'table'], function () {
+        let $ = layui.jquery,
+            form = layui.form,
+            common = layui.common,
+            table = layui.table;
+
+        let active = {
+            reload: function () {
+                table.reload('table_import', {where: data.field, page: {curr: 1}});
+            },
+            remove: function (ids) {
+                common.ajaxRemove(prefix + "/remove", ids, function (res) {
+                    active['reload'].call(this);
+                });
+            }
+        };
+
+        form.on('submit(form-search)', function (data) {
+            table.reload('table_import', {where: data.field, page: {curr: 1}});
+        });
+
+        table.render({
+            elem: '#table_import'
+            , url: prefix + "/db/list"
+            , autoSort: false
+            , skin: 'line'
+            , page: true
+            , cols: new Array([
+                {type: 'checkbox', width: 40}
+                , {field: 'tableName', title: '表名称'}
+                , {field: 'tableComment', title: '表描述'}
+                , {field: 'createTime', title: '创建时间', width: 160, sort: true}
+                , {field: 'updateTime', title: '更新时间', width: 160}
+            ])
+        });
+    });
+
+    function search(isResetCurr) {
+        let field = JSON.stringify($('#searchForm'));
+        let options = {where: field};
+        if (isResetCurr == true) {
+            options.page = {curr: 1};
+        }
+        layui.table.reload('table_import', options);
+    }
+
+    function submitHandler() {
+        let checks = layui.table.checkStatus('table_import');
+        if (checks.data.length == 0) {
+            layui.layer.alert("请至少选择一条记录");
+            return;
+        }
+        let tables = layui.common.joinArray(checks.data, "tableName");
+        let data = {"tables": tables};
+        layui.common.ajax.post(prefix + "/importTable", data, function (res) {
+            if (res.success) {
+                layer.msg(res.msg, {icon: 1, time: 1000}, function () {
+                    parent.layui.table.reload('table_gen');
+                    parent.layui.layer.closeAll();
+                });
+            }
+        });
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('文件新增')"/>
+</head>
+<body>
+<form action="javascript:void(0);" class="layui-form">
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="layui-upload">
+                <button class="layui-btn layui-btn-normal" id="testList" type="button">选择多文件</button>
+                <div class="layui-upload-list">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th>文件名</th>
+                            <th>大小</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody id="demoList"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="button-container">
+            <button class="pear-btn pear-btn-primary pear-btn-sm" id="testListAction" type="submit">
+                <i class="layui-icon layui-icon-ok"></i>
+                提交
+            </button>
+            <button class="pear-btn pear-btn-sm" type="reset">
+                <i class="layui-icon layui-icon-refresh"></i>
+                重置
+            </button>
+        </div>
+    </div>
+</form>
+<th:block th:include="include :: footer"/>
+<script>
+    layui.use(['form', 'jquery', 'upload', 'layer'], function () {
+        let upload = layui.upload;
+        let $ = layui.jquery;
+        let layer = layui.layer;
+
+        let layerIndex;
+
+        let demoListView = $('#demoList')
+            , uploadListIns = upload.render({
+            elem: '#testList'
+            , url: '/system/file/upload' //改成您自己的上传接口
+            , accept: 'file'
+            , method: 'post'
+            , multiple: true
+            , auto: false
+            , bindAction: '#testListAction'
+            , choose: function (obj) {
+                let files = this.files = obj.pushFile();
+                obj.preview(function (index, file) {
+                    let tr = $(['<tr id="upload-' + index + '">'
+                        , '<td>' + file.name + '</td>'
+                        , '<td>' + (file.size / 1024).toFixed(1) + 'kb</td>'
+                        , '<td>'
+                        , '<button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>'
+                        , '<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button>'
+                        , '</td>'
+                        , '</tr>'].join(''));
+
+                    tr.find('.demo-reload').on('click', function () {
+                        obj.upload(index, file);
+                    });
+
+                    tr.find('.demo-delete').on('click', function () {
+                        delete files[index];
+                        tr.remove();
+                        uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
+                    });
+                    demoListView.append(tr);
+                });
+            }
+            , done: function (res, index, upload) {
+                if (res.success) {
+                    let tr = demoListView.find('tr#upload-' + index)
+                        , tds = tr.children();
+                    tds.eq(2).html('&nbsp;<button class="layui-btn layui-btn-xs">完成</button>'); //清空操作
+                    return delete this.files[index];
+                }
+                this.error(index, upload);
+            }
+            , error: function (index) {
+                let tr = demoListView.find('tr#upload-' + index)
+                    , tds = tr.children();
+                tds.eq(2).find('.demo-reload').removeClass('layui-hide');
+            }
+            , allDone: function () {
+                layer.close(layerIndex);
+                layer.msg("上传完成", {icon: 1, time: 1200}, function () {
+                    parent.layer.close(parent.layer.getFrameIndex(window.name));
+                    parent.layui.table.reload("file-table");
+                })
+            },
+            before: function () {
+                layerIndex = layer.load();
+            }
+        });
+    })
+</script>
+<script>
+</script>
+</body>
+</html>

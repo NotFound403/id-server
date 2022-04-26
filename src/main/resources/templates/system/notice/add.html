@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('新增notice')"/>
+</head>
+<body>
+<form action="javascript:void(0);" class="layui-form">
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="layui-form-item">
+                <label class="layui-form-label">标题：</label>
+                <div class="layui-input-block">
+                    <input class="layui-input" lay-verify="required" name="title" placeholder="请输入标题" type="text"/>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">内容：</label>
+                <div class="layui-input-block">
+                    <textarea class="layui-input layui-textarea" lay-verify="required" name="content" placeholder="请输入内容"
+                              type="text"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item layui-hide">
+                <label class="layui-form-label">发送：</label>
+                <div class="layui-input-block">
+                    <input class="layui-input" lay-verify="required" name="sender" placeholder="请输入接收者"
+                           th:value="${#authentication.principal.userId}" type="text"/>
+                </div>
+            </div>
+            <div class="layui-form-item layui-hide accept">
+                <label class="layui-form-label">接收：</label>
+                <div class="layui-input-block">
+                    <select name="accept">
+                        <option value="">所有</option>
+                        <option th:each="user:${users}" th:text="${user.realName}" th:value="${user.userId}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">类型：</label>
+                <div class="layui-input-block">
+                    <select lay-filter="type" lay-verify="required" name="type">
+                        <option value="">所有</option>
+                        <option value="public">公告</option>
+                        <option value="private">私信</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="button-container">
+            <button class="pear-btn pear-btn-primary pear-btn-sm" lay-filter="notice-save" lay-submit="" type="submit">
+                <i class="layui-icon layui-icon-ok"></i>
+                提交
+            </button>
+            <button class="pear-btn pear-btn-sm" type="reset">
+                <i class="layui-icon layui-icon-refresh"></i>
+                重置
+            </button>
+        </div>
+    </div>
+</form>
+</body>
+<th:block th:include="include :: footer"/>
+<script th:inline="javascript">
+
+    layui.use(['form', 'jquery', 'dictionary', 'popup'], function () {
+        let form = layui.form;
+        let $ = layui.jquery;
+        let popup = layui.popup;
+
+        let prefix = "/system/notice/";
+
+        // 监听
+        form.on("select(type)", function () {
+
+            var value = $("select[name='type']").val();
+
+            // 监听
+            if (value === 'public') {
+
+                // 清空 Accept
+                $("select[name='accept']").val("");
+
+                form.render("select")
+
+                // 隐藏 Accept
+                $(".accept").addClass("layui-hide");
+
+            } else if (value === 'private') {
+
+                // 清空 Accept
+                $("select[name='accept']").val("");
+
+                form.render("select")
+
+                // 显示 Accept
+                $(".accept").removeClass("layui-hide");
+
+            } else {
+
+                // 清空 Accept
+                $("select[name='accept']").val("");
+
+                form.render("select")
+
+                // 隐藏 Accept
+                $(".accept").addClass("layui-hide");
+            }
+        });
+
+        form.on('submit(notice-save)', function (data) {
+
+            if (data.field['type'] === 'private' && data.field['accept'] == "") {
+                popup.failure("请选择接收人");
+            } else {
+                $.ajax({
+                    url: prefix + 'save',
+                    data: JSON.stringify(data.field),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    type: 'post',
+                    success: function (result) {
+                        if (result.success) {
+                            layer.msg(result.msg, {icon: 1, time: 1000}, function () {
+                                parent.layer.close(parent.layer.getFrameIndex(window.name));
+                                parent.layui.table.reload("notice-table");
+                            });
+                        } else {
+                            layer.msg(result.msg, {icon: 2, time: 1000});
+                        }
+                    }
+                })
+            }
+            return false;
+        });
+    });
+</script>
+</html>

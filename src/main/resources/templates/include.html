@@ -1,0 +1,18 @@
+<!-- 通用 CSS -->
+<head th:fragment=header(title)>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+    <title th:text="${title}"></title>
+    <link rel="stylesheet" th:href="@{/component/pear/css/pear.css}">
+</head>
+
+<!-- 通用 JAVASCRIPT -->
+<div th:fragment="footer">
+    <script th:src="@{/component/layui/layui.js}"></script>
+    <script th:src="@{/component/pear/pear.js}"></script>
+    <script th:src="@{/admin/js/jquery.min.js}"></script>
+</div>
+

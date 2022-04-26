@@ -1,0 +1,18 @@
+server:
+  port: 9000
+spring:
+  profiles:
+    active: dev
+  application:
+    name: id-server
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+logging:
+  level:
+    org.springframework.web: trace
+    org.springframework.security.oauth2: debug
+    org.springframework.jdbc.core: debug

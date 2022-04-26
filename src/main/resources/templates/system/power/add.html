@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('权限新增')"/>
+</head>
+<body>
+<form action="" class="layui-form">
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="main-container">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">父级</label>
+                    <div class="layui-input-block">
+                        <ul class="dtree" data-id="-1" id="selectParent" name="parentId"></ul>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">名称</label>
+                    <div class="layui-input-block">
+                        <input autocomplete="off" class="layui-input" lay-verify="required" name="powerName" placeholder="权限名称"
+                               type="text">
+                    </div>
+                </div>
+                <div class="layui-form-item" id="powerCodeItem">
+                    <label class="layui-form-label">标识</label>
+                    <div class="layui-input-block">
+                        <input autocomplete="off" class="layui-input" id="powerCode" name="powerCode" placeholder="权限标识"
+                               type="text">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">状态</label>
+                    <div class="layui-input-block">
+                        <input lay-filter="powerType" name="powerType" title="目录" type="radio" value="0">
+                        <input checked lay-filter="powerType" name="powerType" title="菜单" type="radio" value="1">
+                        <input lay-filter="powerType" name="powerType" title="按钮" type="radio" value="2">
+                    </div>
+                </div>
+                <div class="layui-form-item" id="powerUrlItem">
+                    <label class="layui-form-label">路径</label>
+                    <div class="layui-input-block">
+                        <input autocomplete="off" class="layui-input" id="powerUrl" name="powerUrl" placeholder="菜单路径"
+                               type="text">
+                    </div>
+                </div>
+                <div class="layui-form-item" id="openTypeItem">
+                    <label class="layui-form-label">打开</label>
+                    <div class="layui-input-block">
+                        <select id="openType" name="openType">
+                            <option value=""></option>
+                            <option value="_iframe">框架</option>
+                            <option value="_blank">签页</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">图标</label>
+                    <div class="layui-input-block">
+                        <input class="layui-input" id="icon" lay-filter="icon" name="icon" type="text">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">排序</label>
+                    <div class="layui-input-block">
+                        <input autocomplete="off" class="layui-input" name="sort" placeholder="排序"
+                               type="text">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="button-container">
+            <button class="pear-btn pear-btn-primary pear-btn-sm" lay-filter="power-save" lay-submit="" type="submit">
+                <i class="layui-icon layui-icon-ok"></i>
+                提交
+            </button>
+            <button class="pear-btn pear-btn-sm" type="reset">
+                <i class="layui-icon layui-icon-refresh"></i>
+                重置
+            </button>
+        </div>
+    </div>
+</form>
+<th:block th:include="include :: footer"/>
+<script>
+    layui.use(['form', 'jquery', 'iconPicker', 'dtree', 'dictionary'], function () {
+        let form = layui.form;
+        let $ = layui.jquery;
+        let iconPicker = layui.iconPicker;
+        let dtree = layui.dtree;
+
+        dtree.renderSelect({
+            elem: "#selectParent",
+            url: "/system/power/selectParent",
+            method: 'get',
+            selectInputName: {nodeId: "parentId", context: "powerName"},
+            skin: "layui",
+            dataFormat: "list",
+            response: {treeId: "powerId", parentId: "parentId", title: "powerName"},  //修改response中返回数据的定义
+            selectInitVal: "0"
+        });
+
+        form.on("radio(powerType)", function () {
+            if (this.value == '0') {
+                $("#powerUrlItem").hide();
+                $("#powerCodeItem").hide();
+                $("#openTypeItem").hide();
+                $("#powerUrl").val("");
+                $("#powerCode").val("");
+                $("#openType").val("");
+            } else if (this.value == '1') {
+                $("#powerUrlItem").show();
+                $("#powerCodeItem").show();
+                $("#openTypeItem").show();
+            } else if (this.value == '2') {
+                $("#powerUrlItem").hide();
+                $("#openTypeItem").hide();
+                $("#powerCodeItem").show();
+                $("#powerUrl").val("");
+                $("#openType").val("");
+            }
+        });
+
+        form.on('submit(power-save)', function (data) {
+            data.field.icon = "layui-icon " + data.field.icon;
+            $.ajax({
+                url: '/system/power/save',
+                data: JSON.stringify(data.field),
+                dataType: 'json',
+                contentType: 'application/json',
+                type: 'post',
+                success: function (result) {
+                    if (result.success) {
+                        layer.msg(result.msg, {icon: 1, time: 1000}, function () {
+                            parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
+                            parent.layui.treetable.reload("#power-table");
+                        });
+                    } else {
+                        layer.msg(result.msg, {icon: 2, time: 1000});
+                    }
+                }
+            })
+            return false;
+        });
+
+        iconPicker.render({
+            // 选择器，推荐使用input
+            elem: '#icon',
+            // 数据类型：fontClass/unicode，推荐使用fontClass
+            type: 'fontClass',
+            // 是否开启搜索：true/false
+            search: true,
+            // 是否开启分页
+            page: true,
+            // 每页显示数量，默认12
+            limit: 12,
+            // 点击回调
+            click: function (data) {
+                console.log(data);
+            }
+        });
+    })
+</script>
+<script>
+</script>
+</body>
+</html>

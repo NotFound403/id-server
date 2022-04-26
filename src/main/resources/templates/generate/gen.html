@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('代码生成')"/>
+</head>
+<body class="pear-container">
+<div class="layui-card">
+    <div class="layui-card-body">
+        <form class="layui-form search-form" id="searchForm">
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">表名称</label>
+                    <div class="layui-input-inline">
+                        <input autocomplete="off" class="layui-input" name="tableName" placeholder="" type="text">
+                    </div>
+                </div>
+                <div class="layui-inline mt5">
+                    <label class="layui-form-label">创建时间</label>
+                    <div class="layui-input-inline input-sm">
+                        <input class="layui-input" id="startTime" name="params[beginTime]" placeholder="开始时间"
+                               type="text"/>
+                    </div>
+                    <span class="layui-form-mid">-</span>
+                    <div class="layui-input-inline input-sm">
+                        <input class="layui-input" id="endTime" name="params[endTime]" placeholder="结束时间" type="text"/>
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <button class="pear-btn pear-btn-md pear-btn-primary" data-type="reload" id="form-search" lay-filter="form-search"
+                            lay-submit type="button"><i class="layui-icon">&#xe615;</i>搜索
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="layui-card">
+    <div class="layui-card-body">
+        <script id="table_gen_toolbar" type="text/html">
+            <button class="pear-btn pear-btn-md pear-btn-primary" lay-event="batch-gencode"><i class="layui-icon">&#xe654;</i>生成
+            </button>
+            <button class="pear-btn pear-btn-md" lay-event="import"><i class="layui-icon">&#xe654;</i>导入
+            </button>
+            <button class="pear-btn pear-btn-md" lay-event="batch-remove"><i class="layui-icon">&#xe640;</i>删除
+            </button>
+        </script>
+        <table id="table_gen" lay-filter="table_gen"></table>
+        <script id="col_operation" type="text/html">
+            <a href="javascript:;" lay-event="preview" class="pear-btn pear-btn-sm pear-btn-warming">
+                <i class="pear-icon pear-icon-browse"></i>
+            </a>
+            <a href="javascript:;" lay-event="edit" class="pear-btn pear-btn-sm pear-btn-primary">
+                <i class="layui-icon layui-icon-edit"></i>
+            </a>
+            <a href="javascript:;" lay-event="del" class="pear-btn pear-btn-sm pear-btn-danger">
+                <i class="layui-icon layui-icon-delete"></i>
+            </a>
+            <a href="javascript:;" lay-event="gencode" class="pear-btn pear-btn-sm pear-btn-success">
+                <i class="pear-icon pear-icon-export"></i>
+            </a>
+        </script>
+    </div>
+</div>
+<th:block th:include="include :: footer"/>
+<script>
+    let prefix = "/generate";
+
+    layui.use(['common', 'layer', 'form', 'laydate', 'table', 'jquery'], function () {
+
+        let $ = layui.jquery,
+            layer = layui.layer,
+            form = layui.form,
+            common = layui.common,
+            laydate = layui.laydate,
+            table = layui.table;
+
+        let active = {
+            reload: function () {
+                search(false);
+            },
+            remove: function (ids) {
+                common.ajaxRemove(prefix + "/remove", ids, function (res) {
+                    active['reload'].call(this);
+                });
+            }
+        };
+
+        let insStart = laydate.render({
+            elem: '#startTime',
+            min: 0,
+            done: function (value, date) {
+                insEnd.config.min = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+                insEnd.config.elem[0].focus();
+            }
+        });
+
+        let insEnd = laydate.render({
+            elem: '#endTime',
+            min: 0,
+            done: function (value, date) {
+                insStart.config.max = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+            }
+        });
+
+        form.on('submit(form-search)', function (data) {
+            search(true);
+        });
+
+        table.render({
+            elem: '#table_gen',
+            url: prefix + "/list",
+            toolbar: '#table_gen_toolbar',
+            autoSort: false,
+            page: true,
+            skin: 'line',
+            cols: new Array([{
+                type: 'checkbox',
+                width: 40
+            }, {
+                field: 'tableName',
+                title: '表名称'
+            }, {
+                field: 'tableComment',
+                title: '表描述'
+            }, {
+                field: 'className',
+                title: '实体类名称'
+            }, {
+                field: 'createTime',
+                title: '创建时间',
+                width: 160,
+                sort: true
+            }, {
+                field: 'updateTime',
+                title: '更新时间',
+                width: 160
+            }, {
+                title: '操作',
+                align: 'center',
+                width: 220,
+                toolbar: '#col_operation'
+            }])
+        });
+
+        table.on('toolbar(table_gen)', function (obj) {
+            switch (obj.event) {
+                case 'batch-remove':
+                    var checks = table.checkStatus('table_gen');
+                    let ids = common.joinArray(checks.data, "tableId");
+                    active['remove'].call(this, ids);
+                    break;
+                case 'batch-gencode':
+                    var checks = table.checkStatus('table_gen');
+                    if (checks.data.length == 0) {
+                        layer.alert('请选择要生成的数据');
+                        return;
+                    }
+                    layer.confirm('确认要生成选中的' + checks.data.length + '条数据吗?', function (index) {
+                        let tables = common.joinArray(checks.data, "tableName");
+                        location.href = prefix + "/batchGenCode?tables=" + tables;
+                        layer.msg('执行成功,正在生成代码请稍后…', {
+                            icon: 1
+                        });
+                    });
+                    break;
+                case 'import':
+                    layer.open({
+                        type: 2,
+                        title: '导入表结构',
+                        shade: false,
+                        fixed: false,
+                        area: ['1000px', '600px'],
+                        content: prefix + "/importTable",
+                        btn: ["保存", "取消"],
+                        yes: function (index, layero) {
+                            layero.find('iframe')[0].contentWindow.submitHandler();
+                        },
+                        cancel: function (index, layero) {
+                            layui.layer.close(index);
+                            return false;
+                        }
+                    });
+                    break;
+            }
+        });
+
+        table.on('tool(table_gen)', function (obj) {
+            switch (obj.event) {
+                case 'del':
+                    active['remove'].call(this, obj.data.tableId);
+                    break;
+                case 'preview':
+                    preview(obj.data.tableId);
+                    break;
+                case 'gencode':
+                    let tableName = obj.data.tableName;
+                    let genType = obj.data.genType;
+                    layer.confirm('确定要生成' + tableName + '表代码吗？', function (index) {
+                        if (genType === "0") {
+                            location.href = prefix + "/download/" + tableName;
+                            layer.msg('执行成功,正在生成代码请稍后…', {
+                                icon: 1
+                            });
+                        } else if (genType === "1") {
+                            common.ajax.get(prefix + "/genCode/" + tableName);
+                            layer.msg('执行成功,请稍后刷新自定义代码生成目录…', {
+                                icon: 1
+                            });
+                        }
+                    });
+                    break;
+                case 'edit':
+                    let url = prefix + '/edit?tableId=' + obj.data.tableId;
+                    parent.layui.tab.addTabOnlyByElem("content", {
+                        id: obj.data.tableId,
+                        title: "生成配置",
+                        url: url,
+                        close: true
+                    });
+                    break;
+            }
+        });
+
+        table.on('sort(table_gen)', function (obj) {
+            let field = JSON.stringify($('#searchForm'));
+            field.orderByColumn = obj.field;
+            field.isAsc = obj.type;
+            table.reload('table_gen', {
+                where: field,
+                page: {
+                    curr: 1
+                }
+            });
+        });
+    });
+
+    function search(isResetCurr) {
+        let field = JSON.stringify($('#searchForm'));
+        let options = {
+            where: field
+        };
+        if (isResetCurr == true) {
+            options.page = {
+                curr: 1
+            };
+        }
+        layui.table.reload('table_gen', options);
+    }
+
+    function preview(tableId) {
+        let preViewUrl = prefix + "/preview/" + tableId;
+        layui.layer.load(1, {
+            shade: [0.2, '#fff']
+        });
+        layui.common.ajax.get(preViewUrl, function (result) {
+            layui.layer.closeAll();
+            if (result.code == 200) {
+                let items = [];
+                $.each(result.data, function (index, value) {
+                    value = value.replace(/</g, "&lt;");
+                    value = value.replace(/>/g, "&gt;");
+                    let templateName = index.substring(index.lastIndexOf("/") + 1, index.length).replace(/\.vm/g, "");
+                    items.push({
+                        title: templateName,
+                        content: "<pre class=\"layui-code\">" + value + "</pre>"
+                    })
+                });
+                top.layer.tab({
+                    area: ['100%', '100%'],
+                    shadeClose: true,
+                    tab: items
+                });
+            } else {
+                layui.layer.alert(result.msg);
+            }
+        });
+    }
+</script>
+</body>
+</html>

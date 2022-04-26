@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('定时任务日志')"/>
+</head>
+<body class="pear-container">
+<div class="layui-card">
+    <div class="layui-card-body">
+        <form action="" class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label">任务名称</label>
+                <div class="layui-input-inline">
+                    <input class="layui-input" name="jobName" placeholder="" type="text">
+                </div>
+                <button class="pear-btn pear-btn-md pear-btn-primary" lay-filter="log-query" lay-submit>
+                    <i class="layui-icon layui-icon-search"></i>
+                    查询
+                </button>
+                <button class="pear-btn pear-btn-md" type="reset">
+                    <i class="layui-icon layui-icon-refresh"></i>
+                    重置
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="layui-card">
+    <div class="layui-card-body">
+        <table id="log-table" lay-filter="log-table" style="margin-top: 10px;"></table>
+    </div>
+</div>
+</body>
+
+<script id="log-bar" type="text/html">
+    {{#if (d.status == 0) { }}
+    <span style="color: green">成功</span>
+    {{# }else if(d.status == 1){ }}
+    <span style="color: red">异常</span>
+    {{# } }}
+</script>
+
+<script id="log-createTime" type="text/html">
+    {{layui.util.toDateString(d.createTime,  "yyyy-MM-dd HH:mm:ss")}}
+</script>
+
+<th:block th:include="include :: footer"/>
+<script>
+    layui.use(['table', 'form', 'jquery'], function () {
+        let table = layui.table;
+        let form = layui.form;
+        let $ = layui.jquery;
+
+        let MODULE_PATH = "/schedule/log/";
+
+        let cols = [
+            [
+                {title: '名称', field: 'jobName', align: 'center'},
+                {title: '运行类', field: 'beanName', align: 'center'},
+                {title: '参数集合', field: 'params', align: 'center'},
+                {title: '运行时间', field: 'createTime', templet: '#log-createTime', align: 'center'},
+                {title: '运行时长 / 毫秒', field: 'times', align: 'center'},
+                {title: '状态', toolbar: '#log-bar', align: 'center', width: 150}
+            ]
+        ]
+
+        table.render({
+            elem: '#log-table',
+            url: MODULE_PATH + 'data',
+            page: true,
+            cols: cols,
+            skin: 'line',
+            toolbar: false
+        });
+
+        form.on('submit(log-query)', function (data) {
+            table.reload('log-table', {where: data.field})
+            return false;
+        });
+
+        window.error = function (obj) {
+            layer.open({
+                type: 1,
+                title: '异常信息',
+                shade: 0,
+                area: ['450px', '350px'],
+                content: '<div class="pear-container"><div class="layui-card"><div class="layui-card-body">' + obj.data['error'] + '</div></div></div>'
+            });
+        }
+
+        window.refresh = function (param) {
+            table.reload('log-table');
+        }
+    })
+</script>
+</html>

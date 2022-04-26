@@ -3,8 +3,7 @@ package cn.felord.idserver.endpoint.system;
 import cn.felord.idserver.advice.BaseController;
 import cn.felord.idserver.advice.Rest;
 import cn.felord.idserver.advice.RestBody;
-import cn.felord.idserver.dto.OAuth2Client;
-import cn.felord.idserver.entity.Client;
+import cn.felord.idserver.entity.OAuth2Client;
 import cn.felord.idserver.service.JpaRegisteredClientRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -13,7 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -25,7 +24,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @AllArgsConstructor
 @Controller
-@RequestMapping("/client")
 public class ClientController extends BaseController {
     private JpaRegisteredClientRepository clientRepository;
 
@@ -34,16 +32,31 @@ public class ClientController extends BaseController {
      *
      * @return the string
      */
-    @GetMapping("/list")
-    public String index() {
-        return "client/list";
+    @GetMapping("/system/client/main")
+    public String main() {
+        return "system/client/main";
     }
 
-    @PostMapping("/add")
-    @ResponseBody
-    public Rest<?> add(OAuth2Client oAuth2Client){
-        System.out.println("oAuth2Client = " + oAuth2Client);
-        return RestBody.ok();
+    /**
+     * Add string.
+     *
+     * @return the string
+     */
+    @GetMapping("/system/client/add")
+    public String add() {
+        return "/system/client/add";
+    }
+
+    /**
+     * Add oauth2 client rest.
+     *
+     * @param oAuth2Client the o auth 2 client
+     * @return the rest
+     */
+    @PostMapping("/system/oauth2client/add")
+    public Rest<?> addOAuth2Client(@RequestBody OAuth2Client oAuth2Client){
+        clientRepository.save(oAuth2Client.toRegisteredClient());
+        return RestBody.ok("操作成功");
     }
 
 
@@ -54,10 +67,10 @@ public class ClientController extends BaseController {
      * @param limit the limit
      * @return the page
      */
-    @GetMapping("/pagination")
+    @GetMapping("/system/client/data")
     @ResponseBody
     public Page<OAuth2Client> page(@RequestParam Integer page, @RequestParam Integer limit) {
-        return clientRepository.page(PageRequest.of(page, limit, Sort.sort(Client.class)
-                .by(Client::getClientIdIssuedAt).descending()));
+        return clientRepository.page(PageRequest.of(page, limit, Sort.sort(OAuth2Client.class)
+                .by(OAuth2Client::getClientIdIssuedAt).descending()));
     }
 }

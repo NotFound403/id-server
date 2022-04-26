@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+          name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <title>layui表单生成器</title>
+    <link href="../pear/css/pear.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+</head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space10">
+        <div class="layui-col-md1">
+            <div class="layui-card nav click-but">
+                <div class="layui-card-header">长</div>
+                <div class="layui-card-body">
+                    <button class="pear-btn pear-btn-sm" data-size="block" data-type="text" plain>输入框</button>
+                    <button class="pear-btn pear-btn-sm" data-size="block" data-type="password" plain>密码框</button>
+                    <button class="pear-btn pear-btn-sm" data-size="block" data-type="select" plain>选择框</button>
+                    <button class="pear-btn pear-btn-sm" data-size="block" data-type="checkbox_a" plain>复选框</button>
+                    <button class="pear-btn pear-btn-sm" data-size="block" data-type="checkbox_b" plain>开关</button>
+                    <button class="pear-btn pear-btn-sm" data-size="block" data-type="radio" plain>单选框</button>
+                    <button class="pear-btn pear-btn-sm" data-size="block" data-type="textarea" plain>文本域</button>
+                    <button class="pear-btn pear-btn-sm" data-size="block" data-type="submit" plain>提交</button>
+                </div>
+            </div>
+            <div class="layui-card nav">
+                <div class="layui-card-header">短</div>
+                <div class="layui-card-body">
+                    <button class="pear-btn pear-btn-sm" data-size="inline" data-type="text" plain>输入框</button>
+                    <button class="pear-btn pear-btn-sm" data-size="inline" data-type="password" plain>密码框</button>
+                    <button class="pear-btn pear-btn-sm" data-size="inline" data-type="select" plain>选择框</button>
+                    <button class="pear-btn pear-btn-sm" data-size="inline" data-type="checkbox_a" plain>复选框</button>
+                    <button class="pear-btn pear-btn-sm" data-size="inline" data-type="checkbox_b" plain>开关</button>
+                    <button class="pear-btn pear-btn-sm" data-size="inline" data-type="radio" plain>单选框</button>
+                    <button class="pear-btn pear-btn-sm" data-size="inline" data-type="textarea" plain>文本域</button>
+                    <button class="pear-btn pear-btn-sm" data-size="block" data-type="submit" plain>提交</button>
+                </div>
+            </div>
+            <div class="layui-card nav">
+                <div class="layui-card-body">
+                    <button class="pear-btn pear-btn-danger pear-btn-sm del-form" data-type="del"><i class="layui-icon">&#xe640;</i>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+        <div class="layui-col-md5">
+            <div class="layui-card content">
+                <div class="layui-card-header">
+                    view
+                </div>
+                <div class="layui-card-body code">
+                    <form action="" class="layui-form" onsubmit="return false">
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md6">
+            <div class="layui-card r-code-html">
+                <div class="layui-card-header">html</div>
+                <div class="layui-card-body">
+                    <textarea class="layui-textarea code-show" name=""></textarea>
+                </div>
+            </div>
+            <div class="layui-card r-code-js">
+                <div class="layui-card-header">code</div>
+                <div class="layui-card-body">
+                    <textarea class="layui-textarea js-show" name=""></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="../layui/layui.js" type="text/javascript"></script>
+<script src="../pear/pear.js" type="text/javascript"></script>
+<script>
+    layui.use('design');
+</script>
+</html>
