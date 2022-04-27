@@ -7,9 +7,11 @@ import cn.felord.idserver.entity.Menu;
 import cn.felord.idserver.service.JpaMenuService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
@@ -52,9 +54,35 @@ public class MenuController extends BaseController {
      * @return the rest
      */
     @PostMapping("/system/menu/add")
-    public Rest<?> add(@RequestBody Menu menu){
-         jpaMenuService.save(menu);
-      return RestBody.ok("操作成功");
+    public Rest<?> add(@RequestBody Menu menu) {
+        jpaMenuService.save(menu);
+        return RestBody.ok("操作成功");
+    }
+
+    /**
+     * Edit string.
+     *
+     * @param id    the id
+     * @param model the model
+     * @return the string
+     */
+    @GetMapping("/system/menu/update")
+    public String edit(@RequestParam String id, Model model) {
+        Menu menu = jpaMenuService.findById(id);
+        model.addAttribute("menu", menu);
+        return "/system/menu/edit";
+    }
+
+    /**
+     * Edit rest.
+     *
+     * @param menu the menu
+     * @return the rest
+     */
+    @PostMapping("/system/menu/update")
+    public Rest<?> edit(@RequestBody Menu menu) {
+        jpaMenuService.update(menu);
+        return RestBody.ok("操作成功");
     }
 
     /**
