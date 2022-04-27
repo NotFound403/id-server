@@ -6,11 +6,8 @@ import cn.felord.idserver.repository.MenuRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @author felord.cn
@@ -48,12 +45,6 @@ public class JpaMenuService implements MenuService {
         flush.setIcon(menu.getIcon());
         flush.setHref(menu.getHref());
 
-        // 更新 Children 状态
-        if (CollectionUtils.isEmpty(menu.getChildren())) {
-            final Set<String> collect = menu.getChildren().stream().map(Menu::getId).collect(Collectors.toSet());
-            final List<Menu> childrenFlush = this.menuRepository.findAllById(collect);
-            flush.setChildren(childrenFlush);
-        }
         this.menuRepository.flush();
     }
 
