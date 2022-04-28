@@ -17,7 +17,6 @@ import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.config.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.config.TokenSettings;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.Random;
@@ -35,15 +34,24 @@ public class OAuth2ClientTests {
     @Autowired
     private OAuth2ClientRepository oAuth2ClientRepository;
 
-    private ObjectMapper objectMapper= new ObjectMapper().registerModules(new JavaTimeModule());
-
+    private ObjectMapper objectMapper = new ObjectMapper().registerModules(new JavaTimeModule());
 
 
     @Test
-    @Transactional
+
     public void addOAuth2Client() {
 
-        registeredClientRepository.save(createRegisteredClient());
+        RegisteredClient registeredClient = createRegisteredClient();
+
+        OAuth2Client oAuth2Client = OAuth2Client.fromRegisteredClient(registeredClient);
+        oAuth2Client.setScopes(null);
+        oAuth2Client.setAuthorizationGrantTypes(null);
+        oAuth2Client.setRedirectUris(null);
+        oAuth2Client.setClientAuthenticationMethods(null);
+        oAuth2Client.setTokenSettings(null);
+        oAuth2Client.setClientSettings(null);
+
+        oAuth2ClientRepository.save(oAuth2Client);
     }
 
     @Test
@@ -56,7 +64,7 @@ public class OAuth2ClientTests {
     }
 
     @Test
-    public void updateClient(){
+    public void updateClient() {
         String clientId = "e68e46a0-d81b-4012-8b14-266d8fb14931";
         RegisteredClient registeredClient = registeredClientRepository.findByClientId(clientId);
         OAuth2Client oAuth2Client = OAuth2Client.fromRegisteredClient(registeredClient);
@@ -66,8 +74,6 @@ public class OAuth2ClientTests {
         oAuth2Client.setScopes(Collections.singleton(oAuth2Scope));
         registeredClientRepository.save(oAuth2Client.toRegisteredClient());
     }
-
-
 
 
     private static RegisteredClient createRegisteredClient() {

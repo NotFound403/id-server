@@ -7,6 +7,8 @@ import cn.felord.idserver.repository.UserInfoRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class JpaUserInfoService implements UserInfoService {
+    private final PasswordEncoder delegatingPasswordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
     private final UserInfoRepository userInfoRepository;
 
     public JpaUserInfoService(UserInfoRepository userInfoRepository) {
@@ -31,6 +34,8 @@ public class JpaUserInfoService implements UserInfoService {
     @Override
     public UserInfo save(UserInfo userInfo) {
         userInfo.setUserId(null);
+        //todo 303校验
+        userInfo.setSecret(delegatingPasswordEncoder.encode(userInfo.getSecret()));
         if (userInfo.getGender()==null) {
             userInfo.setGender(Integer.valueOf(Gender.UNKNOWN.val()));
         }

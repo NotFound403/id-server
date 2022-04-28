@@ -43,22 +43,22 @@ public class OAuth2Client implements Serializable {
     private Instant clientSecretExpiresAt;
     private String clientName;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id", referencedColumnName = "client_id", insertable = false, updatable = false)
+    @JoinColumn(name = "client_id",  insertable = false, updatable = false)
     private Set<ClientAuthMethod> clientAuthenticationMethods;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id", referencedColumnName = "client_id", insertable = false, updatable = false)
+    @JoinColumn(name = "client_id",  insertable = false, updatable = false)
     private Set<OAuth2GrantType> authorizationGrantTypes;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id", referencedColumnName = "client_id", insertable = false, updatable = false)
+    @JoinColumn(name = "client_id",  insertable = false, updatable = false)
     private Set<RedirectUri> redirectUris;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id", referencedColumnName = "client_id", insertable = false, updatable = false)
+    @JoinColumn(name = "client_id",  insertable = false, updatable = false)
     private Set<OAuth2Scope> scopes;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id", referencedColumnName = "client_id", insertable = false, updatable = false)
+    @JoinColumn(name = "client_id",  insertable = false, updatable = false)
     private OAuth2ClientSettings clientSettings;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id", referencedColumnName = "client_id", insertable = false, updatable = false)
+    @JoinColumn(name = "client_id",  insertable = false, updatable = false)
     private OAuth2TokenSettings tokenSettings;
 
     /**

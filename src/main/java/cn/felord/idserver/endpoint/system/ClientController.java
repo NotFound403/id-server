@@ -28,7 +28,7 @@ public class ClientController extends BaseController {
     private JpaRegisteredClientRepository clientRepository;
 
     /**
-     * Index string.
+     * 客户端列表页
      *
      * @return the string
      */
@@ -38,7 +38,7 @@ public class ClientController extends BaseController {
     }
 
     /**
-     * Add string.
+     * 新增客户端页
      *
      * @return the string
      */
