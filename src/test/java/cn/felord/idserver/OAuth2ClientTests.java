@@ -17,6 +17,7 @@ import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.config.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.config.TokenSettings;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.Random;
@@ -55,6 +56,7 @@ public class OAuth2ClientTests {
     }
 
     @Test
+    @Transactional
     public void findClient() throws JsonProcessingException {
         RegisteredClient registeredClient = registeredClientRepository.findByClientId("e68e46a0-d81b-4012-8b14-266d8fb14931");
 

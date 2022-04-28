@@ -11,6 +11,7 @@ spring:
     hibernate:
       ddl-auto: update
     open-in-view: false
+    database: mysql
 logging:
   level:
     org.springframework.web: trace

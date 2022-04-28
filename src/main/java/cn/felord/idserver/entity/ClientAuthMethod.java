@@ -21,10 +21,10 @@ import java.util.Objects;
  * @since 1.0.0
  */
 @Entity
-@IdClass(ClientAuthMethod.ClientAuthenticationMethodId.class)
 @Getter
 @Setter
 @ToString
+@IdClass(ClientAuthMethod.ClientAuthenticationMethodId.class)
 @Table(name = "client_auth_method")
 public class ClientAuthMethod implements Serializable {
     @Id

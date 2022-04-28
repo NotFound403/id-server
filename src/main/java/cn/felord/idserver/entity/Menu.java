@@ -45,7 +45,7 @@ public class Menu {
     @OneToMany(fetch = FetchType.LAZY)
     @BatchSize(size = 30)
     @Fetch(value = FetchMode.SELECT)
-    @JoinColumn(name = "parent_id", insertable = false, updatable = false)
+    @JoinColumn(name = "parent_id",referencedColumnName = "parent_id",insertable = false, updatable = false)
     @ToString.Exclude
     private List<Menu> children;
 
