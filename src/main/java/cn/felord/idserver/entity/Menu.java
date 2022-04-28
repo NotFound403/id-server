@@ -46,6 +46,7 @@ public class Menu {
     @BatchSize(size = 30)
     @Fetch(value = FetchMode.SELECT)
     @JoinColumn(name = "parent_id", insertable = false, updatable = false)
+    @ToString.Exclude
     private List<Menu> children;
 
     @Override

@@ -2,14 +2,13 @@ package cn.felord.idserver.service;
 
 import cn.felord.idserver.entity.Menu;
 import cn.felord.idserver.exception.NotFoundException;
-import cn.felord.idserver.mapstruct.MenuMapStruct;
+import cn.felord.idserver.mapstruct.MenuMapper;
 import cn.felord.idserver.repository.MenuRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,7 +21,7 @@ import java.util.List;
 public class JpaMenuService implements MenuService {
     private final MenuRepository menuRepository;
 
-    private final MenuMapStruct menuMapStruct;
+    private final MenuMapper menuMapStruct;
 
     private static final String ROOT_ID = "0";
 
