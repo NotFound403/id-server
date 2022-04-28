@@ -36,7 +36,7 @@ public class UserInfo {
 
     private String email;
 
-    private Boolean gender;
+    private Integer gender;
 
     private Instant createTime;
 

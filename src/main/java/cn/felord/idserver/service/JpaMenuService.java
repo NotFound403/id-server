@@ -1,12 +1,10 @@
 package cn.felord.idserver.service;
 
 import cn.felord.idserver.entity.Menu;
-import cn.felord.idserver.entity.dto.MenuVO;
 import cn.felord.idserver.exception.NotFoundException;
 import cn.felord.idserver.mapstruct.MenuMapper;
 import cn.felord.idserver.repository.MenuRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,10 +30,8 @@ public class JpaMenuService implements MenuService {
     }
 
     @Override
-    public List<MenuVO> findByRoot() {
-        Menu probe = new Menu();
-        probe.setParentId(ROOT_ID);
-        return menuMapper.toVos(menuRepository.findAll(Example.of(probe)));
+    public List<Menu> findByRoot() {
+        return menuRepository.findAllByParentId(ROOT_ID);
     }
 
     /**

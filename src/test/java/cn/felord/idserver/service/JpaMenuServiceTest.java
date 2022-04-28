@@ -1,7 +1,6 @@
 package cn.felord.idserver.service;
 
 import cn.felord.idserver.entity.Menu;
-import cn.felord.idserver.entity.dto.MenuVO;
 import lombok.SneakyThrows;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.Test;
@@ -30,7 +29,7 @@ class JpaMenuServiceTest {
     @Test
     @Transactional
     void findByRoot() {
-        final List<MenuVO> byRoot = this.jpaMenuService.findByRoot();
+        final List<Menu> byRoot = this.jpaMenuService.findByRoot();
         System.out.println(byRoot);
     }
 

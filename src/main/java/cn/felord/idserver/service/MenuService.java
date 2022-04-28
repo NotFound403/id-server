@@ -1,7 +1,6 @@
 package cn.felord.idserver.service;
 
 import cn.felord.idserver.entity.Menu;
-import cn.felord.idserver.entity.dto.MenuVO;
 
 import java.util.List;
 
@@ -42,5 +41,5 @@ public interface MenuService {
      *
      * @return the list
      */
-    List<MenuVO> findByRoot();
+    List<Menu> findByRoot();
 }

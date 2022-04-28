@@ -4,14 +4,13 @@ import cn.felord.idserver.advice.BaseController;
 import cn.felord.idserver.advice.Rest;
 import cn.felord.idserver.advice.RestBody;
 import cn.felord.idserver.entity.UserInfo;
-import cn.felord.idserver.repository.UserInfoRepository;
+import cn.felord.idserver.service.UserInfoService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -24,7 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @AllArgsConstructor
 public class UserController extends BaseController {
-    private UserInfoRepository userInfoRepository;
+    private UserInfoService userInfoService;
 
     /**
      * Main string.
@@ -46,9 +45,7 @@ public class UserController extends BaseController {
     @GetMapping("/system/user/data")
     @ResponseBody
     public Page<UserInfo> page(@RequestParam Integer page, @RequestParam Integer limit) {
-        page = Math.max(page - 1, 0);
-        return userInfoRepository.findAll(PageRequest.of(page, limit, Sort.sort(UserInfo.class)
-                .by(UserInfo::getUserId).descending()));
+        return userInfoService.page(page, limit);
     }
 
     /**
@@ -68,8 +65,8 @@ public class UserController extends BaseController {
      * @return the rest
      */
     @PostMapping("/system/user/add")
-    public Rest<?> add(UserInfo userInfo) {
-        userInfoRepository.save(userInfo);
+    public Rest<?> add(@RequestBody UserInfo userInfo) {
+        userInfoService.save(userInfo);
         return RestBody.ok("操作成功");
     }
 }

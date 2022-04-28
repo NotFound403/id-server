@@ -11,6 +11,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -41,7 +42,7 @@ public class Menu {
 
     private String href;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY)
     @BatchSize(size = 30)
     @Fetch(value = FetchMode.SELECT)
     @JoinColumn(name = "parent_id", insertable = false, updatable = false)
