@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <th:block th:include="include :: header('菜单列表')"/>
+    <th:block th:include="include :: header('权限列表')"/>
 </head>
 <body class="pear-container">
 <div class="layui-card">
     <div class="layui-card-body">
         <form action="" class="layui-form">
             <div class="layui-form-item">
-                <label class="layui-form-label">菜单名称</label>
+                <label class="layui-form-label">权限名称</label>
                 <div class="layui-input-inline">
                     <input class="layui-input" name="powerName" placeholder="" type="text">
                 </div>
@@ -31,7 +31,7 @@
 </div>
 
 <script id="power-toolbar" type="text/html">
-    <button
+    <button sec:authorize="hasPermission('/system/power/add','sys:power:add')"
             class="pear-btn pear-btn-primary pear-btn-md" lay-event="add">
         <i class="layui-icon layui-icon-add-1"></i>
         新增
@@ -39,10 +39,10 @@
 </script>
 
 <script id="power-bar" type="text/html">
-    <button
+    <button sec:authorize="hasPermission('/system/power/edit','sys:power:edit')"
             class="pear-btn pear-btn-primary pear-btn-sm" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>
     </button>
-    <button
+    <button sec:authorize="hasPermission('/system/power/remove','sys:power:remove')"
             class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i class="layui-icon layui-icon-delete"></i>
     </button>
 </script>
@@ -98,7 +98,7 @@
             cols: [
                 [
                     {type: 'checkbox'},
-                    {field: 'powerName', minWidth: 200, title: '菜单名称'},
+                    {field: 'powerName', minWidth: 200, title: '权限名称'},
                     {field: 'icon', title: '图标', templet: '#icon'},
                     {field: 'powerType', title: '权限类型', templet: '#power-type'},
                     {field: 'enable', title: '是否可用', templet: '#power-enable'},
