@@ -1,7 +1,9 @@
 package cn.felord.idserver.service;
 
 import cn.felord.idserver.entity.Menu;
+import cn.felord.idserver.entity.dto.MenuVO;
 import lombok.SneakyThrows;
+import org.hamcrest.core.Is;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,8 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -29,7 +30,7 @@ class JpaMenuServiceTest {
     @Test
     @Transactional
     void findByRoot() {
-        final List<Menu> byRoot = this.jpaMenuService.findByRoot();
+        final List<MenuVO> byRoot = this.jpaMenuService.findByRoot();
         System.out.println(byRoot);
     }
 
@@ -39,7 +40,8 @@ class JpaMenuServiceTest {
     void menuList() {
         mockMvc.perform(MockMvcRequestBuilders.get("/system/menu/data"))
                 .andExpectAll(status().isOk(),
-                        content().contentType(MediaType.APPLICATION_JSON))
+                        content().contentType(MediaType.APPLICATION_JSON),
+                        jsonPath("$.code", Is.is(200)))
                 .andDo(MockMvcResultHandlers.print());
     }
 

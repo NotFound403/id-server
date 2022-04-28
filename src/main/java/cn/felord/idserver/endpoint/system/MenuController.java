@@ -96,7 +96,7 @@ public class MenuController extends BaseController {
     @GetMapping("/system/menu/data")
     @ResponseBody
     public List<MenuVO> menuList() {
-        return menuMapper.toVos(jpaMenuService.findByRoot());
+        return jpaMenuService.findByRoot();
     }
 
 }

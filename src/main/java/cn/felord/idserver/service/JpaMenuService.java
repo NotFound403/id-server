@@ -1,6 +1,7 @@
 package cn.felord.idserver.service;
 
 import cn.felord.idserver.entity.Menu;
+import cn.felord.idserver.entity.dto.MenuVO;
 import cn.felord.idserver.exception.NotFoundException;
 import cn.felord.idserver.mapstruct.MenuMapper;
 import cn.felord.idserver.repository.MenuRepository;
@@ -21,7 +22,7 @@ import java.util.List;
 public class JpaMenuService implements MenuService {
     private final MenuRepository menuRepository;
 
-    private final MenuMapper menuMapStruct;
+    private final MenuMapper menuMapper;
 
     private static final String ROOT_ID = "0";
 
@@ -31,10 +32,10 @@ public class JpaMenuService implements MenuService {
     }
 
     @Override
-    public List<Menu> findByRoot() {
+    public List<MenuVO> findByRoot() {
         Menu probe = new Menu();
         probe.setParentId(ROOT_ID);
-        return menuRepository.findAll(Example.of(probe));
+        return menuMapper.toVos(menuRepository.findAll(Example.of(probe)));
     }
 
     /**
@@ -46,7 +47,7 @@ public class JpaMenuService implements MenuService {
     public void update(final Menu menu) {
         final Menu flush = this.menuRepository.findById(menu.getId()).orElseThrow(RuntimeException::new);
         // 此处未修改 children
-        this.menuMapStruct.fireMerge(menu, flush);
+        this.menuMapper.fireMerge(menu, flush);
         this.menuRepository.flush();
     }
 
