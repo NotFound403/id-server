@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 @ToString
 @Table(name = "oauth2_client")
 public class OAuth2Client implements Serializable {
+    private static final long serialVersionUID = 8481969837769002598L;
     @Id
     @GenericGenerator(name = "uuid-hex", strategy = "uuid.hex")
     @GeneratedValue(generator = "uuid-hex")

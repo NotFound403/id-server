@@ -30,6 +30,7 @@ import java.util.Objects;
 @ToString
 @Table(name = "oauth2_client_settings")
 public class OAuth2ClientSettings implements Serializable {
+    private static final long serialVersionUID = -7956711700342643896L;
     @Id
     @Column(name = "client_id", insertable = false, updatable = false)
     private String clientId;

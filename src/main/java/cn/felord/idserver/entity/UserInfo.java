@@ -9,6 +9,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.Objects;
 
@@ -16,7 +17,8 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-public class UserInfo {
+public class UserInfo implements Serializable {
+    private static final long serialVersionUID = -4968368933210959171L;
     @Id
     @GenericGenerator(name = "uuid-hex", strategy = "uuid.hex")
     @GeneratedValue(generator = "uuid-hex")

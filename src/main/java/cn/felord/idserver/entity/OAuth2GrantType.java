@@ -26,7 +26,7 @@ import java.util.Objects;
 @IdClass(OAuth2GrantType.GrantTypeId.class)
 @Table(name = "oauth2_grant_type")
 public class OAuth2GrantType implements Serializable {
-
+    private static final long serialVersionUID = -6157485899335872648L;
     @Id
     @Column(name = "client_id", insertable = false, updatable = false)
     private String clientId;
@@ -35,6 +35,7 @@ public class OAuth2GrantType implements Serializable {
 
     @Data
     public static class GrantTypeId implements Serializable {
+        private static final long serialVersionUID = 4877568519791270151L;
         private String clientId;
         private String grantTypeName;
     }

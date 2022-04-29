@@ -25,7 +25,7 @@ import java.util.Objects;
 @ToString
 @Table(name = "oauth2_scope")
 public class OAuth2Scope implements Serializable {
-
+    private static final long serialVersionUID = 6603836530809864931L;
     @Id
     @Column(name = "client_id", insertable = false, updatable = false)
     private String clientId;
@@ -34,6 +34,7 @@ public class OAuth2Scope implements Serializable {
 
     @Data
     public static class OAuth2ScopeId implements Serializable {
+        private static final long serialVersionUID = 1991088202139468930L;
         private String clientId;
         private String scope;
     }

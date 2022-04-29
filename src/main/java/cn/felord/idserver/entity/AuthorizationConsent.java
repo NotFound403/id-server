@@ -37,7 +37,8 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-public class AuthorizationConsent {
+public class AuthorizationConsent implements Serializable {
+    private static final long serialVersionUID = 4969037032890824406L;
     @Id
     private String registeredClientId;
     @Id
@@ -48,6 +49,7 @@ public class AuthorizationConsent {
 
     @Data
     public static class AuthorizationConsentId implements Serializable {
+        private static final long serialVersionUID = -1813040366041244907L;
         private String registeredClientId;
         private String principalName;
 

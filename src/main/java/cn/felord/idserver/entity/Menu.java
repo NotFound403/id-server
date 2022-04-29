@@ -16,6 +16,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,7 +24,8 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-public class Menu {
+public class Menu implements Serializable {
+    private static final long serialVersionUID = 4206503097158085877L;
     @Id
     @GenericGenerator(name = "uuid-hex", strategy = "uuid.hex")
     @GeneratedValue(generator = "uuid-hex")

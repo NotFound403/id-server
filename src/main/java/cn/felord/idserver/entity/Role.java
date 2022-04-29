@@ -10,7 +10,15 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.Objects;
 
@@ -26,7 +34,8 @@ import java.util.Objects;
 @Setter
 @ToString
 @EntityListeners(AuditingEntityListener.class)
-public class Role {
+public class Role implements Serializable {
+    private static final long serialVersionUID = -6963523161322981431L;
     @Id
     @GenericGenerator(name = "uuid-hex", strategy = "uuid.hex")
     @GeneratedValue(generator = "uuid-hex")
