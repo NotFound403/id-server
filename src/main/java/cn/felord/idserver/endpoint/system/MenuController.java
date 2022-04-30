@@ -4,7 +4,6 @@ import cn.felord.idserver.advice.BaseController;
 import cn.felord.idserver.advice.Rest;
 import cn.felord.idserver.advice.RestBody;
 import cn.felord.idserver.entity.Menu;
-import cn.felord.idserver.mapstruct.MenuMapper;
 import cn.felord.idserver.service.JpaMenuService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -27,7 +26,6 @@ import java.util.List;
 @AllArgsConstructor
 public class MenuController extends BaseController {
     private final JpaMenuService jpaMenuService;
-    private final MenuMapper menuMapper;
 
     /**
      * Main string.

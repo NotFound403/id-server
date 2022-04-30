@@ -56,10 +56,10 @@ public class OAuth2Client implements Serializable {
     @JoinColumn(name = "client_id", referencedColumnName = "client_id", insertable = false, updatable = false)
     private Set<OAuth2Scope> scopes;
     @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id", referencedColumnName = "client_id",foreignKey =  @ForeignKey(name = "null", value = ConstraintMode.NO_CONSTRAINT), insertable = false, updatable = false)
+    @JoinColumn(name = "client_id", referencedColumnName = "client_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT), insertable = false, updatable = false)
     private OAuth2ClientSettings clientSettings;
     @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id", referencedColumnName = "client_id",foreignKey =  @ForeignKey(name = "null", value = ConstraintMode.NO_CONSTRAINT), insertable = false, updatable = false)
+    @JoinColumn(name = "client_id", referencedColumnName = "client_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT), insertable = false, updatable = false)
     private OAuth2TokenSettings tokenSettings;
 
     /**
