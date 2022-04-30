@@ -32,9 +32,16 @@ public interface MenuService {
      * 通过 id 查询 菜单
      *
      * @param id id
-     * @return 菜单
+     * @return 菜单 menu
      */
     Menu findById(String id);
+
+    /**
+     * 菜单列表
+     *
+     * @return list list
+     */
+    List<Menu> findAll();
 
     /**
      * Find by root list.
@@ -42,4 +49,11 @@ public interface MenuService {
      * @return the list
      */
     List<Menu> findByRoot();
+
+    /**
+     * Parents list.
+     *
+     * @return the list
+     */
+    List<Menu> parents();
 }

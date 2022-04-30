@@ -22,11 +22,11 @@ public class MenuTests {
 
         Menu menu = new Menu();
             menu.setParentId(parentId);
-            menu.setTitle("客户端列表");
+            menu.setTitle("菜单管理");
             menu.setType("1");
             menu.setOpenType("_iframe");
-            menu.setIcon("layui-icon-rate");
-            menu.setHref("/system/client/main");
+            menu.setIcon("icon pear-icon pear-icon-menu");
+            menu.setHref("/system/menu/main");
         Menu save = jpaMenuService.save(menu);
 
         System.out.println("save = " + save);

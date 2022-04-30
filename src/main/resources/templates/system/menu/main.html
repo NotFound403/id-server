@@ -10,9 +10,9 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">菜单名称</label>
                 <div class="layui-input-inline">
-                    <input class="layui-input" name="powerName" placeholder="" type="text">
+                    <input class="layui-input" name="menuName" placeholder="" type="text">
                 </div>
-                <button class="pear-btn pear-btn-md pear-btn-primary" lay-filter="power-query" lay-submit>
+                <button class="pear-btn pear-btn-md pear-btn-primary" lay-filter="menu-query" lay-submit>
                     <i class="layui-icon layui-icon-search"></i>
                     查询
                 </button>
@@ -26,11 +26,11 @@
 </div>
 <div class="layui-card">
     <div class="layui-card-body">
-        <table id="power-table" lay-filter="power-table"></table>
+        <table id="menu-table" lay-filter="menu-table"></table>
     </div>
 </div>
 
-<script id="power-toolbar" type="text/html">
+<script id="menu-toolbar" type="text/html">
     <button
             class="pear-btn pear-btn-primary pear-btn-md" lay-event="add">
         <i class="layui-icon layui-icon-add-1"></i>
@@ -50,7 +50,7 @@
     </button>
 </script>
 
-<script id="power-bar" type="text/html">
+<script id="menu-bar" type="text/html">
     <button
             class="pear-btn pear-btn-primary pear-btn-sm" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>
     </button>
@@ -59,19 +59,24 @@
     </button>
 </script>
 
-<script id="power-type" type="text/html">
-    {{#if (d.powerType == '0') { }}
+<script id="menu-type" type="text/html">
+    {{#if (d.type == '0') { }}
     <span>目录</span>
-    {{# }else if(d.powerType == '1'){ }}
+    {{# }else if(d.type == '1'){ }}
     <span>菜单</span>
-    {{# }else if(d.powerType == '2'){ }}
-    <span>按钮</span>
+    {{# }else{ }}
+    <span>未知</span>
     {{# } }}
 </script>
 
-<script id="power-enable" type="text/html">
-    <input type="checkbox" name="enable" value="{{d.powerId}}" lay-skin="switch" lay-text="启用|禁用"
-           lay-filter="power-enable" {{ d.enable== true ? 'checked' : '' }}>
+<script id="open-type" type="text/html">
+    {{#if (d.openType == '_iframe') { }}
+    <span>框架</span>
+    {{# }else if(d.openType == '0'){ }}
+    <span>标签页</span>
+    {{# }else{ }}
+    <span>--</span>
+    {{# } }}
 </script>
 
 <script id="icon" type="text/html">
@@ -98,9 +103,9 @@
             skin: 'line',
             method: 'get',
             treeDefaultClose: false,
-            toolbar: '#power-toolbar',
-            elem: '#power-table',
-            url: '/system/menu/data',
+            toolbar: '#menu-toolbar',
+            elem: '#menu-table',
+            url: '/system/menu/list',
             page: false,
             defaultToolbar: [{
                 layEvent: 'refresh',
@@ -111,20 +116,21 @@
                 [
                     {type: 'checkbox'},
                     {field: 'title', minWidth: 200, title: '菜单名称'},
+                    {field: 'type', minWidth: 200, templet:'#menu-type', title: '类型'},
                     {field: 'icon', title: '图标', templet: '#icon'},
-                    {field: 'powerType', title: '权限类型', templet: '#power-type'},
-                    {field: 'enable', title: '是否可用', templet: '#power-enable'},
-                    {title: '操作', templet: '#power-bar', width: 150, align: 'center'}
+                    {field: 'openType', title: '打开类型', templet: '#open-type'},
+                    {field: 'href', minWidth: 200, title: '链接'},
+                    {title: '操作', templet: '#menu-bar', width: 150, align: 'center'}
                 ]
             ]
         });
 
-        form.on('submit(power-query)', function (data) {
-            treetable.search("#power-table", data.field.powerName)
+        form.on('submit(menu-query)', function (data) {
+            treetable.search("#menu-table", data.field.powerName)
             return false;
         });
 
-        table.on('tool(power-table)', function (obj) {
+        table.on('tool(menu-table)', function (obj) {
             if (obj.event === 'remove') {
                 window.remove(obj);
             } else if (obj.event === 'edit') {
@@ -132,7 +138,7 @@
             }
         })
 
-        table.on('toolbar(power-table)', function (obj) {
+        table.on('toolbar(menu-table)', function (obj) {
             if (obj.event === 'add') {
                 window.add();
             } else if (obj.event === 'refresh') {
@@ -140,13 +146,13 @@
             } else if (obj.event === 'batchRemove') {
                 window.batchRemove(obj);
             }  else if (obj.event === 'expandAll') {
-                treetable.expandAll("#power-table");
+                treetable.expandAll("#menu-table");
             } else if (obj.event === 'foldAll') {
-                treetable.foldAll("#power-table");
+                treetable.foldAll("#menu-table");
             }
         });
 
-        form.on('switch(power-enable)', function (obj) {
+        form.on('switch(menu-enable)', function (obj) {
             let operate;
             if (obj.elem.checked) {
                 operate = "enable";
@@ -214,7 +220,7 @@
         }
 
         window.refresh = function () {
-            treetable.reload('#power-table');
+            treetable.reload('#menu-table');
         }
     })
 </script>

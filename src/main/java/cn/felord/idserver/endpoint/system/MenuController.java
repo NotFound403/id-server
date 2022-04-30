@@ -86,14 +86,35 @@ public class MenuController extends BaseController {
     }
 
     /**
-     * 查询菜单
+     * 侧边栏菜单
      *
      * @return the list
      */
     @GetMapping("/system/menu/data")
     @ResponseBody
-    public List<Menu> menuList() {
+    public List<Menu> aside() {
         return jpaMenuService.findByRoot();
     }
 
+    /**
+     * Menu list list.
+     *
+     * @return the list
+     */
+    @GetMapping("/system/menu/list")
+    @ResponseBody
+    public List<Menu> menuList() {
+        return jpaMenuService.findAll();
+    }
+
+    /**
+     * Menu list list.
+     *
+     * @return the list
+     */
+    @GetMapping("/system/menu/parents")
+    @ResponseBody
+    public List<Menu> parentMenus() {
+        return jpaMenuService.parents();
+    }
 }

@@ -29,7 +29,9 @@ public class Menu implements Serializable {
     private String parentId;
 
     private String title;
-
+    /**
+     *  0 不可跳转   1 可跳转到 href
+     */
     private String type;
 
     private String openType;

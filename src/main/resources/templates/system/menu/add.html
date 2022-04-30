@@ -24,15 +24,15 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">状态</label>
                     <div class="layui-input-block">
-                        <input lay-filter="powerType" name="type" title="目录" type="radio" value="0">
-                        <input checked lay-filter="powerType" name="powerType" title="菜单" type="radio" value="1">
-                        <input lay-filter="powerType" name="type" title="按钮" type="radio" value="2">
+                        <input lay-filter="menuType" name="type" title="目录" type="radio" value="0">
+                        <input checked lay-filter="menuType" name="type" title="菜单" type="radio" value="1">
+<!--                        <input lay-filter="menuType" name="type" title="按钮" type="radio" value="2">-->
                     </div>
                 </div>
-                <div class="layui-form-item" id="powerUrlItem">
+                <div class="layui-form-item" id="menuUrlItem">
                     <label class="layui-form-label layui-form-required">路径</label>
                     <div class="layui-input-block">
-                        <input autocomplete="off" class="layui-input" id="powerUrl" name="href" placeholder="菜单路径"
+                        <input autocomplete="off" class="layui-input" id="menuUrl" name="href" placeholder="菜单路径"
                                type="text" lay-verify="required">
                     </div>
                 </div>
@@ -40,7 +40,7 @@
                     <label class="layui-form-label">打开</label>
                     <div class="layui-input-block">
                         <select id="openType" name="openType">
-                            <option value=""></option>
+                            <option selected value=""></option>
                             <option value="_iframe">框架</option>
                             <option value="_blank">签页</option>
                         </select>
@@ -57,7 +57,7 @@
     </div>
     <div class="bottom">
         <div class="button-container">
-            <button class="pear-btn pear-btn-primary pear-btn-sm" lay-filter="power-save" lay-submit="" type="submit">
+            <button class="pear-btn pear-btn-primary pear-btn-sm" lay-filter="menu-save" lay-submit="" type="submit">
                 <i class="layui-icon layui-icon-ok"></i>
                 提交
             </button>
@@ -78,7 +78,7 @@
 
         dtree.renderSelect({
             elem: "#selectParent",
-            url: "/system/menu/selectParent",
+            url: "/system/menu/parents",
             method: 'get',
             selectInputName: {nodeId: "parentId", context: "title"},
             skin: "layui",
@@ -87,28 +87,25 @@
             selectInitVal: "0"
         });
 
-        form.on("radio(powerType)", function () {
-            if (this.value == '0') {
-                $("#powerUrlItem").hide();
-                $("#powerCodeItem").hide();
+        form.on("radio(menuType)", function () {
+            if (this.value === '0') {
+                $("#menuUrlItem").hide();
                 $("#openTypeItem").hide();
-                $("#powerUrl").val("");
-                $("#powerCode").val("");
+                $("#menuUrl").val("");
+                $("#menuCode").val("");
                 $("#openType").val("");
-            } else if (this.value == '1') {
-                $("#powerUrlItem").show();
-                $("#powerCodeItem").show();
+            } else if (this.value === '1') {
+                $("#menuUrlItem").show();
                 $("#openTypeItem").show();
-            } else if (this.value == '2') {
-                $("#powerUrlItem").hide();
+            } /*else if (this.value == '2') {
+                $("#menuUrlItem").hide();
                 $("#openTypeItem").hide();
-                $("#powerCodeItem").show();
-                $("#powerUrl").val("");
+                $("#menuUrl").val("");
                 $("#openType").val("");
-            }
+            }*/
         });
 
-        form.on('submit(power-save)', function (data) {
+        form.on('submit(menu-save)', function (data) {
             data.field.icon = "layui-icon " + data.field.icon;
             $.ajax({
                 url: '/system/menu/add',
@@ -120,7 +117,7 @@
                     if (result.success) {
                         layer.msg(result.msg, {icon: 1, time: 1000}, function () {
                             parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
-                            parent.layui.treetable.reload("#power-table");
+                            parent.layui.treetable.reload("#menu-table");
                         });
                     } else {
                         layer.msg(result.msg, {icon: 2, time: 1000});
@@ -143,7 +140,7 @@
             limit: 12,
             // 点击回调
             click: function (data) {
-                console.log(data);
+
             }
         });
     })

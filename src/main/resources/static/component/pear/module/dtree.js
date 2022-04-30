@@ -239,7 +239,7 @@ layui.define(['jquery','layer','form'], function(exports) {
         this.response = {           // 树返回的json格式
             statusName: "code",		  //返回标识
             statusCode: 200,		  //返回码
-            message: "message",		  //返回信息
+            message: "msg",		  //返回信息
             rootName: "data",		  //根节点名称
             treeId: "id",			  //节点ID
             parentId: "parentId",	  //父节点ID
@@ -1667,18 +1667,10 @@ layui.define(['jquery','layer','form'], function(exports) {
                 if(returnData) {
                     result = returnData;
                 }
+                var code = result[_this.response.statusName];
 
-                var code = "";
-                if (_this.dataStyle == 'layuiStyle'){
-                    code = result[_this.response.statusName];
-                } else {
-                    code = result.status[_this.response.statusName];
-                }
-
-                if (code == _this.response.statusCode) {
-
-                    var d = result[_this.response.rootName];
-
+                if (code === _this.response.statusCode) {
+                    var d = result[_this.response.rootName].result;
                     if(first && typeof d.length === 'undefined'){
                         $ul.html(_this.getNoneDom().errText("数据解析异常，url回调后的数据格式不正确"));
                         //layer.msg("数据解析异常，url回调后的数据格式不正确", {icon:5});
