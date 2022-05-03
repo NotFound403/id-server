@@ -6,26 +6,6 @@
 <body class="pear-container">
 <div class="layui-card">
     <div class="layui-card-body">
-        <form action="" class="layui-form">
-            <div class="layui-form-item">
-                <label class="layui-form-label">菜单名称</label>
-                <div class="layui-input-inline">
-                    <input class="layui-input" name="menuName" placeholder="" type="text">
-                </div>
-                <button class="pear-btn pear-btn-md pear-btn-primary" lay-filter="menu-query" lay-submit>
-                    <i class="layui-icon layui-icon-search"></i>
-                    查询
-                </button>
-                <button class="pear-btn pear-btn-md" type="reset">
-                    <i class="layui-icon layui-icon-refresh"></i>
-                    重置
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-<div class="layui-card">
-    <div class="layui-card-body">
         <table id="menu-table" lay-filter="menu-table"></table>
     </div>
 </div>
@@ -83,6 +63,13 @@
     <i class="layui-icon {{d.icon}}"></i>
 </script>
 
+<script id="menu-href" type="text/html">
+    {{#if (d.href == null||d.href=='') { }}
+    <span>--</span>
+    {{# }else{ }}
+    <button plain class="pear-btn pear-btn-success">{{d.href}}</button>
+    {{# } }}
+</script>
 </body>
 <th:block th:include="include :: footer"/>
 <script>
@@ -92,9 +79,6 @@
         let $ = layui.jquery;
         let treetable = layui.treetable;
         let popup = layui.popup;
-
-        let MODULE_PATH = "/system/menu/";
-
         treetable.render({
             treeColIndex: 1,
             treeSpid: 0,
@@ -102,7 +86,7 @@
             treePidName: 'parentId',
             skin: 'line',
             method: 'get',
-            treeDefaultClose: false,
+            treeDefaultClose: true,
             toolbar: '#menu-toolbar',
             elem: '#menu-table',
             url: '/system/menu/list',
@@ -119,7 +103,7 @@
                     {field: 'type', minWidth: 200, templet:'#menu-type', title: '类型'},
                     {field: 'icon', title: '图标', templet: '#icon'},
                     {field: 'openType', title: '打开类型', templet: '#open-type'},
-                    {field: 'href', minWidth: 200, title: '链接'},
+                    {field: 'href', minWidth: 200, title: '链接', templet: '#menu-href'},
                     {title: '操作', templet: '#menu-bar', width: 150, align: 'center'}
                 ]
             ]
@@ -183,7 +167,7 @@
                 title: '新增',
                 shade: 0.5,
                 area: ['700px', '500px'],
-                content: MODULE_PATH + 'add'
+                content: '/system/menu/add'
             });
         }
 
@@ -193,7 +177,7 @@
                 title: '修改',
                 shade: 0.5,
                 area: ['700px', '500px'],
-                content: MODULE_PATH + 'edit?powerId=' + obj.data['powerId']
+                content: '/system/menu/edit?powerId=' + obj.data['powerId']
             });
         }
 
@@ -202,7 +186,7 @@
                 layer.close(index);
                 let loading = layer.load();
                 $.ajax({
-                    url: MODULE_PATH + "remove/" + obj.data['powerId'],
+                    url: "/system/menu/remove/" + obj.data['powerId'],
                     dataType: 'json',
                     type: 'delete',
                     success: function (result) {

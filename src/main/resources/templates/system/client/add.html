@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('客户端新增')"/>
+</head>
+<body>
+<form class="layui-form">
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="layui-form-item ">
+                <label class="layui-form-label layui-form-required">客户端名称</label>
+                <div class="layui-input-block layui-input-inline">
+                    <input autocomplete="off" class="layui-input" lay-verify="required" name="clientName"
+                           placeholder="请输入客户端名称"
+                           type="text">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label layui-form-required">客户端密钥</label>
+                <div class="layui-input-block layui-input-inline">
+                    <input autocomplete="off" class="layui-input" lay-verify="required" name="clientSecret"
+                           placeholder="请输入客户端密钥"
+                           type="text">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">客户端类型</label>
+                <div class="layui-input-block">
+                    <input type="radio" lay-filter="clientType" name="clientType" value="confidential" title="机密型"
+                           checked>
+                    <input type="radio" lay-filter="clientType" name="clientType" value="public" title="公共型">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label layui-form-required">客户端认证方式</label>
+                <div class="layui-input-block">
+                    <select id="clientAuthenticationMethods" lay-filter="clientAuthenticationMethods"
+                            lay-verify="required"
+                            name="clientAuthenticationMethods" xm-select="select2"
+                            xm-select-skin="normal">
+                        <option value="client_secret_basic">CLIENT_SECRET_BASIC</option>
+                        <option value="client_secret_post">CLIENT_SECRET_POST</option>
+                        <option value="client_secret_jwt">CLIENT_SECRET_JWT</option>
+                        <option value="private_key_jwt">PRIVATE_KEY_JWT</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label layui-form-required">授权方式</label>
+                <div class="layui-input-block">
+                    <select id="authorizationGrantTypes" lay-filter="authorizationGrantTypes" lay-verify="required"
+                            name="authorizationGrantTypes" xm-select="select3"
+                            xm-select-skin="normal">
+                        <option value="authorization_code">AUTHORIZATION_CODE</option>
+                        <option value="client_credentials">CLIENT_CREDENTIALS</option>
+                        <option value="refresh_token">REFRESH_TOKEN</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label layui-form-required">授权范围</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" lay-verify="required" name="scopes"
+                           placeholder="请输入授权范围，并用英文逗号隔开"
+                           type="text">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label layui-form-required">重定向uri</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" lay-verify="required" name="redirectUris"
+                           placeholder="请输入授权范围，并用英文逗号隔开"
+                           type="text">
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div class="bottom">
+        <div class="button-container">
+            <button class="pear-btn pear-btn-primary pear-btn-sm" lay-filter="client-save" lay-submit="" type="submit">
+                <i class="layui-icon layui-icon-ok"></i>
+                提交
+            </button>
+            <button class="pear-btn pear-btn-sm" type="reset">
+                <i class="layui-icon layui-icon-refresh"></i>
+                重置
+            </button>
+        </div>
+    </div>
+</form>
+<th:block th:include="include :: footer"/>
+<script>
+    layui.use(['form','select', 'jquery'], function () {
+        let form = layui.form;
+        let $ = layui.jquery;
+        let formSelects = layui.select;
+        let $clientAuthenticationMethods = $('#clientAuthenticationMethods');
+        form.on('radio(clientType)', function (data) {
+            $clientAuthenticationMethods.empty();
+            let opts = data.value === 'confidential' ? '<option value="client_secret_basic">CLIENT_SECRET_BASIC</option>' +
+                '<option value="client_secret_post">CLIENT_SECRET_POST</option>' +
+                '<option value="client_secret_jwt">CLIENT_SECRET_JWT</option>' +
+                '<option value="private_key_jwt">PRIVATE_KEY_JWT</option>' :
+                '<option value="none" selected >NONE</option>';
+            $clientAuthenticationMethods.append(opts)
+            form.render('select', "clientAuthenticationMethods");
+            formSelects.render('select2');
+            formSelects.value('select2', ['none'])
+        })
+
+        form.on('submit(client-save)', function (data) {
+            let field = data.field;
+            field.clientAuthenticationMethods = field.clientAuthenticationMethods.split(',')
+            field.authorizationGrantTypes = field.authorizationGrantTypes.split(',')
+            field.scopes = field.scopes.split(',')
+            field.redirectUris = field.redirectUris.split(',')
+
+            $.ajax({
+                url: '/system/client/add',
+                data: JSON.stringify(field),
+                dataType: 'json',
+                contentType: 'application/json',
+                type: 'post',
+                success: function (result) {
+                    if (result.code === 200) {
+                        layer.msg(result.msg, {icon: 1, time: 1000}, function () {
+                            parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
+                            parent.layui.table.reload("client-table");
+                        });
+                    } else {
+                        layer.msg(result.msg, {icon: 2, time: 1000});
+                    }
+                }
+            })
+            return false;
+        });
+    })
+</script>
+<script>
+</script>
+</body>
+</html>

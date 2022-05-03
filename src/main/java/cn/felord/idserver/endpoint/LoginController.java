@@ -1,6 +1,9 @@
 package cn.felord.idserver.endpoint;
 
 import cn.felord.idserver.entity.SystemSettings;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.CurrentSecurityContext;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,7 +25,13 @@ public class LoginController {
      * @return the string
      */
     @GetMapping("/login")
-    public String loginPage(Model model, @RequestAttribute(name = "org.springframework.security.web.csrf.CsrfToken", required = false) CsrfToken csrfToken) {
+    public String loginPage(Model model,
+                            @CurrentSecurityContext(expression = "authentication") Authentication authentication,
+                            @RequestAttribute(name = "org.springframework.security.web.csrf.CsrfToken", required = false) CsrfToken csrfToken) {
+
+        if (!(authentication instanceof AnonymousAuthenticationToken)){
+            return "redirect:/";
+        }
         if (csrfToken != null) {
             model.addAttribute("_csrfToken", csrfToken);
         }

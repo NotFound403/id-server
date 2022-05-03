@@ -54,6 +54,7 @@ public class MenuController extends BaseController {
      * @return the rest
      */
     @PostMapping("/system/menu/add")
+    @ResponseBody
     public Rest<?> add(@RequestBody Menu menu) {
         jpaMenuService.save(menu);
         return RestBody.ok("操作成功");

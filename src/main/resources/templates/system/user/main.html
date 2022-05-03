@@ -79,19 +79,13 @@
            lay-filter="user-enable" {{ d.enabled== true ? 'checked' : '' }} />
 </script>
 
-<script id="user-sex" type="text/html">
+<script id="user-gender" type="text/html">
     {{#if (d.gender == 1) { }}
     <span>男</span>
     {{# }else if(d.gender == 0){ }}
     <span>女</span>
-    {{# } }}
-</script>
-
-<script id="user-login" type="text/html">
-    {{#if (d.login == 0) { }}
-    <span>在线</span>
-    {{# }else if(d.sex == 1){ }}
-    <span>离线</span>
+    {{# }else { }}
+    <span>未知</span>
     {{# } }}
 </script>
 

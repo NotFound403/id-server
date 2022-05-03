@@ -114,7 +114,7 @@
                 contentType: 'application/json',
                 type: 'post',
                 success: function (result) {
-                    if (result.success) {
+                    if (result.code===200) {
                         layer.msg(result.msg, {icon: 1, time: 1000}, function () {
                             parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
                             parent.layui.treetable.reload("#menu-table");
