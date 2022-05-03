@@ -1,13 +1,13 @@
 package cn.felord.idserver.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
-import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -37,29 +37,36 @@ public class OAuth2Client implements Serializable {
     private String id;
     @Column(name = "client_id", unique = true, updatable = false)
     private String clientId;
-
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Instant clientIdIssuedAt;
+    //    @JsonIgnore
     private String clientSecret;
     //todo
     private Instant clientSecretExpiresAt;
     private String clientName;
     @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", referencedColumnName = "client_id", insertable = false, updatable = false)
+    @ToString.Exclude
     private Set<ClientAuthMethod> clientAuthenticationMethods;
     @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", referencedColumnName = "client_id", insertable = false, updatable = false)
+    @ToString.Exclude
     private Set<OAuth2GrantType> authorizationGrantTypes;
     @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", referencedColumnName = "client_id", insertable = false, updatable = false)
+    @ToString.Exclude
     private Set<RedirectUri> redirectUris;
     @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", referencedColumnName = "client_id", insertable = false, updatable = false)
+    @ToString.Exclude
     private Set<OAuth2Scope> scopes;
     @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", referencedColumnName = "client_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT), insertable = false, updatable = false)
+    @ToString.Exclude
     private OAuth2ClientSettings clientSettings;
     @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", referencedColumnName = "client_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT), insertable = false, updatable = false)
+    @ToString.Exclude
     private OAuth2TokenSettings tokenSettings;
 
     /**
@@ -76,6 +83,7 @@ public class OAuth2Client implements Serializable {
 
         RegisteredClient.Builder builder = RegisteredClient.withId(Optional.ofNullable(this.id).orElse(UUID.randomUUID().toString()))
                 .clientId(Optional.ofNullable(this.clientId).orElse(UUID.randomUUID().toString()))
+                .clientSecret(this.clientSecret)
                 .clientIdIssuedAt(this.clientIdIssuedAt)
                 .clientSecretExpiresAt(this.clientSecretExpiresAt)
                 .clientName(this.clientName)
@@ -93,15 +101,9 @@ public class OAuth2Client implements Serializable {
                 .scopes(scopeSet -> scopeSet.addAll(oAuth2Scopes.stream()
                         .map(OAuth2Scope::getScope)
                         .collect(Collectors.toSet())))
+                .scope(OidcScopes.OPENID)
                 .clientSettings(this.clientSettings.toClientSettings())
                 .tokenSettings(this.tokenSettings.toTokenSettings());
-
-        if (StringUtils.hasText(this.clientSecret)) {
-            // CLIENT_SECRET_JWT 使用密文   其它使用明文
-            String encoded = PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(clientSecret);
-            builder.clientSecret(encoded);
-        }
-
         return builder.build();
     }
 
@@ -148,11 +150,14 @@ public class OAuth2Client implements Serializable {
                     return uri;
                 })
                 .collect(Collectors.toSet()));
-        oAuth2Client.setScopes(registeredClient.getScopes().stream().map(scope -> {
-                    OAuth2Scope oAuth2Scope = new OAuth2Scope();
-                    oAuth2Scope.setClientId(clientId);
-                    oAuth2Scope.setScope(scope);
-                    return oAuth2Scope;
+        oAuth2Client.setScopes(registeredClient.getScopes()
+                .stream()
+                .filter(scope-> !OidcScopes.OPENID.equals(scope))
+                .map(scope -> {
+                       OAuth2Scope oAuth2Scope = new OAuth2Scope();
+                       oAuth2Scope.setClientId(clientId);
+                       oAuth2Scope.setScope(scope);
+                       return oAuth2Scope;
                 })
                 .collect(Collectors.toSet()));
         OAuth2ClientSettings settings = OAuth2ClientSettings.fromClientSettings(registeredClient.getClientSettings());

@@ -65,6 +65,7 @@ public class UserController extends BaseController {
      * @return the rest
      */
     @PostMapping("/system/user/add")
+    @ResponseBody
     public Rest<?> add(@RequestBody UserInfo userInfo) {
         userInfoService.save(userInfo);
         return RestBody.ok("操作成功");

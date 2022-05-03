@@ -17,6 +17,6 @@ public interface MenuRepository extends JpaRepository<Menu, String> {
      * @return {@link List}<{@link Menu}>
      */
     @EntityGraph(attributePaths = {"children"})
-    List<Menu> findAllByParentId(String parentId);
+    List<Menu> findAllByParentIdOrderById(String parentId);
 
 }

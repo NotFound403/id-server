@@ -1,13 +1,15 @@
 package cn.felord.idserver.service;
 
 import cn.felord.idserver.entity.OAuth2Client;
+import cn.felord.idserver.entity.dto.OAuth2ClientDTO;
 import cn.felord.idserver.repository.OAuth2ClientRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
-import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+
+import java.time.Instant;
 
 /**
  * The type Jpa registered client repository.
@@ -16,7 +18,7 @@ import org.springframework.util.Assert;
  * @since 1.0.0
  */
 @Service
-public class JpaRegisteredClientRepository implements RegisteredClientRepository {
+public class JpaRegisteredClientRepository implements OAuth2ClientService {
     private final OAuth2ClientRepository OAuth2ClientRepository;
 
 
@@ -37,6 +39,14 @@ public class JpaRegisteredClientRepository implements RegisteredClientRepository
     }
 
     @Override
+    public void saveClient(OAuth2ClientDTO client){
+        OAuth2Client oAuth2Client = client.toClient();
+        oAuth2Client.setClientIdIssuedAt(Instant.now());
+        this.OAuth2ClientRepository.save(oAuth2Client);
+    }
+
+
+    @Override
     public RegisteredClient findById(String id) {
         Assert.hasText(id, "id cannot be empty");
         return this.OAuth2ClientRepository.findById(id).map(OAuth2Client::toRegisteredClient).orElse(null);
@@ -54,6 +64,7 @@ public class JpaRegisteredClientRepository implements RegisteredClientRepository
      * @param pageable the pageable
      * @return the page
      */
+    @Override
     public Page<OAuth2Client> page(Pageable pageable) {
         return this.OAuth2ClientRepository.findAll(pageable);
     }

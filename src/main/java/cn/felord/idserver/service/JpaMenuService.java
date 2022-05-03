@@ -33,7 +33,7 @@ public class JpaMenuService implements MenuService {
 
     @Override
     public List<Menu> findByRoot() {
-        return menuRepository.findAllByParentId(ROOT_ID);
+        return menuRepository.findAllByParentIdOrderById(ROOT_ID);
     }
 
     @Override

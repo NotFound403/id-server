@@ -4,7 +4,8 @@ import cn.felord.idserver.advice.BaseController;
 import cn.felord.idserver.advice.Rest;
 import cn.felord.idserver.advice.RestBody;
 import cn.felord.idserver.entity.OAuth2Client;
-import cn.felord.idserver.service.JpaRegisteredClientRepository;
+import cn.felord.idserver.entity.dto.OAuth2ClientDTO;
+import cn.felord.idserver.service.OAuth2ClientService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,7 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @AllArgsConstructor
 @Controller
 public class ClientController extends BaseController {
-    private JpaRegisteredClientRepository clientRepository;
+    private final OAuth2ClientService clientRepository;
 
     /**
      * 客户端列表页
@@ -53,9 +54,10 @@ public class ClientController extends BaseController {
      * @param oAuth2Client the o auth 2 client
      * @return the rest
      */
-    @PostMapping("/system/oauth2client/add")
-    public Rest<?> addOAuth2Client(@RequestBody OAuth2Client oAuth2Client){
-        clientRepository.save(oAuth2Client.toRegisteredClient());
+    @PostMapping("/system/client/add")
+    @ResponseBody
+    public Rest<?> addOAuth2Client(@RequestBody OAuth2ClientDTO oAuth2Client) {
+        clientRepository.saveClient(oAuth2Client);
         return RestBody.ok("操作成功");
     }
 
@@ -69,6 +71,7 @@ public class ClientController extends BaseController {
     @GetMapping("/system/client/data")
     @ResponseBody
     public Page<OAuth2Client> page(@RequestParam Integer page, @RequestParam Integer limit) {
+        page = Math.max(page - 1, 0);
         return clientRepository.page(PageRequest.of(page, limit, Sort.sort(OAuth2Client.class)
                 .by(OAuth2Client::getClientIdIssuedAt).descending()));
     }
