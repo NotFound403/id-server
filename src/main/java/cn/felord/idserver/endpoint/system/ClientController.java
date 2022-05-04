@@ -11,7 +11,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -74,5 +76,19 @@ public class ClientController extends BaseController {
         page = Math.max(page - 1, 0);
         return clientRepository.page(PageRequest.of(page, limit, Sort.sort(OAuth2Client.class)
                 .by(OAuth2Client::getClientIdIssuedAt).descending()));
+    }
+
+    /**
+     * Details o auth 2 client.
+     *
+     * @param id the id
+     * @return the o auth 2 client
+     */
+    @GetMapping("/system/client/details/{id}")
+    public String details(Model model, @PathVariable String id) {
+        OAuth2Client oauth2Client = clientRepository.findClientById(id);
+        model.addAttribute("oauth2Client",oauth2Client);
+        return "/system/client/details";
+
     }
 }

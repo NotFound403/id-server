@@ -39,7 +39,7 @@ public class JpaRegisteredClientRepository implements OAuth2ClientService {
     }
 
     @Override
-    public void saveClient(OAuth2ClientDTO client){
+    public void saveClient(OAuth2ClientDTO client) {
         OAuth2Client oAuth2Client = client.toClient();
         oAuth2Client.setClientIdIssuedAt(Instant.now());
         this.OAuth2ClientRepository.save(oAuth2Client);
@@ -67,5 +67,10 @@ public class JpaRegisteredClientRepository implements OAuth2ClientService {
     @Override
     public Page<OAuth2Client> page(Pageable pageable) {
         return this.OAuth2ClientRepository.findAll(pageable);
+    }
+
+    @Override
+    public OAuth2Client findClientById(String id) {
+        return this.OAuth2ClientRepository.searchOAuth2ClientById(id);
     }
 }

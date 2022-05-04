@@ -19,15 +19,6 @@
         <i class="pear-icon pear-icon-add"></i>
         新增
     </button>
-    <button class="pear-btn pear-btn-md"
-            lay-event="batchRemove">
-        <i class="pear-icon pear-icon-ashbin"></i>
-        删除
-    </button>
-    <button class="pear-btn pear-btn-md" lay-event="collasped">
-        <i class="pear-icon pear-icon-modular"></i>
-        高级
-    </button>
 </script>
 
 <script id="client-bar" type="text/html">
@@ -38,25 +29,25 @@
 
 </script>
 
+<script id="client-details" type="text/html">
+    <button plain class="pear-btn pear-btn-success pear-btn-sm" lay-event="details">{{d.clientName}}</button>
+</script>
 
 <th:block th:include="include :: footer"/>
 <script>
-    layui.use(['table', 'form', 'jquery', 'popup', 'common'], function () {
+    layui.use(['table', 'form', 'jquery', 'popup'], function () {
         let table = layui.table;
         let form = layui.form;
         let $ = layui.jquery;
         let popup = layui.popup;
-        let common = layui.common;
-
 
         let cols = [
             [
-                {type: 'checkbox'},
-                {title: '客户端ID', field: 'clientId', align: 'left', width: 180},
-                {title: '密钥', field: 'clientSecret', align: 'center', width: 140},
-                {title: '客户端名称', field: 'clientName', align: 'center', width: 50},
-                {title: '创建时间', field: 'clientIdIssuedAt', align: 'center', width: 60},
-                {title: '操作', toolbar: '#client-bar', align: 'center', width: 100}
+                {title: '客户端ID', field: 'clientId', align: 'left'},
+                {title: '密钥', field: 'clientSecret', align: 'center'},
+                {title: '客户端名称', field: 'clientName',toolbar:'#client-details', align: 'center'},
+                {title: '创建时间', field: 'clientIdIssuedAt', align: 'center'},
+                {title: '操作', toolbar: '#client-bar', align: 'center'}
             ]
         ]
 
@@ -90,6 +81,9 @@
                 window.remove(obj);
             } else if (obj.event === 'edit') {
                 window.edit(obj);
+            }else if(obj.event === 'details') {
+                console.log(obj)
+                window.details(obj.data);
             }
         });
 
@@ -98,8 +92,6 @@
                 window.add();
             } else if (obj.event === 'refresh') {
                 window.refresh();
-            } else if (obj.event === 'batchRemove') {
-                window.batchRemove(obj);
             }
         });
 
@@ -114,7 +106,7 @@
                 type: 2,
                 title: '新增',
                 shade: 0.1,
-                area: ['600px', '600px'],
+                area: ['750px', '750px'],
                 content: '/system/client/add'
             });
         }
@@ -124,12 +116,21 @@
                 type: 2,
                 title: '修改',
                 shade: 0.1,
-                area: ['100%', '100%'],
+                area: ['750px', '750px'],
                 content: '/system/client/edit?clientId=' + obj.data['clientId']
             });
         }
 
+        window.details = function (data) {
 
+            layer.open({
+                type: 2,
+                title: '<strong>详情</strong>',
+                shade: 0.1,
+                area: ['750px', '750px'],
+                content: '/system/client/details/'+data.id
+            });
+        }
         window.remove = function (obj) {
             layer.confirm('确定要删除该用户', {icon: 3, title: '提示'}, function (index) {
                 layer.close(index);
@@ -151,34 +152,6 @@
                 })
             });
         }
-
-        window.batchRemove = function (obj) {
-            let ids = common.checkField(obj, 'clientId');
-            if (common.isEmpty(ids)) {
-                popup.warning("未选中数据");
-                return false;
-            }
-            layer.confirm('确定要删除选中用户', {icon: 3, title: '提示'}, function (index) {
-                layer.close(index);
-                let loading = layer.load();
-                $.ajax({
-                    url: '/system/client/batchRemove/' + ids,
-                    dataType: 'json',
-                    type: 'delete',
-                    success: function (result) {
-                        layer.close(loading);
-                        if (result.success) {
-                            popup.success(result.msg, function () {
-                                table.reload('client-table');
-                            })
-                        } else {
-                            popup.failure(result.msg);
-                        }
-                    }
-                })
-            });
-        }
-
         window.refresh = function (param) {
             table.reload('client-table', {where: param});
         }

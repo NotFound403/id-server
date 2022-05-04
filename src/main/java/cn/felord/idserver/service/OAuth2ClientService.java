@@ -28,4 +28,13 @@ public interface OAuth2ClientService extends RegisteredClientRepository {
      * @return the page
      */
     Page<OAuth2Client> page(Pageable pageable);
+
+    /**
+     * Find client by id o auth 2 client.
+     *
+     * @param id the id
+     * @return the o auth 2 client
+     */
+    OAuth2Client  findClientById(String id);
+
 }
