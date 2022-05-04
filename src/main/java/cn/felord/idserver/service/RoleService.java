@@ -1,6 +1,7 @@
 package cn.felord.idserver.service;
 
 import cn.felord.idserver.entity.Role;
+import org.springframework.data.domain.Page;
 
 import java.util.Collection;
 import java.util.List;
@@ -29,5 +30,22 @@ public interface RoleService {
      * @return the set
      */
     List<Role> findByClient(String clientId);
+
+   /**
+    * Save role.
+    *
+    * @param role the role
+    * @return the role
+    */
+   Role save(Role role);
+
+   /**
+    * Page page.
+    *
+    * @param page  the page
+    * @param limit the limit
+    * @return the page
+    */
+   Page<Role> page(Integer page, Integer limit);
 
 }

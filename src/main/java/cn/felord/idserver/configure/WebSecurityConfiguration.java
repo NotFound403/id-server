@@ -35,7 +35,7 @@ public class WebSecurityConfiguration {
         http.csrf().disable()
                 .headers().frameOptions().sameOrigin()
                 .and()
-                .authorizeRequests().anyRequest().anonymous()
+                .authorizeRequests().anyRequest().authenticated()
                 /*  .and()
                   .exceptionHandling()
                   .authenticationEntryPoint(authenticationEntryPoint)*/

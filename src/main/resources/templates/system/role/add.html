@@ -11,35 +11,21 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label">名称</label>
                     <div class="layui-input-block">
-                        <input autocomplete="off" class="layui-input" lay-verify="required" name="roleName" placeholder="请输入标题"
+                        <input autocomplete="off" class="layui-input" lay-verify="required" name="roleContent" placeholder="请输入标题"
                                type="text">
                     </div>
                 </div>
                 <div class="layui-form-item">
                     <label class="layui-form-label">标识</label>
                     <div class="layui-input-block">
-                        <input autocomplete="off" class="layui-input" lay-verify="required" name="roleCode" placeholder="请输入标题"
-                               type="text">
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">状态</label>
-                    <div class="layui-input-block">
-                        <input name="enable" title="开启" type="radio" value="0">
-                        <input checked name="enable" title="关闭" type="radio" value="1">
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">排序</label>
-                    <div class="layui-input-block">
-                        <input autocomplete="off" class="layui-input" name="sort" placeholder="请输入标题"
+                        <input autocomplete="off" class="layui-input" lay-verify="required" name="roleName" placeholder="请输入标题"
                                type="text">
                     </div>
                 </div>
                 <div class="layui-form-item layui-form-text">
                     <label class="layui-form-label">描述</label>
                     <div class="layui-input-block">
-                        <textarea class="layui-textarea" name="details" placeholder="请输入描述"></textarea>
+                        <textarea class="layui-textarea" name="description" placeholder="请输入描述"></textarea>
                     </div>
                 </div>
             </div>
@@ -66,13 +52,13 @@
 
         form.on('submit(role-save)', function (data) {
             $.ajax({
-                url: '/system/role/save',
+                url: '/system/role/add',
                 data: JSON.stringify(data.field),
                 dataType: 'json',
                 contentType: 'application/json',
                 type: 'post',
                 success: function (result) {
-                    if (result.success) {
+                    if (result.code === 200) {
                         layer.msg(result.msg, {icon: 1, time: 1000}, function () {
                             parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
                             parent.layui.table.reload("role-table");
