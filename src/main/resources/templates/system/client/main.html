@@ -132,16 +132,15 @@
             });
         }
         window.remove = function (obj) {
-            layer.confirm('确定要删除该用户', {icon: 3, title: '提示'}, function (index) {
+            layer.confirm('确定要删除该客户端', {icon: 3, title: '提示'}, function (index) {
                 layer.close(index);
                 let loading = layer.load();
                 $.ajax({
-                    url: '/system/client/remove/' + obj.data['clientId'],
-                    dataType: 'json',
-                    type: 'delete',
+                    url: '/system/client/remove/' + obj.data['id'],
+                    type: 'post',
                     success: function (result) {
                         layer.close(loading);
-                        if (result.success) {
+                        if (result.code === 200) {
                             popup.success(result.msg, function () {
                                 obj.del();
                             });

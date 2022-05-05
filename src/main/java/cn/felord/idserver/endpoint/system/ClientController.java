@@ -63,6 +63,13 @@ public class ClientController extends BaseController {
         return RestBody.ok("操作成功");
     }
 
+    @PostMapping("/system/client/remove/{id}")
+    @ResponseBody
+    public Rest<?> remove(@PathVariable String id){
+        clientRepository.removeByClientId(id);
+        return RestBody.ok("操作成功");
+    }
+
     /**
      * Page page.
      *
@@ -89,6 +96,6 @@ public class ClientController extends BaseController {
         OAuth2Client oauth2Client = clientRepository.findClientById(id);
         model.addAttribute("oauth2Client",oauth2Client);
         return "/system/client/details";
-
     }
+
 }

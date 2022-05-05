@@ -5,10 +5,10 @@
     <link rel="stylesheet" th:href="@{/admin/css/other/login.css}"/>
 </head>
 <!-- 代 码 结 构 -->
-<body background="admin/images/login.svg">
+<body th:background="@{/admin/images/login.svg}">
 <form action="javascript:void(0);" class="layui-form">
     <div class="layui-form-item">
-        <img class="logo" src="admin/images/logo.png"/>
+        <img class="logo" th:src="@{/admin/images/logo.png}"/>
         <div class="title">Id Server</div>
         <div class="desc">
             一个轻量级的授权服务器
@@ -39,7 +39,7 @@
             let loader = layer.load();
             let btn = button.load({elem: '.login'});
             $.ajax({
-                url: '/login',
+                url: '/system/login',
                 data: data.field,
                 type: "post",
                 dataType: 'json',

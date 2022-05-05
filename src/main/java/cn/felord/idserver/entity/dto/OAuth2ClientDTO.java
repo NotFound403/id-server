@@ -74,12 +74,12 @@ public class OAuth2ClientDTO {
         }).collect(Collectors.toSet()));
         if (clientSettings==null){
             clientSettings= OAuth2ClientSettings.fromClientSettings(new OAuth2ClientSettings().toClientSettings());
-            clientSettings.setClientId(clientId);
         }
+        clientSettings.setClientId(clientId);
         if (tokenSettings==null){
             tokenSettings= OAuth2TokenSettings.fromTokenSettings(new OAuth2TokenSettings().toTokenSettings());
-            tokenSettings.setClientId(clientId);
         }
+        tokenSettings.setClientId(clientId);
         oAuth2Client.setClientSettings(clientSettings);
         oAuth2Client.setTokenSettings(tokenSettings);
         return oAuth2Client;

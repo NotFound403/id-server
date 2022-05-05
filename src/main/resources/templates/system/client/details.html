@@ -67,8 +67,8 @@
     <div class="layui-card-body">
         <ul class="list">
             <li class="list-item"><span class="title">是否需要proofKey</span><span class="footer" th:text="${oauth2Client.clientSettings.requireProofKey?'是':'否'}">--</span></li>
-            <li class="list-item"><span class="title">是否需要授权确认</span><span class="footer" th:text="${oauth2Client.clientSettings.requireAuthorizationConsent?'是':'否'}">--</span></li>
-            <li class="list-item"><span class="title">jwk端点</span><span class="footer" th:text="${oauth2Client.clientSettings.jwkSetUrl}">--</span></li>
+            <li class="list-item"><span class="title">是否授权确认</span><span class="footer" th:text="${oauth2Client.clientSettings.requireAuthorizationConsent?'是':'否'}">--</span></li>
+            <li class="list-item"><span class="title">JWK端点</span><span class="footer" th:text="${oauth2Client.clientSettings.jwkSetUrl}">--</span></li>
             <li class="list-item"><span class="title">签名算法</span><span class="footer" th:text="${oauth2Client.clientSettings.signingAlgorithm}">--</span></li>
         </ul>
     </div>

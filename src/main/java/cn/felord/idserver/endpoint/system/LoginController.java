@@ -1,4 +1,4 @@
-package cn.felord.idserver.endpoint;
+package cn.felord.idserver.endpoint.system;
 
 import cn.felord.idserver.entity.SystemSettings;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -24,7 +24,7 @@ public class LoginController {
      *
      * @return the string
      */
-    @GetMapping("/login")
+    @GetMapping("/system/login")
     public String loginPage(Model model,
                             @CurrentSecurityContext(expression = "authentication") Authentication authentication,
                             @RequestAttribute(name = "org.springframework.security.web.csrf.CsrfToken", required = false) CsrfToken csrfToken) {
@@ -38,12 +38,12 @@ public class LoginController {
         SystemSettings systemSettings = new SystemSettings();
 
         model.addAttribute("systemSettings", systemSettings);
-        return "login";
+        return "/system/login";
     }
 
-    @GetMapping("/")
+    @GetMapping("/system")
     public String index() {
-        return "index";
+        return "/system/index";
     }
 
 
@@ -52,7 +52,7 @@ public class LoginController {
      *
      * @return the string
      */
-    @GetMapping("/console")
+    @GetMapping("/system/console")
     public String home(){
         return "console/console";
     }

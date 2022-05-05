@@ -37,4 +37,10 @@ public interface OAuth2ClientService extends RegisteredClientRepository {
      */
     OAuth2Client  findClientById(String id);
 
+    /**
+     * Remove by client id.
+     *
+     * @param id the id
+     */
+    void removeByClientId(String id);
 }

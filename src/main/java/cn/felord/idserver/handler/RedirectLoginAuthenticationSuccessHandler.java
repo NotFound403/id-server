@@ -30,7 +30,7 @@ public class RedirectLoginAuthenticationSuccessHandler implements Authentication
     private final ObjectMapper objectMapper = new ObjectMapper()
             .registerModule(new JavaTimeModule());
     private RequestCache requestCache = new HttpSessionRequestCache();
-    private static final String defaultTargetUrl = "/";
+    private static final String defaultTargetUrl = "/system";
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {

@@ -44,27 +44,27 @@ public class OAuth2Client implements Serializable {
     //todo
     private Instant clientSecretExpiresAt;
     private String clientName;
-    @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", referencedColumnName = "client_id", insertable = false, updatable = false)
     @ToString.Exclude
     private Set<ClientAuthMethod> clientAuthenticationMethods;
-    @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", referencedColumnName = "client_id", insertable = false, updatable = false)
     @ToString.Exclude
     private Set<OAuth2GrantType> authorizationGrantTypes;
-    @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", referencedColumnName = "client_id", insertable = false, updatable = false)
     @ToString.Exclude
     private Set<RedirectUri> redirectUris;
-    @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", referencedColumnName = "client_id", insertable = false, updatable = false)
     @ToString.Exclude
     private Set<OAuth2Scope> scopes;
-    @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", referencedColumnName = "client_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT), insertable = false, updatable = false)
     @ToString.Exclude
     private OAuth2ClientSettings clientSettings;
-    @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id", referencedColumnName = "client_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT), insertable = false, updatable = false)
     @ToString.Exclude
     private OAuth2TokenSettings tokenSettings;

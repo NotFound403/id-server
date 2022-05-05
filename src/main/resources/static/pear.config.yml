@@ -36,7 +36,7 @@ tab:
   ## 首页
   index:
     id: "10" ## 标识 ID , 建议与菜单项中的 ID 一致
-    href: "/console" ## 页面地址
+    href: "/system/console" ## 页面地址
     title: "首页" ## 标题
 ## 主题配置
 theme:
