@@ -57,4 +57,11 @@ public class LoginController {
         return "console/console";
     }
 
+
+    @GetMapping("/system/oauth2Login")
+    public String oauthLogin(){
+        return "/oauth2Login";
+    }
+
+
 }
