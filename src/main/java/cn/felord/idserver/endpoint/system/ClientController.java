@@ -4,6 +4,8 @@ import cn.felord.idserver.advice.BaseController;
 import cn.felord.idserver.advice.Rest;
 import cn.felord.idserver.advice.RestBody;
 import cn.felord.idserver.entity.OAuth2Client;
+import cn.felord.idserver.entity.OAuth2Scope;
+import cn.felord.idserver.entity.RedirectUri;
 import cn.felord.idserver.entity.dto.OAuth2ClientDTO;
 import cn.felord.idserver.service.OAuth2ClientService;
 import lombok.AllArgsConstructor;
@@ -18,6 +20,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.stream.Collectors;
 
 /**
  * The type Client controller.
@@ -51,6 +55,24 @@ public class ClientController extends BaseController {
     }
 
     /**
+     * 编辑页
+     *
+     * @param model the model
+     * @param id    the id
+     * @return the string
+     */
+    @GetMapping("/system/client/edit/{id}")
+    public String edit(Model model,@PathVariable String id) {
+        OAuth2Client oauth2Client = clientRepository.findClientById(id);
+        String oAuth2Scope = oauth2Client.getScopes().stream().map(OAuth2Scope::getScope).collect(Collectors.joining(","));
+        String redirectUris = oauth2Client.getRedirectUris().stream().map(RedirectUri::getRedirectUri).collect(Collectors.joining(","));
+        model.addAttribute("oauth2Client",oauth2Client);
+        model.addAttribute("oauth2Scope",oAuth2Scope);
+        model.addAttribute("redirectUris",redirectUris);
+        return "/system/client/edit";
+    }
+
+    /**
      * Add oauth2 client rest.
      *
      * @param oAuth2Client the o auth 2 client
@@ -63,10 +85,29 @@ public class ClientController extends BaseController {
         return RestBody.ok("操作成功");
     }
 
+    /**
+     * Remove rest.
+     *
+     * @param id the id
+     * @return the rest
+     */
     @PostMapping("/system/client/remove/{id}")
     @ResponseBody
     public Rest<?> remove(@PathVariable String id){
         clientRepository.removeByClientId(id);
+        return RestBody.ok("操作成功");
+    }
+
+    /**
+     * Remove rest.
+     *
+     * @param oAuth2Client the o auth 2 client
+     * @return the rest
+     */
+    @PostMapping("/system/client/edit")
+    @ResponseBody
+    public Rest<?> edit(@RequestBody OAuth2ClientDTO oAuth2Client){
+        clientRepository.update(oAuth2Client);
         return RestBody.ok("操作成功");
     }
 
@@ -88,7 +129,8 @@ public class ClientController extends BaseController {
     /**
      * Details o auth 2 client.
      *
-     * @param id the id
+     * @param model the model
+     * @param id    the id
      * @return the o auth 2 client
      */
     @GetMapping("/system/client/details/{id}")

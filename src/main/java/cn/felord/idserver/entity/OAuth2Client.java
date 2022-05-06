@@ -37,34 +37,34 @@ public class OAuth2Client implements Serializable {
     private String id;
     @Column(name = "client_id", unique = true, updatable = false)
     private String clientId;
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Instant clientIdIssuedAt;
     //    @JsonIgnore
     private String clientSecret;
     //todo
     private Instant clientSecretExpiresAt;
     private String clientName;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "client_id", referencedColumnName = "client_id", insertable = false, updatable = false)
     @ToString.Exclude
     private Set<ClientAuthMethod> clientAuthenticationMethods;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "client_id", referencedColumnName = "client_id", insertable = false, updatable = false)
     @ToString.Exclude
     private Set<OAuth2GrantType> authorizationGrantTypes;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "client_id", referencedColumnName = "client_id", insertable = false, updatable = false)
     @ToString.Exclude
     private Set<RedirectUri> redirectUris;
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "client_id", referencedColumnName = "client_id", insertable = false, updatable = false)
     @ToString.Exclude
     private Set<OAuth2Scope> scopes;
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "client_id", referencedColumnName = "client_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT), insertable = false, updatable = false)
     @ToString.Exclude
     private OAuth2ClientSettings clientSettings;
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "client_id", referencedColumnName = "client_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT), insertable = false, updatable = false)
     @ToString.Exclude
     private OAuth2TokenSettings tokenSettings;
@@ -152,12 +152,12 @@ public class OAuth2Client implements Serializable {
                 .collect(Collectors.toSet()));
         oAuth2Client.setScopes(registeredClient.getScopes()
                 .stream()
-                .filter(scope-> !OidcScopes.OPENID.equals(scope))
+                .filter(scope -> !OidcScopes.OPENID.equals(scope))
                 .map(scope -> {
-                       OAuth2Scope oAuth2Scope = new OAuth2Scope();
-                       oAuth2Scope.setClientId(clientId);
-                       oAuth2Scope.setScope(scope);
-                       return oAuth2Scope;
+                    OAuth2Scope oAuth2Scope = new OAuth2Scope();
+                    oAuth2Scope.setClientId(clientId);
+                    oAuth2Scope.setScope(scope);
+                    return oAuth2Scope;
                 })
                 .collect(Collectors.toSet()));
         OAuth2ClientSettings settings = OAuth2ClientSettings.fromClientSettings(registeredClient.getClientSettings());

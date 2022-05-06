@@ -22,6 +22,13 @@ public interface OAuth2ClientService extends RegisteredClientRepository {
     void saveClient(OAuth2ClientDTO client);
 
     /**
+     * Update.
+     *
+     * @param client the client
+     */
+    void update(OAuth2ClientDTO client);
+
+    /**
      * Page page.
      *
      * @param pageable the pageable

@@ -30,7 +30,7 @@ public class LoginController {
                             @RequestAttribute(name = "org.springframework.security.web.csrf.CsrfToken", required = false) CsrfToken csrfToken) {
 
         if (!(authentication instanceof AnonymousAuthenticationToken)){
-            return "redirect:/";
+            return "redirect:/system";
         }
         if (csrfToken != null) {
             model.addAttribute("_csrfToken", csrfToken);
