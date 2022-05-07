@@ -3,3 +3,9 @@ spring:
       url: jdbc:mysql://wwaliyuncnit.mysql.rds.aliyuncs.com:3306/id_server
       username: id_server
       password: ID_SERVER_DATABASE123
+logging:
+  level:
+    org.springframework.web: trace
+    org.springframework.security.oauth2: debug
+    org.springframework.jdbc.core: debug
+    org.springframework.security: trace

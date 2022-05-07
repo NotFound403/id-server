@@ -88,7 +88,7 @@ public class IdServerSecurityConfiguration {
          */
         @Bean
         public ProviderSettings providerSettings(@Value("${server.port}") Integer port) {
-            //TODO 生产应该使用域名
+            //TODO 配置化 生产应该使用域名
             return ProviderSettings.builder().issuer("http://localhost:" + port).build();
         }
     }
@@ -132,7 +132,7 @@ public class IdServerSecurityConfiguration {
     }
 
     /**
-     * 后台安全配置.
+     * 普通用户访问安全配置.
      *
      * @author felord.cn
      * @since 1.0.0
