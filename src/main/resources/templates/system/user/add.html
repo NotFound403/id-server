@@ -30,7 +30,7 @@
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label layui-form-required">secret</label>
+                    <label class="layui-form-label layui-form-required">密码</label>
                     <div class="layui-input-block">
                         <input autocomplete="off" class="layui-input" lay-verify="required" name="secret" placeholder="请输入secret"
                                type="text">
@@ -81,13 +81,13 @@
             // data.field.roleIds = roleIds;
 
             $.ajax({
-                url: '/system/user/save',
+                url: '/system/user/add',
                 data: JSON.stringify(data.field),
                 dataType: 'json',
                 contentType: 'application/json',
                 type: 'post',
                 success: function (result) {
-                    if (result.success) {
+                    if (result.code===200) {
                         layer.msg(result.msg, {icon: 1, time: 1000}, function () {
                             parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
                             parent.layui.table.reload("user-table");

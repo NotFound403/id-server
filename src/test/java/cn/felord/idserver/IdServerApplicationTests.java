@@ -1,10 +1,10 @@
 package cn.felord.idserver;
 
-import cn.felord.idserver.entity.OAuth2Client;
 import cn.felord.idserver.entity.Menu;
-import cn.felord.idserver.repository.OAuth2ClientRepository;
+import cn.felord.idserver.entity.OAuth2Client;
 import cn.felord.idserver.repository.MenuRepository;
-import cn.felord.idserver.service.JpaRegisteredClientRepository;
+import cn.felord.idserver.repository.OAuth2ClientRepository;
+import cn.felord.idserver.service.OAuth2ClientService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -33,7 +33,7 @@ class IdServerApplicationTests {
     @Autowired
     MenuRepository menuRepository;
     @Autowired
-    JpaRegisteredClientRepository jpaRegisteredClientRepository;
+    OAuth2ClientService jpaRegisteredClientRepository;
 
     @Test
     void contextLoads() throws JsonProcessingException {

@@ -9,13 +9,8 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,7 +18,8 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-public class Menu {
+public class Menu implements Serializable {
+    private static final long serialVersionUID = 4206503097158085877L;
     @Id
     @GenericGenerator(name = "uuid-hex", strategy = "uuid.hex")
     @GeneratedValue(generator = "uuid-hex")
@@ -33,7 +29,9 @@ public class Menu {
     private String parentId;
 
     private String title;
-
+    /**
+     *  0 不可跳转   1 可跳转到 href
+     */
     private String type;
 
     private String openType;
@@ -45,7 +43,8 @@ public class Menu {
     @OneToMany(fetch = FetchType.LAZY)
     @BatchSize(size = 30)
     @Fetch(value = FetchMode.SELECT)
-    @JoinColumn(name = "parent_id", insertable = false, updatable = false)
+    @JoinColumn(name = "parent_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT), insertable = false, updatable = false)
+    @ToString.Exclude
     private List<Menu> children;
 
     @Override

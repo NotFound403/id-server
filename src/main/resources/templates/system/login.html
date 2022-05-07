@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('登录')"/>
+    <link rel="stylesheet" th:href="@{/admin/css/other/login.css}"/>
+</head>
+<!-- 代 码 结 构 -->
+<body th:background="@{/admin/images/login.svg}">
+<form action="javascript:void(0);" class="layui-form">
+    <div class="layui-form-item">
+        <img class="logo" th:src="@{/admin/images/logo.png}"/>
+        <div class="title">Id Server</div>
+        <div class="desc">
+            一个轻量级的授权服务器
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <input class="layui-input" hover name="username" placeholder="请输入用户名" type="text" autocomplete="off"/>
+    </div>
+    <div class="layui-form-item">
+        <input class="layui-input" hover name="password" placeholder="请输入密码" type="password" autocomplete="off"/>
+    </div>
+    <div class="layui-form-item">
+        <button class="pear-btn pear-btn-success login" lay-filter="login" lay-submit>
+            立 即 登 录
+        </button>
+    </div>
+</form>
+<th:block th:include="include :: footer"/>
+<script>
+    layui.use(['form', 'jquery', 'layer', 'button', 'popup'], function () {
+        let form = layui.form;
+        let $ = layui.jquery;
+        let layer = layui.layer;
+        let button = layui.button;
+        let popup = layui.popup;
+
+        form.on('submit(login)', function (data) {
+            let loader = layer.load();
+            let btn = button.load({elem: '.login'});
+            $.ajax({
+                url: '/system/login',
+                data: data.field,
+                type: "post",
+                dataType: 'json',
+                success: function (result) {
+                    console.log(result)
+                    layer.close(loader);
+                    btn.stop(function () {
+                        if (result.code===200){
+                            popup.success(result.msg, function () {
+                                location.href =result.data.targetUrl;
+                            })
+                        }
+                        if (result.code===401) {
+                            popup.failure(result.msg);
+                        }
+                    })
+                }
+            });
+            return false;
+        });
+
+
+    })
+</script>
+<script>
+    if (window !== top) {
+        top.location.href = location.href;
+    }
+</script>
+</body>
+</html>

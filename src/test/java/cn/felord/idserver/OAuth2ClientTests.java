@@ -3,13 +3,17 @@ package cn.felord.idserver;
 import cn.felord.idserver.entity.OAuth2Client;
 import cn.felord.idserver.entity.OAuth2Scope;
 import cn.felord.idserver.repository.OAuth2ClientRepository;
-import cn.felord.idserver.service.JpaRegisteredClientRepository;
+import cn.felord.idserver.service.OAuth2ClientService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import lombok.SneakyThrows;
+import org.hamcrest.core.Is;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
@@ -17,6 +21,10 @@ import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.config.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.config.TokenSettings;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
@@ -24,39 +32,64 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 /**
  * @author felord.cn
  * @since 1.0.0
  */
 @SpringBootTest
+@AutoConfigureMockMvc
 public class OAuth2ClientTests {
     @Autowired
-    private JpaRegisteredClientRepository registeredClientRepository;
+    private OAuth2ClientService registeredClientRepository;
     @Autowired
     private OAuth2ClientRepository oAuth2ClientRepository;
+    @Autowired
+    MockMvc mockMvc;
+    private ObjectMapper objectMapper = new ObjectMapper().registerModules(new JavaTimeModule());
 
-    private ObjectMapper objectMapper= new ObjectMapper().registerModules(new JavaTimeModule());
 
+    @Test
+    public void addOAuth2Client() {
 
+        RegisteredClient registeredClient = createRegisteredClient();
+
+        OAuth2Client oAuth2Client = OAuth2Client.fromRegisteredClient(registeredClient);
+        oAuth2Client.setScopes(null);
+        oAuth2Client.setAuthorizationGrantTypes(null);
+        oAuth2Client.setRedirectUris(null);
+        oAuth2Client.setClientAuthenticationMethods(null);
+        oAuth2Client.setTokenSettings(null);
+        oAuth2Client.setClientSettings(null);
+
+        oAuth2ClientRepository.save(oAuth2Client);
+    }
 
     @Test
     @Transactional
-    public void addOAuth2Client() {
-
-        registeredClientRepository.save(createRegisteredClient());
-    }
-
-    @Test
     public void findClient() throws JsonProcessingException {
-        RegisteredClient registeredClient = registeredClientRepository.findByClientId("e68e46a0-d81b-4012-8b14-266d8fb14931");
+        RegisteredClient registeredClient = registeredClientRepository.findByClientId("13f7e26e-c6be-4300-9acd-d75944577f7e");
 
         String json = objectMapper.writeValueAsString(registeredClient);
-
+        RegisteredClient oAuth2Client = OAuth2Client.fromRegisteredClient(registeredClient).toRegisteredClient();
+        String json1 = objectMapper.writeValueAsString(oAuth2Client);
+        System.out.println("json1 = " + json1);
         System.out.println("json = " + json);
+    }
+    @SneakyThrows
+    @Test
+    @WithAnonymousUser
+    void clientPage() {
+        mockMvc.perform(MockMvcRequestBuilders.get("/system/client/data?page=0&limit=10"))
+                .andExpectAll(status().isOk(),
+                        content().contentType(MediaType.APPLICATION_JSON),
+                        jsonPath("$.code", Is.is(200)))
+                .andDo(MockMvcResultHandlers.print());
     }
 
     @Test
-    public void updateClient(){
+    public void updateClient() {
         String clientId = "e68e46a0-d81b-4012-8b14-266d8fb14931";
         RegisteredClient registeredClient = registeredClientRepository.findByClientId(clientId);
         OAuth2Client oAuth2Client = OAuth2Client.fromRegisteredClient(registeredClient);
@@ -68,14 +101,11 @@ public class OAuth2ClientTests {
     }
 
 
-
-
     private static RegisteredClient createRegisteredClient() {
         return RegisteredClient.withId(UUID.randomUUID().toString())
 //               客户端ID和密码
                 .clientId(UUID.randomUUID().toString())
 //               此处为了避免频繁启动重复写入仓库
-//                .id(id)
 //                client_secret_basic    客户端需要存明文   服务器存密文
                 .clientSecret(PasswordEncoderFactories.createDelegatingPasswordEncoder()
                         .encode("secret"))

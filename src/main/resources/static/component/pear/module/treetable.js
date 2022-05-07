@@ -27,9 +27,9 @@ layui.define(['layer', 'table'], function (exports) {
                     $.get(param.url, param.where, function (res) {
                         if (param.parseData) {
                             res = param.parseData(res);
-                            param.data = res.data;
+                            param.data = res.data.result;
                         }
-                        treetable.init(param, res.data);
+                        treetable.init(param, res.data.result);
                     });
                 }
             }

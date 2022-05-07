@@ -25,6 +25,7 @@ import java.util.Objects;
 @IdClass(RedirectUri.RedirectUriId.class)
 @Table(name = "redirect_uri")
 public class RedirectUri  implements Serializable{
+    private static final long serialVersionUID = 9221146008979764156L;
     @Id
     @Column(name="client_id",insertable = false,updatable = false)
     private String clientId;
@@ -33,6 +34,7 @@ public class RedirectUri  implements Serializable{
 
     @Data
     public static class RedirectUriId implements Serializable {
+        private static final long serialVersionUID = -8081989338438799123L;
         private String clientId;
         private String redirectUri;
     }

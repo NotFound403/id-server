@@ -21,12 +21,13 @@ import java.util.Objects;
  * @since 1.0.0
  */
 @Entity
-@IdClass(ClientAuthMethod.ClientAuthenticationMethodId.class)
 @Getter
 @Setter
 @ToString
+@IdClass(ClientAuthMethod.ClientAuthenticationMethodId.class)
 @Table(name = "client_auth_method")
 public class ClientAuthMethod implements Serializable {
+    private static final long serialVersionUID = 8357713071222963428L;
     @Id
     @Column(name = "client_id", insertable = false, updatable = false)
     private String clientId;
@@ -35,6 +36,7 @@ public class ClientAuthMethod implements Serializable {
 
     @Data
     public static class ClientAuthenticationMethodId implements Serializable {
+        private static final long serialVersionUID = 6996307333048077105L;
         private String clientId;
 
         private String clientAuthenticationMethod;

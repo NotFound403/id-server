@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('客户端列表')"/>
+    <link rel="stylesheet" th:href="@{/admin/css/other/user.css}"/>
+</head>
+<body class="pear-container">
+
+<div class="layui-card">
+    <div class="layui-card-body">
+        <table id="client-table" lay-filter="client-table"></table>
+    </div>
+</div>
+
+</body>
+
+<script id="client-toolbar" type="text/html">
+    <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="add">
+        <i class="pear-icon pear-icon-add"></i>
+        新增
+    </button>
+</script>
+
+<script id="client-bar" type="text/html">
+    <button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="edit"><i class="pear-icon pear-icon-edit"></i>
+    </button>
+    <button class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i class="pear-icon pear-icon-ashbin"></i>
+    </button>
+
+</script>
+
+<script id="client-details" type="text/html">
+    <button plain class="pear-btn pear-btn-success pear-btn-sm" lay-event="details">{{d.clientName}}</button>
+</script>
+
+<th:block th:include="include :: footer"/>
+<script>
+    layui.use(['table', 'form', 'jquery', 'popup'], function () {
+        let table = layui.table;
+        let form = layui.form;
+        let $ = layui.jquery;
+        let popup = layui.popup;
+
+        let cols = [
+            [
+                {title: '客户端ID', field: 'clientId', align: 'left'},
+                {title: '密钥', field: 'clientSecret', align: 'center'},
+                {title: '客户端名称', field: 'clientName',toolbar:'#client-details', align: 'center'},
+                {title: '创建时间', field: 'clientIdIssuedAt', align: 'center'},
+                {title: '操作', toolbar: '#client-bar', align: 'center'}
+            ]
+        ]
+
+        table.render({
+            elem: '#client-table',
+            url: '/system/client/data',
+            page: true,
+            cols: cols,
+            skin: 'line',
+            height: 'full-148',
+            toolbar: '#client-toolbar',
+            text: {none: '暂无客户端信息'},
+            parseData: function (response) {
+
+                return {
+                    "code": response.code, //返回状态码
+                    "msg": response.msg, //解析提示信息
+                    "count": response.data.totalElements, //后台返回的数据总条数，用于自定义分页使用
+                    "data": response.data.content //解析数据列表
+                };
+            },
+            defaultToolbar: [{
+                layEvent: 'refresh',
+                icon: 'layui-icon-refresh',
+                title: "刷新"
+            }, 'filter', 'print', 'exports']
+        });
+
+        table.on('tool(client-table)', function (obj) {
+            if (obj.event === 'remove') {
+                window.remove(obj);
+            } else if (obj.event === 'edit') {
+                window.edit(obj);
+            }else if(obj.event === 'details') {
+                console.log(obj)
+                window.details(obj.data);
+            }
+        });
+
+        table.on('toolbar(client-table)', function (obj) {
+            if (obj.event === 'add') {
+                window.add();
+            } else if (obj.event === 'refresh') {
+                window.refresh();
+            }
+        });
+
+        form.on('submit(client-query)', function (data) {
+            window.refresh(data.field);
+            return false;
+        });
+
+
+        window.add = function () {
+            layer.open({
+                type: 2,
+                title: '新增',
+                shade: 0.1,
+                area: ['750px', '750px'],
+                content: '/system/client/add'
+            });
+        }
+
+        window.edit = function (obj) {
+            layer.open({
+                type: 2,
+                title: '修改',
+                shade: 0.1,
+                area: ['750px', '750px'],
+                content: '/system/client/edit/' + obj.data['id']
+            });
+        }
+
+        window.details = function (data) {
+
+            layer.open({
+                type: 2,
+                title: '<strong>详情</strong>',
+                shade: 0.1,
+                area: ['750px', '750px'],
+                content: '/system/client/details/'+data.id
+            });
+        }
+        window.remove = function (obj) {
+            layer.confirm('确定要删除该客户端', {icon: 3, title: '提示'}, function (index) {
+                layer.close(index);
+                let loading = layer.load();
+                $.ajax({
+                    url: '/system/client/remove/' + obj.data['id'],
+                    type: 'post',
+                    success: function (result) {
+                        layer.close(loading);
+                        if (result.code === 200) {
+                            popup.success(result.msg, function () {
+                                obj.del();
+                            });
+                        } else {
+                            popup.failure(result.msg);
+                        }
+                    }
+                })
+            });
+        }
+        window.refresh = function (param) {
+            table.reload('client-table', {where: param});
+        }
+    })
+</script>
+</html>

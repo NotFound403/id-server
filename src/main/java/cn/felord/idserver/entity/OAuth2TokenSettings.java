@@ -28,6 +28,7 @@ import java.util.Optional;
 @ToString
 @Table(name = "oauth2_token_settings")
 public class OAuth2TokenSettings implements Serializable {
+    private static final long serialVersionUID = -7077164876986169673L;
     @Id
     @Column(name = "client_id", insertable = false, updatable = false)
     private String clientId;

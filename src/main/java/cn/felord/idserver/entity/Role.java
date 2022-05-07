@@ -4,12 +4,21 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.Objects;
 
@@ -24,8 +33,12 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-public class Role {
+@EntityListeners(AuditingEntityListener.class)
+public class Role implements Serializable {
+    private static final long serialVersionUID = -6963523161322981431L;
     @Id
+    @GenericGenerator(name = "uuid-hex", strategy = "uuid.hex")
+    @GeneratedValue(generator = "uuid-hex")
     private String roleId;
 
     @Column(name = "client_id")
@@ -36,15 +49,21 @@ public class Role {
 
     private String roleContent;
 
-    private Instant createTime;
-
-    private String createId;
-
-    private Instant updateTime;
-
-    private String updateId;
+    private String description;
 
     private Boolean enabled;
+
+    @CreatedDate
+    private Instant createTime;
+
+    @CreatedBy
+    private String createId;
+
+    @LastModifiedDate
+    private Instant updateTime;
+
+    @LastModifiedBy
+    private String updateId;
 
     @Override
     public boolean equals(Object o) {

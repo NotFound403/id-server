@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('客户端新增')"/>
+</head>
+<body>
+<form class="layui-form">
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="layui-form-item layui-hide">
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" lay-verify="required" name="id"
+                           th:value="${oauth2Client.id}" type="hidden">
+                </div>
+            </div>
+            <div class="layui-form-item layui-hide">
+                <label class="layui-form-label">客户端ID</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" lay-verify="required" name="clientId"
+                           th:value="${oauth2Client.clientId}" type="text">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label  layui-form-required">客户端名称</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" lay-verify="required" name="clientName"
+                           placeholder="请输入客户端名称" th:value="${oauth2Client.clientName}"
+                           type="text">
+                </div>
+            </div>
+            <!--            <div class="layui-form-item">
+                            <label class="layui-form-label layui-form-required">客户端密钥</label>
+                            <div class="layui-input-block">
+                                <input autocomplete="off" class="layui-input" lay-verify="required" name="clientSecret"
+                                       placeholder="请输入客户端密钥"
+                                       type="text">
+                            </div>
+                        </div>-->
+            <div class="layui-form-item">
+                <label class="layui-form-label">客户端类型</label>
+                <div class="layui-input-block ">
+                    <input type="radio" lay-filter="clientType"
+                           th:checked="${oauth2Client.clientAuthenticationMethods[0].clientAuthenticationMethod ne 'none'}"
+                           name="clientType" value="confidential" title="机密型"
+                           checked>
+                    <input type="radio" lay-filter="clientType"
+                           th:checked="${oauth2Client.clientAuthenticationMethods[0].clientAuthenticationMethod eq 'none'}"
+                           name="clientType" value="public" title="公共型">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label layui-form-required">认证方式</label>
+                <div th:if="${oauth2Client.clientAuthenticationMethods[0].clientAuthenticationMethod ne 'none'}"
+                     class="layui-input-block layui-form">
+                    <select id="clientAuthenticationMethods" lay-filter="clientAuthenticationMethods"
+                            lay-verify="required"
+                            name="clientAuthenticationMethods" xm-select="select1" xm-select-radio
+                            xm-select-skin="normal">
+                        <option value=""></option>
+                        <option value="client_secret_basic"
+                                th:selected="${oauth2Client.clientAuthenticationMethods[0].clientAuthenticationMethod eq 'client_secret_basic'}">
+                            CLIENT_SECRET_BASIC
+                        </option>
+                        <option value="client_secret_post"
+                                th:selected="${oauth2Client.clientAuthenticationMethods[0].clientAuthenticationMethod eq 'client_secret_post'}">
+                            CLIENT_SECRET_POST
+                        </option>
+                        <option value="client_secret_jwt"
+                                th:selected="${oauth2Client.clientAuthenticationMethods[0].clientAuthenticationMethod eq 'client_secret_jwt'}">
+                            CLIENT_SECRET_JWT
+                        </option>
+                        <option value="private_key_jwt"
+                                th:selected="${oauth2Client.clientAuthenticationMethods[0].clientAuthenticationMethod eq 'private_key_jwt'}">
+                            PRIVATE_KEY_JWT
+                        </option>
+                    </select>
+                </div>
+                <div th:if="${oauth2Client.clientAuthenticationMethods[0].clientAuthenticationMethod eq 'none'}"
+                     class="layui-input-block layui-form">
+                    <select id="clientAuthenticationMethods" lay-filter="clientAuthenticationMethods"
+                            lay-verify="required"
+                            name="clientAuthenticationMethods" xm-select="select1" xm-select-radio
+                            xm-select-skin="normal">
+                        <option value="none" selected>NONE</option>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label layui-form-required">授权方式</label>
+                <div class="layui-input-block">
+                    <select id="authorizationGrantTypes" lay-filter="authorizationGrantTypes" lay-verify="required"
+                            name="authorizationGrantTypes" xm-select="select2"
+                            xm-select-skin="normal">
+                        <option value=""></option>
+                        <th:block th:each="oAuth2GrantType: ${oauth2Client.authorizationGrantTypes}">
+                            <option th:if="${oAuth2GrantType.grantTypeName eq 'authorization_code'}"
+                                    value="authorization_code"
+                                    th:selected="${oAuth2GrantType.grantTypeName eq 'authorization_code'}">
+                                AUTHORIZATION_CODE
+                            </option>
+                            <option th:if="${oAuth2GrantType.grantTypeName eq 'client_credentials'}"
+                                    value="client_credentials"
+                                    th:selected="${oAuth2GrantType.grantTypeName eq 'client_credentials'}">
+                                CLIENT_CREDENTIALS
+                            </option>
+                            <option th:if="${oAuth2GrantType.grantTypeName eq 'refresh_token'}" value="refresh_token"
+                                    th:selected="${oAuth2GrantType.grantTypeName eq 'refresh_token'}">REFRESH_TOKEN
+                            </option>
+                        </th:block>
+                    </select>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label layui-form-required">授权范围</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" lay-verify="required" name="scopes"
+                           placeholder="请输入授权范围，多个用英文逗号隔开" th:value="${oauth2Scope}"
+                           type="text">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label layui-form-required">重定向URI</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" lay-verify="required" name="redirectUris"
+                           placeholder="请输入重定向uri，多个用英文逗号隔开" th:value="${redirectUris}"
+                           type="text">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label layui-form-required">proofKey</label>
+                <div class="layui-input-block ">
+                    <input type="radio" name="requireProofKey" th:checked="${oauth2Client.clientSettings.requireProofKey}" value="true" title="需要">
+                    <input type="radio" name="requireProofKey" th:checked="${not oauth2Client.clientSettings.requireProofKey}" value="false" title="不需要">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label layui-form-required">授权确认</label>
+                <div class="layui-input-block ">
+                    <input type="radio" name="requireAuthorizationConsent" th:checked="${oauth2Client.clientSettings.requireAuthorizationConsent}" value="true" title="需要">
+                    <input type="radio" name="requireAuthorizationConsent" th:checked="${not oauth2Client.clientSettings.requireAuthorizationConsent}" value="false" title="不需要">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label layui-form-required">JWK端点</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" name="jwkSetUrl"
+                           placeholder="授权方式为PRIVATE_KEY_JWT时请输入客户端提供的jwkSetUrl"
+                           th:value="${oauth2Client.clientSettings.jwkSetUrl}"
+                           type="text" th:readonly="${oauth2Client.clientAuthenticationMethods[0].clientAuthenticationMethod ne 'private_key_jwt'}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">签名算法</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" lay-filter="signingAlgorithm" name="signingAlgorithm"
+                           placeholder="认证方式为CLIENT_SECRET_JWT或PRIVATE_KEY_JWT时需要指定签名算法"
+                           th:value="${oauth2Client.clientSettings.signingAlgorithm}"
+                           type="text" readonly>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label layui-form-required">访问令牌TTL（s）</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" name="accessTokenTimeToLive"
+                           placeholder="访问令牌生存时间，单位秒"
+                           type="number" th:value="${oauth2Client.tokenSettings.accessTokenTimeToLive.getSeconds()}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label layui-form-required">令牌格式</label>
+                <div class="layui-input-block ">
+                    <input type="radio" name="tokenFormat" value="self-contained" title="透明令牌" checked>
+                    <!--                    <input type="radio" name="tokenFormat" value="reference" title="不透明令牌">-->
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label layui-form-required">复用刷新令牌</label>
+                <div class="layui-input-block ">
+                    <input type="radio" name="reuseRefreshTokens" th:checked="${oauth2Client.tokenSettings.reuseRefreshTokens}" value="true" title="复用">
+                    <input type="radio" name="reuseRefreshTokens" th:checked="${not oauth2Client.tokenSettings.reuseRefreshTokens}" value="false" title="不复用">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label layui-form-required">刷新令牌TTL（s）</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" name="refreshTokenTimeToLive"
+                           placeholder="刷新令牌生存时间，单位秒"
+                           type="number" th:value="${oauth2Client.tokenSettings.refreshTokenTimeToLive.getSeconds()}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label layui-form-required">ID Token签名算法</label>
+                <div class="layui-input-block">
+                    <input autocomplete="off" class="layui-input" name="idTokenSignatureAlgorithm"
+                           placeholder="ID Token签名算法"
+                           type="text" value="RS256" readonly>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div class="bottom">
+        <div class="button-container">
+            <button class="pear-btn pear-btn-primary pear-btn-sm" lay-filter="client-update" lay-submit="" type="submit">
+                <i class="layui-icon layui-icon-ok"></i>
+                提交
+            </button>
+            <button class="pear-btn pear-btn-sm" type="reset">
+                <i class="layui-icon layui-icon-refresh"></i>
+                重置
+            </button>
+        </div>
+    </div>
+</form>
+<th:block th:include="include :: footer"/>
+<script>
+    layui.use(['form', 'select', 'jquery'], function () {
+        let form = layui.form;
+
+        let $ = layui.jquery;
+        let formSelects = layui.select;
+
+        let $clientAuthenticationMethods = $('#clientAuthenticationMethods');
+        form.on('radio(clientType)', function (data) {
+            $clientAuthenticationMethods.empty();
+            let opts = data.value === 'confidential' ? '<option value=""></option>' +
+                '<option value="client_secret_basic">CLIENT_SECRET_BASIC</option>' +
+                '<option value="client_secret_post">CLIENT_SECRET_POST</option>' +
+                '<option value="client_secret_jwt">CLIENT_SECRET_JWT</option>' +
+                '<option value="private_key_jwt">PRIVATE_KEY_JWT</option>' :
+                '<option value="none" selected >NONE</option>';
+            $clientAuthenticationMethods.append(opts)
+            formSelects.render('select1');
+            formSelects.value('select1', ['none'])
+        })
+
+        formSelects.on('select1', function (id, vals, val, isAdd, isDisabled) {
+            let name = val.name;
+            let signingAlgorithm = null;
+            let $jwk = $('input[name="jwkSetUrl"]');
+            $jwk.attr("readonly", "readonly");
+            $jwk.val(null);
+            if (isAdd) {
+                if (name === 'CLIENT_SECRET_JWT') {
+                    signingAlgorithm = 'HS256';
+                } else if (name === 'PRIVATE_KEY_JWT') {
+                    signingAlgorithm = 'RS256';
+                    $jwk.removeAttr("readonly");
+                }
+            }
+            $('input[name="signingAlgorithm"]').val(signingAlgorithm);
+        }, true);
+
+        form.on('submit(client-update)', function (data) {
+            let field = data.field;
+            field.clientAuthenticationMethods = field.clientAuthenticationMethods.split(',')
+            field.authorizationGrantTypes = field.authorizationGrantTypes.split(',')
+            field.scopes = field.scopes.split(',')
+            field.redirectUris = field.redirectUris.split(',')
+            field.clientSettings = {
+                requireProofKey: field.requireProofKey,
+                requireAuthorizationConsent: field.requireAuthorizationConsent,
+                jwkSetUrl: field.jwkSetUrl,
+                signingAlgorithm: field.signingAlgorithm
+            }
+            field.tokenSettings = {
+                accessTokenTimeToLive: `PT${field.accessTokenTimeToLive}S`,
+                tokenFormat: field.tokenFormat,
+                reuseRefreshTokens: field.reuseRefreshTokens,
+                refreshTokenTimeToLive: `PT${field.refreshTokenTimeToLive}S`,
+                idTokenSignatureAlgorithm: field.idTokenSignatureAlgorithm
+            }
+            $.ajax({
+                url: '/system/client/edit',
+                data: JSON.stringify(field),
+                dataType: 'json',
+                contentType: 'application/json',
+                type: 'post',
+                success: function (result) {
+                    if (result.code === 200) {
+                        layer.msg(result.msg, {icon: 1, time: 1000}, function () {
+                            parent.layer.close(parent.layer.getFrameIndex(window.name));
+                            parent.layui.table.reload("client-table");
+                        });
+                    } else {
+                        layer.msg(result.msg, {icon: 2, time: 1000});
+                    }
+                }
+            })
+            return false;
+        });
+    })
+</script>
+</body>
+</html>

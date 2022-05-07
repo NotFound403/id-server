@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('ID Server')"/>
+    <link href="admin/css/loader.css" rel="stylesheet"/>
+    <link href="admin/css/admin.css" rel="stylesheet"/>
+</head>
+<!-- 结 构 代 码 -->
+<body class="layui-layout-body pear-admin">
+<!-- 布 局 框 架 -->
+<div class="layui-layout layui-layout-admin">
+    <!-- 顶 部 样 式 -->
+    <div class="layui-header">
+        <!-- 菜 单 顶 部 -->
+        <div class="layui-logo">
+            <!-- 图 标 -->
+            <img class="logo"/>
+            <!-- 标 题 -->
+            <span class="title"></span>
+        </div>
+        <!-- 顶 部 左 侧 功 能 -->
+        <ul class="layui-nav layui-layout-left">
+            <li class="collaspe layui-nav-item"><a class="layui-icon layui-icon-shrink-right" href="#"></a></li>
+            <li class="refresh layui-nav-item"><a class="layui-icon layui-icon-refresh-1" href="#" loading=600></a></li>
+        </ul>
+        <!-- 多 系 统 菜 单 -->
+        <div class="layui-layout-control" id="control"></div>
+        <!-- 顶 部 右 侧 菜 单 -->
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item layui-hide-xs"><a class="fullScreen layui-icon layui-icon-screen-full"
+                                                        href="#"></a></li>
+            <li class="layui-nav-item layui-hide-xs"><a class="layui-icon layui-icon-website"
+                                                        href="http://www.pearadmin.com"></a></li>
+            <li class="layui-nav-item layui-hide-xs message"></li>
+            <li class="layui-nav-item user">
+                <!-- 头 像 -->
+                <a class="layui-icon layui-icon-username" href="javascript:;"></a>
+                <!-- 功 能 菜 单 -->
+                <dl class="layui-nav-child">
+                    <dd><a user-menu-id="5555" user-menu-title="基本资料" user-menu-url="/system/user/center">基本资料</a></dd>
+                    <dd><a class="logout" href="javascript:void(0);">注销登录</a></dd>
+                </dl>
+            </li>
+            <!-- 主 题 配 置 -->
+            <li class="layui-nav-item setting"><a class="layui-icon layui-icon-more-vertical" href="#"></a></li>
+        </ul>
+    </div>
+    <!-- 侧 边 区 域 -->
+    <div class="layui-side layui-bg-black">
+        <!-- 菜 单 顶 部 -->
+        <div class="layui-logo">
+            <!-- 图 标 -->
+            <img class="logo"/>
+            <!-- 标 题 -->
+            <span class="title"></span>
+        </div>
+        <!-- 菜 单 内 容 -->
+        <div class="layui-side-scroll">
+            <div id="sideMenu"></div>
+        </div>
+    </div>
+    <!-- 视 图 页 面 -->
+    <div class="layui-body">
+        <!-- 内 容 页 面 -->
+        <div id="content"></div>
+    </div>
+    <!-- 遮 盖 层 -->
+    <div class="pear-cover"></div>
+    <!-- 加 载 动 画 -->
+    <div class="loader-main">
+        <!-- 动 画 对 象 -->
+        <div class="loader"></div>
+    </div>
+</div>
+<!-- 移 动 端 便 捷 操 作 -->
+<div class="pear-collasped-pe collaspe">
+    <a class="layui-icon layui-icon-shrink-right" href="#"></a>
+</div>
+<!-- 依 赖 脚 本 -->
+<th:block th:include="include :: footer"/>
+<script th:inline="javascript">
+    layui.use(['admin', 'jquery', 'layer', 'popup'], function () {
+        let admin = layui.admin;
+        let $ = layui.jquery;
+        let layer = layui.layer;
+        let popup = layui.popup;
+
+        // 框架初始化时会读取 根目录下 pear.config.yml 文件作为初始化配置
+        // 你可以通过 admin.setConfigPath 方法修改配置文件位置
+        // 你可以通过 admin.setConfigType 方法修改配置文件类型
+        admin.setConfigType("yml");
+        admin.setConfigPath("pear.config.yml");
+        admin.render();
+
+        // 注销实现
+        admin.logout(function () {
+            let loading = layer.load();
+            $.ajax({
+                url: '/logout',
+                dataType: 'json',
+                type: 'post',
+                success: function (result) {
+                    layer.close(loading);
+                    if (result.success) {
+                        popup.success(result.msg, function () {
+                            location.href = "/system/login";
+                        });
+                        return true;
+                    }
+                }
+            })
+        })
+    })
+</script>
+</body>
+</html>

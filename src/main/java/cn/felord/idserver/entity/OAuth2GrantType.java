@@ -16,7 +16,10 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
+ * The type Oauth2 grant type.
+ *
  * @author felord.cn
+ * @see AuthorizationGrantType
  * @since 1.0.0
  */
 @Entity
@@ -26,15 +29,19 @@ import java.util.Objects;
 @IdClass(OAuth2GrantType.GrantTypeId.class)
 @Table(name = "oauth2_grant_type")
 public class OAuth2GrantType implements Serializable {
-
+    private static final long serialVersionUID = -6157485899335872648L;
     @Id
     @Column(name = "client_id", insertable = false, updatable = false)
     private String clientId;
     @Id
     private String grantTypeName;
 
+    /**
+     * The type Grant type id.
+     */
     @Data
     public static class GrantTypeId implements Serializable {
+        private static final long serialVersionUID = 4877568519791270151L;
         private String clientId;
         private String grantTypeName;
     }
@@ -53,6 +60,11 @@ public class OAuth2GrantType implements Serializable {
         return Objects.hash(clientId, grantTypeName);
     }
 
+    /**
+     * To grant type authorization grant type.
+     *
+     * @return the authorization grant type
+     */
     public AuthorizationGrantType toGrantType() {
         return new AuthorizationGrantType(grantTypeName);
     }

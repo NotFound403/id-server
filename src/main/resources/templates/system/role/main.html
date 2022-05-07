@@ -10,11 +10,11 @@
             <div class="layui-form-item">
                 <label class="layui-form-label">角色名</label>
                 <div class="layui-input-inline">
-                    <input class="layui-input" name="roleName" placeholder="" type="text">
+                    <input class="layui-input" name="roleContent" placeholder="" type="text">
                 </div>
                 <label class="layui-form-label">角色标识</label>
                 <div class="layui-input-inline">
-                    <input class="layui-input" name="roleCode" placeholder="" type="text">
+                    <input class="layui-input" name="roleName" placeholder="" type="text">
                 </div>
                 <button class="pear-btn pear-btn-md pear-btn-primary" lay-filter="role-query" lay-submit>
                     <i class="layui-icon layui-icon-search"></i>
@@ -36,12 +36,12 @@
 </body>
 
 <script id="role-toolbar" type="text/html">
-    <button sec:authorize="hasPermission('/system/role/add','sys:role:add')"
+    <button
             class="pear-btn pear-btn-primary pear-btn-md" lay-event="add">
         <i class="layui-icon layui-icon-add-1"></i>
         新增
     </button>
-    <button sec:authorize="hasPermission('/system/role/remove','sys:role:remove')" class="pear-btn pear-btn-md"
+    <button  class="pear-btn pear-btn-md"
             lay-event="batchRemove">
         <i class="layui-icon layui-icon-delete"></i>
         删除
@@ -49,21 +49,21 @@
 </script>
 
 <script id="role-bar" type="text/html">
-    <button sec:authorize="hasPermission('/system/role/edit','sys:role:edit')"
+    <button
             class="pear-btn pear-btn-primary pear-btn-sm" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>
     </button>
-    <button sec:authorize="hasPermission('/system/role/power','sys:role:power')"
+    <button
             class="pear-btn pear-btn-warming pear-btn-sm" lay-event="power"><i
             class="layui-icon layui-icon-vercode"></i>
     </button>
-    <button sec:authorize="hasPermission('/system/role/remove','sys:role:remove')"
+    <button
             class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i class="layui-icon layui-icon-delete"></i>
     </button>
 </script>
 
 <script id="role-enable" type="text/html">
     <input type="checkbox" name="enable" value="{{d.roleId}}" lay-skin="switch" lay-text="启用|禁用"
-           lay-filter="role-enable" {{d.enable== '0' ? 'checked' : '' }} >
+           lay-filter="role-enable" {{d.enabled== true ? 'checked' : '' }} >
 </script>
 
 <th:block th:include="include :: footer"/>
@@ -80,11 +80,10 @@
         let cols = [
             [
                 {type: 'checkbox'},
-                {title: '角色名', field: 'roleName', align: 'center', width: 100},
-                {title: 'Key值', field: 'roleCode', align: 'center'},
-                {title: '描述', field: 'details', align: 'center'},
-                {title: '是否可用', field: 'enable', align: 'center', templet: '#role-enable'},
-                {title: '排序', field: 'sort', align: 'center'},
+                {title: '角色名', field: 'roleContent', align: 'center', width: 100},
+                {title: '编码', field: 'roleName', align: 'center'},
+                {title: '描述', field: 'description', align: 'center'},
+                {title: '是否可用', field: 'enabled', align: 'center', templet: '#role-enable'},
                 {title: '操作', toolbar: '#role-bar', align: 'center', width: 195}
             ]
         ]
@@ -96,6 +95,16 @@
             cols: cols,
             skin: 'line',
             toolbar: '#role-toolbar',
+            text: {none: '暂无角色信息'},
+            parseData: function (response) {
+
+                return {
+                    "code": response.code, //返回状态码
+                    "msg": response.msg, //解析提示信息
+                    "count": response.data.totalElements, //后台返回的数据总条数，用于自定义分页使用
+                    "data": response.data.content //解析数据列表
+                };
+            },
             defaultToolbar: [{
                 title: '刷新',
                 layEvent: 'refresh',

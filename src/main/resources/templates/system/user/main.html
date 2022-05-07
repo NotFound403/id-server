@@ -79,19 +79,13 @@
            lay-filter="user-enable" {{ d.enabled== true ? 'checked' : '' }} />
 </script>
 
-<script id="user-sex" type="text/html">
+<script id="user-gender" type="text/html">
     {{#if (d.gender == 1) { }}
     <span>男</span>
     {{# }else if(d.gender == 0){ }}
     <span>女</span>
-    {{# } }}
-</script>
-
-<script id="user-login" type="text/html">
-    {{#if (d.login == 0) { }}
-    <span>在线</span>
-    {{# }else if(d.sex == 1){ }}
-    <span>离线</span>
+    {{# }else { }}
+    <span>未知</span>
     {{# } }}
 </script>
 
@@ -113,7 +107,7 @@
                 {title: '账号', field: 'username', align: 'center'},
                 {title: '姓名', field: 'realName', align: 'center', width: 110},
                 {title: '昵称', field: 'nickName', align: 'center', width: 110},
-                {title: '性别', field: 'gender', align: 'center', templet: '#user-sex', width: 60},
+                {title: '性别', field: 'gender', align: 'center', templet: '#user-gender', width: 60},
                 {title: '电话', field: 'phoneNumber', align: 'center'},
                 {title: '邮箱', field: 'email', align: 'center'},
                 {title: '启用', field: 'enabled', align: 'center', templet: '#user-enable', width: 120},

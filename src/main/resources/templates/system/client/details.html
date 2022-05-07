@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('客户端详情')"/>
+    <link rel="stylesheet" th:href="@{/admin/css/other/console1.css}"/>
+</head>
+<body>
+<div class="layui-card">
+    <div class="layui-card-header">基本信息</div>
+    <div class="layui-card-body">
+        <ul class="list">
+            <li class="list-item"><span class="title">客户端ID</span><span class="footer" th:text="${oauth2Client.clientId}">--</span></li>
+            <li class="list-item"><span class="title">密钥</span><span class="footer" th:text="${oauth2Client.clientSecret}">--</span></li>
+            <li class="list-item"><span class="title">客户端名称</span><span class="footer" th:text="${oauth2Client.clientName}">--</span></li>
+            <li class="list-item"><span class="title">创建时间</span><span class="footer" th:text="${#dates.format(oauth2Client.clientIdIssuedAt, 'yyyy-MM-dd HH:mm:ss')}">--</span></li>
+        </ul>
+    </div>
+</div>
+<div class="layui-card">
+    <div class="layui-card-header">认证方式</div>
+    <div class="layui-card-body">
+        <ul class="list">
+            <li class="list-item">
+                <div class="layui-btn-container tag">
+                    <button plain th:each="clientAuthMethod: ${oauth2Client.clientAuthenticationMethods}" type="button" class="tag-item tag-item-normal layui-btn layui-btn-primary layui-btn-sm" th:text="${{#strings.toUpperCase(clientAuthMethod.clientAuthenticationMethod)}}"></button>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="layui-card">
+    <div class="layui-card-header">授权方式</div>
+    <div class="layui-card-body">
+        <ul class="list">
+            <li class="list-item">
+                <div class="layui-btn-container tag">
+                    <button plain th:each="oAuth2GrantType: ${oauth2Client.authorizationGrantTypes}" type="button" class="tag-item tag-item-normal layui-btn layui-btn-primary layui-btn-sm" th:text="${{#strings.toUpperCase(oAuth2GrantType.grantTypeName)}}"></button>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="layui-card">
+    <div class="layui-card-header">授权范围</div>
+    <div class="layui-card-body">
+        <ul class="list">
+            <li class="list-item">
+                <div class="layui-btn-container tag">
+                    <button   th:each="oAuth2Scope: ${oauth2Client.scopes}" type="button" class="tag-item tag-item-normal layui-btn layui-btn-primary layui-btn-sm" th:text="${{oAuth2Scope.scope}}"></button>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="layui-card">
+    <div class="layui-card-header">重定向URI</div>
+    <div class="layui-card-body">
+        <ul class="list">
+            <li  th:each="redirectUri: ${oauth2Client.redirectUris}" class="list-item">
+                <span class="title" th:text="${{redirectUri.redirectUri}}">--</span>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="layui-card">
+    <div class="layui-card-header">客户端配置</div>
+    <div class="layui-card-body">
+        <ul class="list">
+            <li class="list-item"><span class="title">是否需要proofKey</span><span class="footer" th:text="${oauth2Client.clientSettings.requireProofKey?'是':'否'}">--</span></li>
+            <li class="list-item"><span class="title">是否授权确认</span><span class="footer" th:text="${oauth2Client.clientSettings.requireAuthorizationConsent?'是':'否'}">--</span></li>
+            <li class="list-item"><span class="title">JWK端点</span><span class="footer" th:text="${oauth2Client.clientSettings.jwkSetUrl}">--</span></li>
+            <li class="list-item"><span class="title">签名算法</span><span class="footer" th:text="${oauth2Client.clientSettings.signingAlgorithm}">--</span></li>
+        </ul>
+    </div>
+</div>
+<div class="layui-card">
+    <div class="layui-card-header">令牌配置</div>
+    <div class="layui-card-body">
+        <ul class="list">
+            <li class="list-item"><span class="title">访问令牌有效期(s)</span><span class="footer" th:text="${oauth2Client.tokenSettings.accessTokenTimeToLive.getSeconds()}">--</span></li>
+            <li class="list-item"><span class="title">令牌格式</span><span class="footer" th:text="${oauth2Client.tokenSettings.tokenFormat}">--</span></li>
+            <li class="list-item"><span class="title">是否复用刷新令牌</span><span class="footer" th:text="${oauth2Client.tokenSettings.reuseRefreshTokens?'是':'否'}">--</span></li>
+            <li class="list-item"><span class="title">刷新令牌有效期(s)</span><span class="footer" th:text="${oauth2Client.tokenSettings.refreshTokenTimeToLive.getSeconds()}">--</span></li>
+            <li class="list-item"><span class="title">ID Token签名算法</span><span class="footer" th:text="${oauth2Client.tokenSettings.idTokenSignatureAlgorithm}">--</span></li>
+        </ul>
+    </div>
+</div>
+<th:block th:include="include :: footer"/>
+</body>
+</html>

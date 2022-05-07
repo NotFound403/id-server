@@ -11,8 +11,10 @@ spring:
     hibernate:
       ddl-auto: update
     open-in-view: false
+    database: mysql
 logging:
   level:
     org.springframework.web: trace
     org.springframework.security.oauth2: debug
     org.springframework.jdbc.core: debug
+    org.springframework.security: trace
