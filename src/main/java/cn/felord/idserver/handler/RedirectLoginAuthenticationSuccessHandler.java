@@ -30,15 +30,25 @@ public class RedirectLoginAuthenticationSuccessHandler implements Authentication
     private final ObjectMapper objectMapper = new ObjectMapper()
             .registerModule(new JavaTimeModule());
     private RequestCache requestCache = new HttpSessionRequestCache();
-    private static final String defaultTargetUrl = "/system";
+    private static final String defaultTargetUrl = "/";
+    private final String redirect;
+
+    public RedirectLoginAuthenticationSuccessHandler() {
+        this.redirect = defaultTargetUrl;
+    }
+
+    public RedirectLoginAuthenticationSuccessHandler(String redirect) {
+        this.redirect = redirect;
+    }
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
         SavedRequest savedRequest = this.requestCache.getRequest(request, response);
 
-        String targetUrl = savedRequest == null ? defaultTargetUrl : savedRequest.getRedirectUrl();
+        String targetUrl = savedRequest == null ? this.redirect : savedRequest.getRedirectUrl();
         clearAuthenticationAttributes(request);
-        this.write(RestBody.okData(Collections.singletonMap("targetUrl", targetUrl),"登录成功！"), response);
+        this.write(RestBody.okData(Collections.singletonMap("targetUrl", targetUrl), "登录成功！"), response);
     }
 
     public void setRequestCache(RequestCache requestCache) {

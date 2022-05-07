@@ -1,12 +1,14 @@
 package cn.felord.idserver.endpoint.oauth2;
 
-import cn.felord.idserver.entity.Role;
-import cn.felord.idserver.service.RoleService;
+import cn.felord.idserver.entity.OAuth2Scope;
+import cn.felord.idserver.service.OAuth2ScopeService;
+import lombok.AllArgsConstructor;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsent;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsentService;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
+import org.springframework.security.oauth2.server.authorization.config.ProviderSettings;
 import org.springframework.security.oauth2.server.authorization.web.OAuth2AuthorizationEndpointFilter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +20,7 @@ import java.security.Principal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -26,18 +29,13 @@ import java.util.Set;
  * @author felord.cn
  */
 @Controller
+@AllArgsConstructor
 public class AuthorizationConsentController {
     private final RegisteredClientRepository registeredClientRepository;
     private final OAuth2AuthorizationConsentService authorizationConsentService;
-    private final RoleService roleService;
+    private final OAuth2ScopeService oAuth2ScopeService;
+    private final ProviderSettings providerSettings;
 
-    public AuthorizationConsentController(RegisteredClientRepository registeredClientRepository,
-                                          OAuth2AuthorizationConsentService authorizationConsentService,
-                                          RoleService roleService) {
-        this.registeredClientRepository = registeredClientRepository;
-        this.authorizationConsentService = authorizationConsentService;
-        this.roleService = roleService;
-    }
 
     /**
      * {@link OAuth2AuthorizationEndpointFilter} 会302重定向到{@code  /oauth2/consent}并携带入参
@@ -63,15 +61,15 @@ public class AuthorizationConsentController {
         Set<String> authorizedScopes = currentAuthorizationConsent != null ?
                 currentAuthorizationConsent.getScopes() : Collections.emptySet();
 
-        Set<Role> scopesToApproves = new HashSet<>();
-        Set<Role> previouslyApprovedScopesSet = new HashSet<>();
+        Set<OAuth2Scope> scopesToApproves = new HashSet<>();
+        Set<OAuth2Scope> previouslyApprovedScopesSet = new HashSet<>();
 
         String[] scopes = StringUtils.delimitedListToStringArray(scope, " ");
 
-        Set<Role> oAuth2Scopes = roleService.findByNames(clientId, Arrays.asList(scopes));
+        List<OAuth2Scope> oAuth2Scopes = oAuth2ScopeService.findByClientIdAndScope(clientId, Arrays.asList(scopes));
 
               oAuth2Scopes.forEach(oAuth2Scope -> {
-                  if (authorizedScopes.contains(oAuth2Scope.getRoleName())) {
+                  if (authorizedScopes.contains(oAuth2Scope.getScope())) {
                       previouslyApprovedScopesSet.add(oAuth2Scope);
                   } else {
                       scopesToApproves.add(oAuth2Scope);
@@ -80,6 +78,7 @@ public class AuthorizationConsentController {
 
         String clientName = registeredClient.getClientName();
 
+        model.addAttribute("authorizationEndpoint", providerSettings.getAuthorizationEndpoint());
         model.addAttribute("clientId", clientId);
         model.addAttribute("clientName", clientName);
         model.addAttribute("state", state);

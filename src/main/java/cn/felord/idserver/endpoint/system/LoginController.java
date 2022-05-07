@@ -46,7 +46,6 @@ public class LoginController {
         return "/system/index";
     }
 
-
     /**
      * Home string.
      *
@@ -56,12 +55,5 @@ public class LoginController {
     public String home(){
         return "console/console";
     }
-
-
-    @GetMapping("/system/oauth2Login")
-    public String oauthLogin(){
-        return "/oauth2Login";
-    }
-
 
 }

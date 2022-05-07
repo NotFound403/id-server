@@ -55,7 +55,6 @@ public class RoleController extends BaseController {
     @PostMapping("/system/role/add")
     @ResponseBody
     public Rest<?> add(@RequestBody Role role) {
-        role.setClientId("0");
         jpaRoleService.save(role);
         return RestBody.ok("操作成功");
     }

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" th:href="@{/component/pear/css/pear.css}"/>
+    <style>
+        h1{
+            margin-top: 200px;
+            color: #5FB878;
+        }
+        .layui-card-body{
+            text-align: center;height: 500px;
+        }
+    </style>
+</head>
+<body class="pear-container">
+<div class="layui-card">
+    <div class="layui-card-header"></div>
+    <div class="layui-card-body">
+        <h1><b th:text="'你好！'+${principal}+'，此页面为中间页'"></b></h1>
+    </div>
+</div>
+</body>
+<script th:src="@{/component/layui/layui.js}"></script>
+<script th:src="@{/component/pear/pear.js}"></script>
+</html>

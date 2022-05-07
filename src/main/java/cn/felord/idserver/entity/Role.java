@@ -29,7 +29,7 @@ import java.util.Objects;
  * @since 1.0.0
  */
 @Entity
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"client_id", "role_name"})})
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"role_name"})})
 @Getter
 @Setter
 @ToString
@@ -40,9 +40,6 @@ public class Role implements Serializable {
     @GenericGenerator(name = "uuid-hex", strategy = "uuid.hex")
     @GeneratedValue(generator = "uuid-hex")
     private String roleId;
-
-    @Column(name = "client_id")
-    private String clientId;
 
     @Column(name = "role_name")
     private String roleName;

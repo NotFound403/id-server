@@ -2,8 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <th:block th:include="include :: header('ID Server')"/>
-    <link href="admin/css/loader.css" rel="stylesheet"/>
-    <link href="admin/css/admin.css" rel="stylesheet"/>
+    <link th:href="@{/admin/css/loader.css}" rel="stylesheet"/>
+    <link th:href="@{/admin/css/admin.css}" rel="stylesheet"/>
 </head>
 <!-- 结 构 代 码 -->
 <body class="layui-layout-body pear-admin">
@@ -30,7 +30,7 @@
             <li class="layui-nav-item layui-hide-xs"><a class="fullScreen layui-icon layui-icon-screen-full"
                                                         href="#"></a></li>
             <li class="layui-nav-item layui-hide-xs"><a class="layui-icon layui-icon-website"
-                                                        href="http://www.pearadmin.com"></a></li>
+                                                        href="https://felord.cn"></a></li>
             <li class="layui-nav-item layui-hide-xs message"></li>
             <li class="layui-nav-item user">
                 <!-- 头 像 -->

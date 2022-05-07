@@ -2,6 +2,7 @@ package cn.felord.idserver;
 
 import cn.felord.idserver.entity.Menu;
 import cn.felord.idserver.service.JpaMenuService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,8 +29,7 @@ public class MenuTests {
             menu.setIcon("icon pear-icon pear-icon-menu");
             menu.setHref("/system/menu/main");
         Menu save = jpaMenuService.save(menu);
-
-        System.out.println("save = " + save);
+        Assertions.assertNotNull(save.getId());
 
     }
 }

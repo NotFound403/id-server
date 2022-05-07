@@ -44,15 +44,13 @@
                 type: "post",
                 dataType: 'json',
                 success: function (result) {
-                    console.log(result)
                     layer.close(loader);
                     btn.stop(function () {
                         if (result.code===200){
                             popup.success(result.msg, function () {
                                 location.href =result.data.targetUrl;
                             })
-                        }
-                        if (result.code===401) {
+                        } else if (result.code===401) {
                             popup.failure(result.msg);
                         }
                     })

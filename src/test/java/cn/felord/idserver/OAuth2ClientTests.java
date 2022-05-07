@@ -4,6 +4,7 @@ import cn.felord.idserver.entity.OAuth2Client;
 import cn.felord.idserver.entity.OAuth2Scope;
 import cn.felord.idserver.repository.OAuth2ClientRepository;
 import cn.felord.idserver.service.OAuth2ClientService;
+import cn.felord.idserver.service.OAuth2ScopeService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -45,6 +46,8 @@ public class OAuth2ClientTests {
     private OAuth2ClientService registeredClientRepository;
     @Autowired
     private OAuth2ClientRepository oAuth2ClientRepository;
+    @Autowired
+    private OAuth2ScopeService oAuth2ScopeService;
     @Autowired
     MockMvc mockMvc;
     private ObjectMapper objectMapper = new ObjectMapper().registerModules(new JavaTimeModule());

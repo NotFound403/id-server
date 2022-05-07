@@ -88,7 +88,7 @@ public class IdServerSecurityConfiguration {
          */
         @Bean
         public ProviderSettings providerSettings(@Value("${server.port}") Integer port) {
-            //TODO 生产应该使用域名
+            //TODO 配置化 生产应该使用域名
             return ProviderSettings.builder().issuer("http://localhost:" + port).build();
         }
     }
@@ -114,7 +114,6 @@ public class IdServerSecurityConfiguration {
         @Order(Ordered.HIGHEST_PRECEDENCE + 1)
         SecurityFilterChain systemSecurityFilterChain(HttpSecurity http) throws Exception {
             SimpleAuthenticationEntryPoint authenticationEntryPoint = new SimpleAuthenticationEntryPoint();
-
             AuthenticationEntryPointFailureHandler authenticationFailureHandler = new AuthenticationEntryPointFailureHandler(authenticationEntryPoint);
             http.antMatcher(SYSTEM_ANT_PATH).csrf().disable()
                     .headers().frameOptions().sameOrigin()
@@ -125,7 +124,7 @@ public class IdServerSecurityConfiguration {
                       .authenticationEntryPoint(authenticationEntryPoint)*/
                     .and()
                     .formLogin().loginPage("/system/login").loginProcessingUrl("/system/login")
-                    .successHandler(new RedirectLoginAuthenticationSuccessHandler())
+                    .successHandler(new RedirectLoginAuthenticationSuccessHandler("/system"))
                     .failureHandler(authenticationFailureHandler).permitAll();
             return http.build();
         }
@@ -133,7 +132,7 @@ public class IdServerSecurityConfiguration {
     }
 
     /**
-     * 后台安全配置.
+     * 普通用户访问安全配置.
      *
      * @author felord.cn
      * @since 1.0.0
@@ -153,6 +152,8 @@ public class IdServerSecurityConfiguration {
         SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http,
                                                        @Qualifier("authorizationServerSecurityFilterChain") SecurityFilterChain securityFilterChain) throws Exception {
             DefaultSecurityFilterChain authorizationServerFilterChain = (DefaultSecurityFilterChain) securityFilterChain;
+            SimpleAuthenticationEntryPoint authenticationEntryPoint = new SimpleAuthenticationEntryPoint();
+            AuthenticationEntryPointFailureHandler authenticationFailureHandler = new AuthenticationEntryPointFailureHandler(authenticationEntryPoint);
             http.requestMatcher(new AndRequestMatcher(
                             new NegatedRequestMatcher(new AntPathRequestMatcher(SYSTEM_ANT_PATH)),
                             new NegatedRequestMatcher(authorizationServerFilterChain.getRequestMatcher())
@@ -166,7 +167,9 @@ public class IdServerSecurityConfiguration {
                             .passwordEncoder(PasswordEncoderFactories.createDelegatingPasswordEncoder()::encode)
                             .roles("USER")
                             .build())
-                    .formLogin()
+                    .formLogin().loginPage("/login")
+                    .successHandler(new RedirectLoginAuthenticationSuccessHandler())
+                    .failureHandler(authenticationFailureHandler).permitAll()
                     .and()
                     .oauth2ResourceServer().jwt();
             return http.build();
