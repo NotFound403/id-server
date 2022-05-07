@@ -3,7 +3,7 @@
 <head>
     <script>if (window !== top) top.location.replace(location.href);</script>
     <meta charset="UTF-8">
-    <title>oauth2-登陆</title>
+    <title>oauth2 登陆</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link th:href="@{/component/layui/css/layui.css}" rel="stylesheet"/>
@@ -40,7 +40,7 @@
             height: 117px;
             background-color: #414755;
             border-radius: 12px 12px 0 0;
-            font-family: SourceHanSansCN-Regular;
+            font-family: SourceHanSansCN-Regular, sans-serif;
             font-size: 30px;
             font-weight: 400;
             font-stretch: normal;
@@ -215,8 +215,8 @@
 <div class="main-body">
     <div class="login-main">
         <div class="login-top">
-            <span>Oauth2</span>
-            <span>后台登录</span>
+            <span>OAuth2</span>
+            <span>授权登录</span>
             <span class="bg1"></span>
             <span class="bg2"></span>
         </div>
@@ -239,49 +239,48 @@
                          onclick="this.src='/public/captcha?'+ new Date().getTime()"/>
                 </div>-->
             </div>
-<!--            <div class="tip">-->
-<!--                <input type="checkbox" name="rememberMe" title="记住我" value="true" lay-skin="primary">-->
-<!--            </div>-->
+            <!--            <div class="tip">-->
+            <!--                <input type="checkbox" name="rememberMe" title="记住我" value="true" lay-skin="primary">-->
+            <!--            </div>-->
             <div class="layui-form-item" style="text-align:center; width:100%;height:100%;margin:0px;">
-                <button class="login-btn" lay-submit="" lay-filter="do-login">立即登录</button>
+                <button class="login-btn" lay-submit lay-filter="do-login">立即登录</button>
             </div>
         </form>
     </div>
 </div>
 <div class="footer">
-<!--    ©版权所有 2018-2022 xxxxx<span class="padding-5">|</span><a target="_blank" href="http://www.miitbeian.gov.cn">陕ICPxxxxx号</a>-->
+    <!--    ©版权所有 2018-2022 xxxxx<span class="padding-5">|</span><a target="_blank" href="http://www.miitbeian.gov.cn">陕ICPxxxxx号</a>-->
 </div>
 <script th:src="@{/component/layui/layui.js}"></script>
 <script th:src="@{/admin/js/jquery.min.js}"></script>
 <script>
-    layui.use(['form', 'jquery'], function () {
+    layui.use(['form','layer', 'button', 'jquery'], function () {
         let form = layui.form;
+        let layer = layui.layer;
         let $ = layui.jquery;
+        let button = layui.button;
+
         form.on('submit(do-login)', function (data) {
+            let loader = layer.load();
+            let btn = button.load({elem: '.login'});
             $.ajax({
-                url: '/dologin',
-                data: {
-                    'username': data.field.username,
-                    'password': data.field.password
-                    // 'captcha': data.field.captcha,
-                    // 'rememberMe': data.field.rememberMe
-                },
+                url: '/login',
+                data: data.field,
+                type: "post",
                 dataType: 'json',
-                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-                type: 'post',
                 success: function (result) {
-                    console.log(result)
-                    if (result.success) {
-                        layer.msg(result.message, {icon: 1, time: 1000}, function () {
-                            window.location.href = "/system/index";
-                        });
-                    } else {
-                        layer.msg(result.message, {icon: 2, time: 1000});
-                        $("#captcha").focus()
-                        $("#captchaImage").attr("src", "/public/captcha" + "?" + new Date().getTime())
-                    }
+                    layer.close(loader);
+                    btn.stop(function () {
+                        if (result.code === 200) {
+                            popup.success(result.msg, function () {
+                                location.href = result.data.targetUrl;
+                            })
+                        } else if (result.code === 401) {
+                            popup.failure(result.msg);
+                        }
+                    })
                 }
-            })
+            });
             return false;
         });
     })
