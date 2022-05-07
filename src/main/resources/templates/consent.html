@@ -38,7 +38,7 @@
     </div>
     <div class="row">
         <div class="col text-center">
-            <form name="consent_form" method="post" action="/oauth2/authorize">
+            <form name="consent_form" method="post" th:action="${authorizationEndpoint}">
                 <input type="hidden" name="client_id" th:value="${clientId}">
                 <input type="hidden" name="state" th:value="${state}">
 

@@ -31,6 +31,7 @@ public class OAuth2Scope implements Serializable {
     private String clientId;
     @Id
     private String scope;
+    private String description;
 
     @Data
     public static class OAuth2ScopeId implements Serializable {
