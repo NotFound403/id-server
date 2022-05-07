@@ -21,6 +21,12 @@ public interface OAuth2ClientRepository extends JpaRepository<OAuth2Client, Stri
      * @param clientId the client id
      * @return the optional
      */
+    @EntityGraph(attributePaths = {"clientAuthenticationMethods",
+            "authorizationGrantTypes",
+            "redirectUris",
+            "scopes",
+            "clientSettings",
+            "tokenSettings"})
     Optional<OAuth2Client> findByClientId(String clientId);
 
     /**

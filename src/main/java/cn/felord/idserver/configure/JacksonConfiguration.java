@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
  * @author zhengchalei
  */
 @Configuration
-public class WebConfiguration {
+public class JacksonConfiguration {
 
     @Bean
     public Jackson2ObjectMapperBuilderCustomizer jackson2ObjectMapperBuilderCustomizer() {

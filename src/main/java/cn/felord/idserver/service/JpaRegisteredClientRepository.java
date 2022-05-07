@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.time.Instant;
+import java.util.Optional;
 
 /**
  * The type Jpa registered client repository.
@@ -56,7 +57,9 @@ public class JpaRegisteredClientRepository implements OAuth2ClientService {
     @Override
     public RegisteredClient findById(String id) {
         Assert.hasText(id, "id cannot be empty");
-        return this.oAuth2ClientRepository.findById(id).map(OAuth2Client::toRegisteredClient).orElse(null);
+        return Optional.ofNullable(this.oAuth2ClientRepository.searchOAuth2ClientById(id))
+                .map(OAuth2Client::toRegisteredClient)
+                .orElse(null);
     }
 
     @Override

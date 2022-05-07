@@ -17,3 +17,4 @@ logging:
     org.springframework.web: trace
     org.springframework.security.oauth2: debug
     org.springframework.jdbc.core: debug
+    org.springframework.security: trace
