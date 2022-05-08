@@ -4,6 +4,12 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
+/**
+ * The type PermissionController.
+ *
+ * @author felord.cn
+ * @since 1.0.0
+ */
 @Controller
 @AllArgsConstructor
 public class PermissionController {

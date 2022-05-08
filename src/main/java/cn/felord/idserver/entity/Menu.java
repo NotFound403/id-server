@@ -14,6 +14,12 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * The type Menu.
+ *
+ * @author felord.cn
+ * @since 1.0.0
+ */
 @Entity
 @Getter
 @Setter

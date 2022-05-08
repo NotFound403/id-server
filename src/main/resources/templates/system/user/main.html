@@ -6,28 +6,6 @@
 </head>
 <body class="pear-container">
 <div class="layui-card">
-    <div class="layui-card-body">
-        <form action="" class="layui-form" lay-filter="user-query-form">
-            <div class="layui-form-item">
-                <label class="layui-form-label">用户</label>
-                <div class="layui-input-inline">
-                    <input class="layui-input" name="realName" placeholder="" type="text">
-                </div>
-                <label class="layui-form-label">账号</label>
-                <div class="layui-input-inline">
-                    <input class="layui-input" name="username" placeholder="" type="text">
-                </div>
-                <button class="pear-btn pear-btn-md pear-btn-primary" lay-filter="user-query" lay-submit>
-                    <i class="layui-icon layui-icon-search"></i>
-                    查询
-                </button>
-                <button class="pear-btn pear-btn-md" type="reset">
-                    <i class="layui-icon layui-icon-refresh"></i>
-                    重置
-                </button>
-            </div>
-        </form>
-    </div>
 </div>
 <div class="user-left user-collasped">
     <div class="layui-card">
@@ -53,11 +31,6 @@
     <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="add">
         <i class="pear-icon pear-icon-add"></i>
         新增
-    </button>
-    <button class="pear-btn pear-btn-md"
-            lay-event="batchRemove">
-        <i class="pear-icon pear-icon-ashbin"></i>
-        删除
     </button>
     <button class="pear-btn pear-btn-md" lay-event="collasped">
         <i class="pear-icon pear-icon-modular"></i>
@@ -207,22 +180,15 @@
         });
 
         form.on('switch(user-enable)', function (obj) {
-            let operate;
-            if (obj.elem.checked) {
-                operate = "enable";
-            } else {
-                operate = "disable";
-            }
             let loading = layer.load();
             $.ajax({
-                url: '/system/user/' + operate,
-                data: JSON.stringify({userId: this.value}),
+                url: '/system/user/enable/' +this.value,
                 dataType: 'json',
                 contentType: 'application/json',
-                type: 'put',
+                type: 'post',
                 success: function (result) {
                     layer.close(loading);
-                    if (result.success) {
+                    if (result.code===200) {
                         popup.success(result.msg);
                     } else {
                         popup.failure(result.msg);
@@ -247,7 +213,7 @@
                 title: '修改',
                 shade: 0.1,
                 area: ['550px', '500px'],
-                content: '/system/user/edit?userId=' + obj.data['userId']
+                content: '/system/user/edit/' + obj.data['userId']
             });
         }
 
@@ -256,8 +222,8 @@
                 type: 2,
                 title: '修改用户密码',
                 shade: 0.1,
-                area: ['550px', '200px'],
-                content:'/system/user/editpasswordadmin?userId=' + obj.data['userId']
+                area: ['550px', '300px'],
+                content:'/system/user/password/' + obj.data['userId']
             });
         }
 

@@ -27,6 +27,6 @@ public interface MenuMapper {
     @Mappings(value = {
             @Mapping(target = "children", ignore = true)
     })
-    void fireMerge(Menu source, @MappingTarget Menu target);
+    void merge(Menu source, @MappingTarget Menu target);
 
 }

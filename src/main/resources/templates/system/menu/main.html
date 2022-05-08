@@ -6,26 +6,6 @@
 <body class="pear-container">
 <div class="layui-card">
     <div class="layui-card-body">
-        <form action="" class="layui-form">
-            <div class="layui-form-item">
-                <label class="layui-form-label">菜单名称</label>
-                <div class="layui-input-inline">
-                    <input class="layui-input" name="menuName" placeholder="" type="text">
-                </div>
-                <button class="pear-btn pear-btn-md pear-btn-primary" lay-filter="menu-query" lay-submit>
-                    <i class="layui-icon layui-icon-search"></i>
-                    查询
-                </button>
-                <button class="pear-btn pear-btn-md" type="reset">
-                    <i class="layui-icon layui-icon-refresh"></i>
-                    重置
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-<div class="layui-card">
-    <div class="layui-card-body">
         <table id="menu-table" lay-filter="menu-table"></table>
     </div>
 </div>
@@ -35,10 +15,6 @@
             class="pear-btn pear-btn-primary pear-btn-md" lay-event="add">
         <i class="layui-icon layui-icon-add-1"></i>
         新增
-    </button>
-    <button  class="pear-btn pear-btn-md" lay-event="batchRemove">
-        <i class="layui-icon layui-icon-delete"></i>
-        删除
     </button>
     <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="expandAll">
         <i class="layui-icon layui-icon-spread-left"></i>
@@ -147,9 +123,7 @@
                 window.add();
             } else if (obj.event === 'refresh') {
                 window.refresh();
-            } else if (obj.event === 'batchRemove') {
-                window.batchRemove(obj);
-            }  else if (obj.event === 'expandAll') {
+            } else if (obj.event === 'expandAll') {
                 treetable.expandAll("#menu-table");
             } else if (obj.event === 'foldAll') {
                 treetable.foldAll("#menu-table");

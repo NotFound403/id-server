@@ -1,6 +1,7 @@
 package cn.felord.idserver.service;
 
 import cn.felord.idserver.entity.UserInfo;
+import cn.felord.idserver.entity.dto.UserPasswordDTO;
 import org.springframework.data.domain.Page;
 
 /**
@@ -28,5 +29,35 @@ public interface UserInfoService {
      * @return the user info
      */
     UserInfo save(UserInfo userInfo);
+
+    /**
+     * Update.
+     *
+     * @param userInfo the user info
+     */
+    void update(UserInfo userInfo);
+
+    /**
+     * Enable.
+     *
+     * @param userId the user id
+     */
+    void enable(String userId);
+
+    /**
+     * Find by id user info.
+     *
+     * @param userId the user id
+     * @return the user info
+     */
+    UserInfo findById(String userId);
+
+    /**
+     * Change password.
+     *
+     * @param passwordDTO the password dto
+     */
+    void changePassword(UserPasswordDTO passwordDTO);
+
 
 }

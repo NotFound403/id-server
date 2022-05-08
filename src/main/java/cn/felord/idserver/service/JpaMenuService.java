@@ -61,7 +61,7 @@ public class JpaMenuService implements MenuService {
     public void update(final Menu menu) {
         final Menu flush = this.menuRepository.findById(menu.getId()).orElseThrow(RuntimeException::new);
         // 此处未修改 children
-        this.menuMapper.fireMerge(menu, flush);
+        this.menuMapper.merge(menu, flush);
         this.menuRepository.flush();
     }
 

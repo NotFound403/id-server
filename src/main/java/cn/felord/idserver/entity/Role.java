@@ -1,5 +1,6 @@
 package cn.felord.idserver.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -57,9 +58,11 @@ public class Role implements Serializable {
     private String createId;
 
     @LastModifiedDate
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Instant updateTime;
 
     @LastModifiedBy
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private String updateId;
 
     @Override

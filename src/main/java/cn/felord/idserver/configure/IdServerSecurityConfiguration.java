@@ -124,7 +124,7 @@ public class IdServerSecurityConfiguration {
                     .and()
                     .securityContext().securityContextRepository(securityContextRepository)
                     .and()
-                    .authorizeRequests().anyRequest().authenticated()
+                    .authorizeRequests().anyRequest().anonymous()
                     /*  .and()
                       .exceptionHandling()
                       .authenticationEntryPoint(authenticationEntryPoint)*/

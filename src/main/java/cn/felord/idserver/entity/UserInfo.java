@@ -1,5 +1,6 @@
 package cn.felord.idserver.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -19,6 +20,12 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.Objects;
 
+/**
+ * The type UserInfo.
+ *
+ * @author felord.cn
+ * @since 1.0.0
+ */
 @Entity
 @Getter
 @Setter
@@ -50,12 +57,14 @@ public class UserInfo implements Serializable {
     private Boolean enabled;
 
     @CreatedDate
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Instant createTime;
 
     @CreatedBy
     private String createId;
 
     @LastModifiedDate
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Instant updateTime;
 
     @LastModifiedBy
