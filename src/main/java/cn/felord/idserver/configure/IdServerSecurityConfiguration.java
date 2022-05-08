@@ -19,6 +19,7 @@ import org.springframework.security.oauth2.server.authorization.config.ProviderS
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationEntryPointFailureHandler;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
@@ -36,6 +37,7 @@ public class IdServerSecurityConfiguration {
 
     private static final String CUSTOM_CONSENT_PAGE_URI = "/oauth2/consent";
     private static final String SYSTEM_ANT_PATH = "/system/**";
+    public static final String ID_SERVER_SYSTEM_SECURITY_CONTEXT_KEY = "ID_SERVER_SYSTEM_SECURITY_CONTEXT";
 
     /**
      * 授权服务器配置
@@ -115,8 +117,12 @@ public class IdServerSecurityConfiguration {
         SecurityFilterChain systemSecurityFilterChain(HttpSecurity http) throws Exception {
             SimpleAuthenticationEntryPoint authenticationEntryPoint = new SimpleAuthenticationEntryPoint();
             AuthenticationEntryPointFailureHandler authenticationFailureHandler = new AuthenticationEntryPointFailureHandler(authenticationEntryPoint);
+            HttpSessionSecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
+            securityContextRepository.setSpringSecurityContextKey(ID_SERVER_SYSTEM_SECURITY_CONTEXT_KEY);
             http.antMatcher(SYSTEM_ANT_PATH).csrf().disable()
                     .headers().frameOptions().sameOrigin()
+                    .and()
+                    .securityContext().securityContextRepository(securityContextRepository)
                     .and()
                     .authorizeRequests().anyRequest().authenticated()
                     /*  .and()
