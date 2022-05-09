@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <th:block th:include="include :: header('菜单列表')"/>
+    <th:block th:include="include :: header('权限列表')"/>
 </head>
 <body class="pear-container">
 <div class="layui-card">
     <div class="layui-card-body">
-        <table id="menu-table" lay-filter="menu-table"></table>
+        <table id="permission-table" lay-filter="permission-table"></table>
     </div>
 </div>
 
-<script id="menu-toolbar" type="text/html">
-    <button
+<script id="permission-toolbar" type="text/html">
+    <!--<button
             class="pear-btn pear-btn-primary pear-btn-md" lay-event="add">
         <i class="layui-icon layui-icon-add-1"></i>
         新增
-    </button>
+    </button>-->
     <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="expandAll">
         <i class="layui-icon layui-icon-spread-left"></i>
         展开
@@ -26,7 +26,7 @@
     </button>
 </script>
 
-<script id="menu-bar" type="text/html">
+<script id="permission-bar" type="text/html">
     <button
             class="pear-btn pear-btn-primary pear-btn-sm" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>
     </button>
@@ -35,37 +35,11 @@
     </button>
 </script>
 
-<script id="menu-type" type="text/html">
-    {{#if (d.type == '0') { }}
-    <span>目录</span>
-    {{# }else if(d.type == '1'){ }}
-    <span>菜单</span>
-    {{# }else{ }}
-    <span>未知</span>
-    {{# } }}
+
+<script id="permissionCode" type="text/html">
+     <button plain class="pear-btn pear-btn-success" disabled>{{d.permissionCode}}</button>
 </script>
 
-<script id="open-type" type="text/html">
-    {{#if (d.openType == '_iframe') { }}
-    <span>框架</span>
-    {{# }else if(d.openType == '0'){ }}
-    <span>标签页</span>
-    {{# }else{ }}
-    <span>--</span>
-    {{# } }}
-</script>
-
-<script id="icon" type="text/html">
-    <i class="layui-icon {{d.icon}}"></i>
-</script>
-
-<script id="menu-href" type="text/html">
-    {{#if (d.href == null||d.href=='') { }}
-    <span>--</span>
-    {{# }else{ }}
-    <button plain class="pear-btn pear-btn-success">{{d.href}}</button>
-    {{# } }}
-</script>
 </body>
 <th:block th:include="include :: footer"/>
 <script>
@@ -78,14 +52,14 @@
         treeTable.render({
             treeColIndex: 0,
             treeSpid: 0,
-            treeIdName: 'id',
+            treeIdName: 'permissionId',
             treePidName: 'parentId',
             skin: 'line',
             method: 'get',
             treeDefaultClose: true,
-            toolbar: '#menu-toolbar',
-            elem: '#menu-table',
-            url: '/system/menu/list',
+            toolbar: '#permission-toolbar',
+            elem: '#permission-table',
+            url: '/system/permission/list',
             page: false,
             defaultToolbar: [{
                 layEvent: 'refresh',
@@ -94,23 +68,21 @@
             }, 'filter', 'print', 'exports'],
             cols: [
                 [
-                    // {type: 'checkbox'},
-                    {field: 'title', minWidth: 200, title: '菜单名称'},
-                    {field: 'type', minWidth: 200, templet:'#menu-type', title: '类型'},
-                    {field: 'icon', title: '图标', templet: '#icon'},
-                    {field: 'openType', title: '打开类型', templet: '#open-type'},
-                    {field: 'href', minWidth: 200, title: '链接', templet: '#menu-href'},
-                    {title: '操作', templet: '#menu-bar', width: 150, align: 'center'}
+                    {field: 'title', title: '权限名称'},
+                    {field: 'permissionCode',   title: '权限码', templet: '#permissionCode'},
+                    {field: 'description', title: '描述'},
+                    {field: 'sortable', title: '序号'},
+                    // {title: '操作', templet: '#permission-bar', width: 150, align: 'center'}
                 ]
             ]
         });
 
-        form.on('submit(menu-query)', function (data) {
-            treeTable.search("#menu-table", data.field.powerName)
+        form.on('submit(permission-query)', function (data) {
+            treeTable.search("#permission-table", data.field.powerName)
             return false;
         });
 
-        table.on('tool(menu-table)', function (obj) {
+        table.on('tool(permission-table)', function (obj) {
             if (obj.event === 'remove') {
                 window.remove(obj);
             } else if (obj.event === 'edit') {
@@ -118,19 +90,19 @@
             }
         })
 
-        table.on('toolbar(menu-table)', function (obj) {
+        table.on('toolbar(permission-table)', function (obj) {
             if (obj.event === 'add') {
                 window.add();
             } else if (obj.event === 'refresh') {
                 window.refresh();
             } else if (obj.event === 'expandAll') {
-                treeTable.expandAll("#menu-table");
+                treeTable.expandAll("#permission-table");
             } else if (obj.event === 'foldAll') {
-                treeTable.foldAll("#menu-table");
+                treeTable.foldAll("#permission-table");
             }
         });
 
-        form.on('switch(menu-enable)', function (obj) {
+        form.on('switch(permission-enable)', function (obj) {
             let operate;
             if (obj.elem.checked) {
                 operate = "enable";
@@ -139,7 +111,7 @@
             }
             let loading = layer.load();
             $.ajax({
-                url: '/system/menu/' + operate,
+                url: '/system/permission/' + operate,
                 data: JSON.stringify({powerId: this.value}),
                 dataType: 'json',
                 contentType: 'application/json',
@@ -161,7 +133,7 @@
                 title: '新增',
                 shade: 0.5,
                 area: ['700px', '500px'],
-                content: '/system/menu/add'
+                content: '/system/permission/add'
             });
         }
 
@@ -171,7 +143,7 @@
                 title: '修改',
                 shade: 0.5,
                 area: ['700px', '500px'],
-                content: '/system/menu/edit?powerId=' + obj.data['powerId']
+                content: '/system/permission/edit?powerId=' + obj.data['powerId']
             });
         }
 
@@ -180,7 +152,7 @@
                 layer.close(index);
                 let loading = layer.load();
                 $.ajax({
-                    url: "/system/menu/remove/" + obj.data['powerId'],
+                    url: "/system/permission/remove/" + obj.data['powerId'],
                     dataType: 'json',
                     type: 'delete',
                     success: function (result) {
@@ -198,7 +170,7 @@
         }
 
         window.refresh = function () {
-            treeTable.reload('#menu-table');
+            treeTable.reload('#permission-table');
         }
     })
 </script>

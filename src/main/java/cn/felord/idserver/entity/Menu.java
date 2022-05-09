@@ -26,6 +26,7 @@ import java.util.Objects;
 @ToString
 public class Menu implements Serializable {
     private static final long serialVersionUID = 4206503097158085877L;
+
     @Id
     @GenericGenerator(name = "uuid-hex", strategy = "uuid.hex")
     @GeneratedValue(generator = "uuid-hex")

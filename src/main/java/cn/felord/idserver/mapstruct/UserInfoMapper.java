@@ -24,7 +24,7 @@ public interface UserInfoMapper {
      */
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mappings(value = {
-            @Mapping(target = "secret", ignore = true)
+            @Mapping(target = "password", ignore = true),
     })
     void merge(UserInfo source, @MappingTarget UserInfo target);
 }

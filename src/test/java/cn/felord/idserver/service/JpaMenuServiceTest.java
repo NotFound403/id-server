@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -35,7 +35,7 @@ class JpaMenuServiceTest {
 
     @SneakyThrows
     @Test
-    @WithUserDetails("felord")
+    @WithAnonymousUser
     void menuList() {
         mockMvc.perform(MockMvcRequestBuilders.get("/system/menu/data"))
                 .andExpectAll(status().isOk(),

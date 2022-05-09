@@ -1,60 +1,57 @@
 package cn.felord.idserver.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 /**
- * The type UserInfo.
+ * The type Permission.
  *
  * @author felord.cn
  * @since 1.0.0
  */
 @Entity
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"permission_code"})})
 @Getter
 @Setter
 @ToString
 @EntityListeners(AuditingEntityListener.class)
-public class UserInfo implements UserDetails, Serializable {
-    private static final long serialVersionUID = -4968368933210959171L;
+public class Permission implements Serializable {
+    private static final long serialVersionUID = -4047778726351517869L;
+
     @Id
     @GenericGenerator(name = "uuid-hex", strategy = "uuid.hex")
     @GeneratedValue(generator = "uuid-hex")
-    private String userId;
-    @Column(unique = true,nullable = false)
-    private String username;
-    @Column(nullable = false)
-    @JsonIgnore
-    private String password;
+    private String permissionId;
 
-    private String nickName;
+    @Column(name = "parent_id", updatable = false)
+    private String parentId;
 
-    private String realName;
-    @Column(unique = true,nullable = false)
-    private String phoneNumber;
+    private String title;
 
-    private String avatarUrl;
+    @Column(name = "permission_code")
+    private String permissionCode;
 
-    private String email;
+    private String description;
 
-    private Integer gender;
+    private Integer sortable;
 
     private Boolean enabled;
 
@@ -72,41 +69,23 @@ public class UserInfo implements UserDetails, Serializable {
     @LastModifiedBy
     private String updateId;
 
-    @ManyToMany(targetEntity = Role.class, fetch = FetchType.LAZY)
-    @JoinTable(name = "user_role", joinColumns = {@JoinColumn(name = "user_id")}, inverseJoinColumns = {@JoinColumn(name = "role_id")})
+    @OneToMany(fetch = FetchType.LAZY)
+    @BatchSize(size = 30)
+    @Fetch(value = FetchMode.SELECT)
+    @JoinColumn(name = "parent_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT), insertable = false, updatable = false)
     @ToString.Exclude
-    private Collection<Role> authorities = Collections.emptySet();
+    private List<Permission> children;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        UserInfo userInfo = (UserInfo) o;
-        return userId != null && Objects.equals(userId, userInfo.userId);
+        Permission that = (Permission) o;
+        return permissionId != null && Objects.equals(permissionId, that.permissionId);
     }
 
     @Override
     public int hashCode() {
         return getClass().hashCode();
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return this.enabled;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return this.enabled;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return this.enabled;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return this.enabled;
     }
 }

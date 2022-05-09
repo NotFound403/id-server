@@ -40,7 +40,7 @@ public class JpaUserInfoService implements UserInfoService {
     public UserInfo save(UserInfo userInfo) {
         userInfo.setUserId(null);
         //todo 303校验
-        userInfo.setSecret(delegatingPasswordEncoder.encode(userInfo.getSecret()));
+        userInfo.setPassword(delegatingPasswordEncoder.encode(userInfo.getPassword()));
         if (userInfo.getGender() == null) {
             userInfo.setGender(Integer.valueOf(Gender.UNKNOWN.val()));
         }
@@ -87,11 +87,11 @@ public class JpaUserInfoService implements UserInfoService {
         String userId = passwordDTO.getUserId();
         UserInfo target = userInfoRepository.findById(userId)
                 .orElseThrow(RuntimeException::new);
-        if (delegatingPasswordEncoder.matches(passwordDTO.getOldPassword(), target.getSecret())) {
+        if (delegatingPasswordEncoder.matches(passwordDTO.getOldPassword(), target.getPassword())) {
 
             UserInfo userInfo = new UserInfo();
             userInfo.setUserId(userId);
-            userInfo.setSecret(delegatingPasswordEncoder.encode(newPassword));
+            userInfo.setPassword(delegatingPasswordEncoder.encode(newPassword));
             this.userInfoMapper.merge(userInfo, target);
             this.userInfoRepository.flush();
 
