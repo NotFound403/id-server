@@ -101,7 +101,7 @@
                 type: 'post',
                 success: function (result) {
                     layer.close(loading);
-                    if (result.success) {
+                    if (result.code === 200 ) {
                         popup.success(result.msg, function () {
                             location.href = "/system/login";
                         });

@@ -1,7 +1,9 @@
 package cn.felord.idserver.service;
 
 import cn.felord.idserver.entity.UserInfo;
+import cn.felord.idserver.entity.dto.UserInfoDTO;
 import cn.felord.idserver.entity.dto.UserPasswordDTO;
+import cn.felord.idserver.entity.dto.UserRoleDTO;
 import org.springframework.data.domain.Page;
 
 /**
@@ -21,14 +23,21 @@ public interface UserInfoService {
      */
     Page<UserInfo> page(Integer page, Integer limit);
 
+    /**
+     * Find by username user info.
+     *
+     * @param username the username
+     * @return the user info
+     */
+    UserInfo findByUsername(String username);
 
     /**
      * Save user info.
      *
-     * @param userInfo the user info
+     * @param userInfoDTO the user info
      * @return the user info
      */
-    UserInfo save(UserInfo userInfo);
+    UserInfo save(UserInfoDTO userInfoDTO);
 
     /**
      * Update.
@@ -36,6 +45,13 @@ public interface UserInfoService {
      * @param userInfo the user info
      */
     void update(UserInfo userInfo);
+
+    /**
+     * Delete by id.
+     *
+     * @param userId the user id
+     */
+    void deleteById(String userId);
 
     /**
      * Enable.
@@ -59,5 +75,10 @@ public interface UserInfoService {
      */
     void changePassword(UserPasswordDTO passwordDTO);
 
-
+    /**
+     * Bind roles.
+     *
+     * @param userRoleDTO the user role dto
+     */
+    void bindRoles(UserRoleDTO userRoleDTO);
 }

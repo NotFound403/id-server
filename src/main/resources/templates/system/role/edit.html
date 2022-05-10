@@ -9,47 +9,29 @@
         <div class="main-container">
             <div class="main-container">
                 <div class="layui-form-item layui-hide">
-                    <label class="layui-form-label">编号</label>
                     <div class="layui-input-block">
                         <input autocomplete="off" class="layui-input" lay-verify="required" name="roleId"
-                               placeholder="请输入标题" th:value="${sysRole.roleId}" type="text">
+                               placeholder="请输入roleId" type="text" th:value="${role.roleId}">
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">名称</label>
+                    <label class="layui-form-label layui-form-required">角色名</label>
                     <div class="layui-input-block">
-                        <input autocomplete="off" class="layui-input" lay-verify="required" name="roleName"
-                               placeholder="请输入标题" th:value="${sysRole.roleName}" type="text">
+                        <input autocomplete="off" class="layui-input" lay-verify="required" name="roleContent" placeholder="请输入标题"
+                               type="text" th:value="${role.roleContent}">
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">标识</label>
+                    <label class="layui-form-label layui-form-required">角色码</label>
                     <div class="layui-input-block">
-                        <input autocomplete="off" class="layui-input" lay-verify="required" name="roleCode" placeholder="请输入标题"
-                               readonly th:value="${sysRole.roleCode}" type="text">
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">状态</label>
-                    <div class="layui-input-block">
-                        <input name="enable" th:checked="${sysRole.enable eq '0'}" title="开启" type="radio" value="0">
-                        <input checked name="enable" th:checked="${sysRole.enable eq '1'}" title="关闭" type="radio"
-                               value="1">
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">排序</label>
-                    <div class="layui-input-block">
-                        <input autocomplete="off" class="layui-input" name="sort" placeholder="请输入标题"
-                               th:value="${sysRole.sort}"
-                               type="text">
+                        <input autocomplete="off" class="layui-input" lay-verify="required" name="roleName" placeholder="请输入标题"
+                               type="text" th:value="${role.roleName}">
                     </div>
                 </div>
                 <div class="layui-form-item layui-form-text">
                     <label class="layui-form-label">描述</label>
                     <div class="layui-input-block">
-                        <textarea class="layui-textarea" name="details" placeholder="请输入内容"
-                                  th:text="${sysRole.details}"></textarea>
+                        <textarea class="layui-textarea" name="description" placeholder="请输入描述"  th:text="${role.description}"></textarea>
                     </div>
                 </div>
             </div>
@@ -57,8 +39,7 @@
     </div>
     <div class="bottom">
         <div class="button-container">
-            <button class="pear-btn pear-btn-primary pear-btn-sm" lay-filter="role-update" lay-submit=""
-                    type="submit">
+            <button class="pear-btn pear-btn-primary pear-btn-sm" lay-filter="role-save" lay-submit="" type="submit">
                 <i class="layui-icon layui-icon-ok"></i>
                 提交
             </button>
@@ -75,15 +56,15 @@
         let form = layui.form;
         let $ = layui.jquery;
 
-        form.on('submit(role-update)', function (data) {
+        form.on('submit(role-save)', function (data) {
             $.ajax({
-                url: '/system/role/update',
+                url: '/system/role/edit',
                 data: JSON.stringify(data.field),
                 dataType: 'json',
                 contentType: 'application/json',
-                type: 'put',
+                type: 'post',
                 success: function (result) {
-                    if (result.success) {
+                    if (result.code === 200) {
                         layer.msg(result.msg, {icon: 1, time: 1000}, function () {
                             parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
                             parent.layui.table.reload("role-table");
@@ -96,8 +77,6 @@
             return false;
         });
     })
-</script>
-<script>
 </script>
 </body>
 </html>

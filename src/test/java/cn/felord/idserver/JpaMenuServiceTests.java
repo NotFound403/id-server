@@ -1,6 +1,7 @@
-package cn.felord.idserver.service;
+package cn.felord.idserver;
 
 import cn.felord.idserver.entity.Menu;
+import cn.felord.idserver.service.JpaMenuService;
 import lombok.SneakyThrows;
 import org.hamcrest.core.Is;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class JpaMenuServiceTest {
+class JpaMenuServiceTests {
     @Autowired
     MockMvc mockMvc;
     @Autowired

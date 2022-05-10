@@ -1,20 +1,23 @@
 package cn.felord.idserver.configure;
 
+import cn.felord.idserver.entity.Permission;
+import cn.felord.idserver.entity.Role;
 import cn.felord.idserver.handler.RedirectLoginAuthenticationSuccessHandler;
 import cn.felord.idserver.handler.SimpleAuthenticationEntryPoint;
+import cn.felord.idserver.service.OAuth2UserDetailsService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.server.authorization.config.ProviderSettings;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
@@ -25,18 +28,25 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Objects;
+
 /**
  * The type Id server security configuration.
  *
  * @author felord.cn
  * @since 1.0.0
  */
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class IdServerSecurityConfiguration {
 
     private static final String CUSTOM_CONSENT_PAGE_URI = "/oauth2/consent";
     private static final String SYSTEM_ANT_PATH = "/system/**";
+    /**
+     * The constant ID_SERVER_SYSTEM_SECURITY_CONTEXT_KEY.
+     */
     public static final String ID_SERVER_SYSTEM_SECURITY_CONTEXT_KEY = "ID_SERVER_SYSTEM_SECURITY_CONTEXT";
 
     /**
@@ -124,7 +134,7 @@ public class IdServerSecurityConfiguration {
                     .and()
                     .securityContext().securityContextRepository(securityContextRepository)
                     .and()
-                    .authorizeRequests().anyRequest().anonymous()
+                    .authorizeRequests().anyRequest().authenticated()
                     /*  .and()
                       .exceptionHandling()
                       .authenticationEntryPoint(authenticationEntryPoint)*/
@@ -149,13 +159,16 @@ public class IdServerSecurityConfiguration {
         /**
          * Default security filter chain security filter chain.
          *
-         * @param http the http
+         * @param http                     the http
+         * @param oAuth2UserDetailsService the oauth2 user details service
+         * @param securityFilterChain      the security filter chain
          * @return the security filter chain
          * @throws Exception the exception
          */
         @Bean
         @Order(Ordered.HIGHEST_PRECEDENCE + 2)
         SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http,
+                                                       OAuth2UserDetailsService oAuth2UserDetailsService,
                                                        @Qualifier("authorizationServerSecurityFilterChain") SecurityFilterChain securityFilterChain) throws Exception {
             DefaultSecurityFilterChain authorizationServerFilterChain = (DefaultSecurityFilterChain) securityFilterChain;
             SimpleAuthenticationEntryPoint authenticationEntryPoint = new SimpleAuthenticationEntryPoint();
@@ -167,12 +180,7 @@ public class IdServerSecurityConfiguration {
                             authorizeRequests
                                     .anyRequest().authenticated()
                     ).csrf().disable()
-                    .userDetailsService(username -> User.builder()
-                            .username("user")
-                            .password("user")
-                            .passwordEncoder(PasswordEncoderFactories.createDelegatingPasswordEncoder()::encode)
-                            .roles("USER")
-                            .build())
+                    .userDetailsService(oAuth2UserDetailsService::loadOAuth2UserByUsername)
                     .formLogin().loginPage("/login")
                     .successHandler(new RedirectLoginAuthenticationSuccessHandler())
                     .failureHandler(authenticationFailureHandler).permitAll()
@@ -202,5 +210,32 @@ public class IdServerSecurityConfiguration {
                 .antMatchers("/admin/js/**")
                 .antMatchers("/admin/images/**")
                 .antMatchers("/favicon.ico");
+    }
+
+
+    /**
+     * The type Resource permission evaluator.
+     */
+    static class ResourcePermissionEvaluator implements PermissionEvaluator {
+        private static final String ROOT_ROLE_NAME = "id_server";
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
+            Collection<Role> roles = (Collection<Role>) authentication.getAuthorities();
+            if (roles.stream().anyMatch(role -> Objects.equals(ROOT_ROLE_NAME,role.getRoleName()))) {
+                return true;
+            }
+            return roles.stream()
+                    .flatMap(role -> role.getPermissions().stream())
+                    .map(Permission::getPermissionCode)
+                    .anyMatch(p -> Objects.equals(p, permission));
+        }
+
+        @Override
+        public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
+            //todo
+            return true;
+        }
     }
 }

@@ -17,9 +17,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * The type UserInfo.
@@ -32,6 +32,16 @@ import java.util.Objects;
 @Setter
 @ToString
 @EntityListeners(AuditingEntityListener.class)
+
+@NamedEntityGraphs(
+        @NamedEntityGraph(name = "userinfo.userDetails",
+        attributeNodes = {
+                @NamedAttributeNode(value = "authorities",subgraph = "permissions")
+        },subgraphs = {
+                @NamedSubgraph(name = "permissions",
+                        attributeNodes = @NamedAttributeNode("permissions"))
+        })
+)
 public class UserInfo implements UserDetails, Serializable {
     private static final long serialVersionUID = -4968368933210959171L;
     @Id
@@ -75,7 +85,7 @@ public class UserInfo implements UserDetails, Serializable {
     @ManyToMany(targetEntity = Role.class, fetch = FetchType.LAZY)
     @JoinTable(name = "user_role", joinColumns = {@JoinColumn(name = "user_id")}, inverseJoinColumns = {@JoinColumn(name = "role_id")})
     @ToString.Exclude
-    private Collection<Role> authorities = Collections.emptySet();
+    private Set<Role> authorities = Collections.emptySet();
 
     @Override
     public boolean equals(Object o) {

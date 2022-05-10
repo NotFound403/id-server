@@ -4,10 +4,15 @@ import cn.felord.idserver.advice.BaseController;
 import cn.felord.idserver.advice.Rest;
 import cn.felord.idserver.advice.RestBody;
 import cn.felord.idserver.entity.UserInfo;
+import cn.felord.idserver.entity.dto.RoleDTO;
+import cn.felord.idserver.entity.dto.UserInfoDTO;
 import cn.felord.idserver.entity.dto.UserPasswordDTO;
+import cn.felord.idserver.entity.dto.UserRoleDTO;
+import cn.felord.idserver.service.RoleService;
 import cn.felord.idserver.service.UserInfoService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +21,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 /**
  * 分为系统用户和普通用户
@@ -27,6 +34,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @AllArgsConstructor
 public class UserController extends BaseController {
     private UserInfoService userInfoService;
+    private final RoleService roleService;
 
     /**
      * Main string.
@@ -48,6 +56,8 @@ public class UserController extends BaseController {
     @GetMapping("/system/user/data")
     @ResponseBody
     public Page<UserInfo> page(@RequestParam Integer page, @RequestParam Integer limit) {
+        Authentication authentication = this.currentUser();
+        System.out.println("authentication = " + authentication.getAuthorities());
         return userInfoService.page(page, limit);
     }
 
@@ -69,7 +79,7 @@ public class UserController extends BaseController {
      */
     @PostMapping("/system/user/add")
     @ResponseBody
-    public Rest<?> add(@RequestBody UserInfo userInfo) {
+    public Rest<?> add(@RequestBody UserInfoDTO userInfo) {
         userInfoService.save(userInfo);
         return RestBody.ok("操作成功");
     }
@@ -139,6 +149,52 @@ public class UserController extends BaseController {
     @ResponseBody
     public Rest<?> changePassword(@RequestBody UserPasswordDTO passwordDTO) {
         userInfoService.changePassword(passwordDTO);
+        return RestBody.ok("操作成功");
+    }
+
+    /**
+     * Bind permission string.
+     *
+     * @param model  the model
+     * @param userId the role id
+     * @return the string
+     */
+    @GetMapping("/system/user/role/{userId}")
+    public String bindRole(Model model, @PathVariable String userId) {
+        //       [[${userId}]]
+        model.addAttribute("userId", userId);
+        return "/system/user/role";
+    }
+
+    /**
+     * Page list.
+     *
+     * @param roleId the role id
+     * @return the list
+     */
+    @GetMapping("/system/user/roles/{roleId}")
+    @ResponseBody
+    public List<RoleDTO> roles(@PathVariable String roleId) {
+        return roleService.roleTreeData(roleId);
+    }
+
+    /**
+     * Save role permissions rest.
+     *
+     * @param userRoleDTO the user role dto
+     * @return the rest
+     */
+    @PostMapping("/system/user/save/roles")
+    @ResponseBody
+    public Rest<?> saveRolePermissions(@RequestBody UserRoleDTO userRoleDTO) {
+        this.userInfoService.bindRoles(userRoleDTO);
+        return RestBody.ok("操作成功");
+    }
+
+    @PostMapping("/system/user/remove/{userId}")
+    @ResponseBody
+    public Rest<?> remove(@PathVariable String userId) {
+        this.userInfoService.deleteById(userId);
         return RestBody.ok("操作成功");
     }
 }

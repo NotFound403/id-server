@@ -17,11 +17,6 @@
         <i class="layui-icon layui-icon-add-1"></i>
         新增
     </button>
-    <button  class="pear-btn pear-btn-md"
-            lay-event="batchRemove">
-        <i class="layui-icon layui-icon-delete"></i>
-        删除
-    </button>
 </script>
 
 <script id="role-bar" type="text/html">
@@ -29,7 +24,7 @@
             class="pear-btn pear-btn-primary pear-btn-sm" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>
     </button>
     <button
-            class="pear-btn pear-btn-warming pear-btn-sm" lay-event="power"><i
+            class="pear-btn pear-btn-warming pear-btn-sm" lay-event="permission"><i
             class="layui-icon layui-icon-vercode"></i>
     </button>
     <button
@@ -56,9 +51,9 @@
         let cols = [
             [
                 {title: '角色名', field: 'roleContent', align: 'center', width: 100},
-                {title: '编码', field: 'roleName', align: 'center'},
+                {title: '角色码', field: 'roleName', align: 'center'},
                 {title: '描述', field: 'description', align: 'center'},
-                {title: '是否可用', field: 'enabled', align: 'center', templet: '#role-enable'},
+                // {title: '是否可用', field: 'enabled', align: 'center', templet: '#role-enable'},
                 {title: '操作', toolbar: '#role-bar', align: 'center', width: 195}
             ]
         ]
@@ -92,8 +87,8 @@
                 window.remove(obj);
             } else if (obj.event === 'edit') {
                 window.edit(obj);
-            } else if (obj.event === 'power') {
-                window.power(obj);
+            } else if (obj.event === 'permission') {
+                window.permission(obj);
             }
         });
 
@@ -102,8 +97,6 @@
                 window.add();
             } else if (obj.event === 'refresh') {
                 window.refresh();
-            } else if (obj.event === 'batchRemove') {
-                window.batchRemove(obj);
             }
         });
 
@@ -128,7 +121,7 @@
                 type: 'put',
                 success: function (result) {
                     layer.close(loading);
-                    if (result.success) {
+                    if (result.code === 200 ) {
                         layer.msg(result.msg, {icon: 1, time: 1000});
                     } else {
                         layer.msg(result.msg, {icon: 2, time: 1000});
@@ -147,13 +140,13 @@
             });
         }
 
-        window.power = function (obj) {
+        window.permission = function (obj) {
             layer.open({
                 type: 2,
                 title: '授权',
                 shade: 0.1,
                 area: ['320px', '400px'],
-                content: MODULE_PATH + 'power?roleId=' + obj.data["roleId"]
+                content: MODULE_PATH + 'permission/' + obj.data["roleId"]
             });
         }
 
@@ -163,7 +156,7 @@
                 title: '修改',
                 shade: 0.1,
                 area: ['500px', '500px'],
-                content: MODULE_PATH + 'edit?roleId=' + obj.data['roleId']
+                content: MODULE_PATH + 'edit/' + obj.data['roleId']
             });
         }
 
@@ -174,10 +167,10 @@
                 $.ajax({
                     url: MODULE_PATH + "remove/" + obj.data['roleId'],
                     dataType: 'json',
-                    type: 'delete',
+                    type: 'post',
                     success: function (result) {
                         layer.close(loading);
-                        if (result.success) {
+                        if (result.code === 200 ) {
                             layer.msg(result.msg, {icon: 1, time: 1000}, function () {
                                 obj.del();
                             });
@@ -204,7 +197,7 @@
                     type: 'delete',
                     success: function (result) {
                         layer.close(loading);
-                        if (result.success) {
+                        if (result.code === 200 ) {
                             popup.success(result.msg, function () {
                                 table.reload('role-table');
                             });

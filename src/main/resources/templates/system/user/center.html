@@ -228,7 +228,7 @@
                 contentType: 'application/json',
                 type: 'put',
                 success: function (result) {
-                    if (result.success) {
+                    if (result.code === 200 ) {
                         layer.msg("修改成功", {icon: 1, time: 1000});
                     } else {
                         layer.msg("修改失败", {icon: 2, time: 1000});
