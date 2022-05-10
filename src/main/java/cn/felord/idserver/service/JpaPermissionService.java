@@ -1,13 +1,22 @@
 package cn.felord.idserver.service;
 
 import cn.felord.idserver.entity.Permission;
+import cn.felord.idserver.entity.Role;
+import cn.felord.idserver.entity.dto.PermissionDTO;
+import cn.felord.idserver.mapstruct.PermissionMapper;
 import cn.felord.idserver.repository.PermissionRepository;
+import cn.felord.idserver.repository.RoleRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author felord.cn
@@ -18,6 +27,8 @@ import java.util.List;
 public class JpaPermissionService implements PermissionService {
     private static final String ROOT_ID = "0";
     private final PermissionRepository permissionRepository;
+    private final RoleRepository roleRepository;
+    private final PermissionMapper permissionMapper;
 
     @Override
     public List<Permission> findByRoot() {
@@ -60,5 +71,20 @@ public class JpaPermissionService implements PermissionService {
         root.setTitle("根目录");
         permissions.add(root);
         return permissions;
+    }
+
+    @Override
+    public List<PermissionDTO> permissionTreeData(String roleId) {
+        Role role = roleRepository.findByRoleId(roleId);
+        if (role==null){
+            return Collections.emptyList();
+        }
+        Set<Permission> roleIdPermissions = role.getPermissions();
+        List<Permission> all  = permissionRepository.findAll();
+        Stream<PermissionDTO> unChecked = all.stream()
+                .filter((permission -> !roleIdPermissions.contains(permission)))
+                .map(permissionMapper::toUnCheckedDTO);
+        return Stream.concat(unChecked, roleIdPermissions.stream().map(permissionMapper::toCheckedDTO))
+                .sorted(Comparator.comparingInt(PermissionDTO::getSortable)).collect(Collectors.toList());
     }
 }

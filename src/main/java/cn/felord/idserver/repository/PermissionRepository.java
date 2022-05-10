@@ -5,7 +5,9 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The interface Permission repository.
@@ -23,4 +25,12 @@ public interface PermissionRepository extends JpaRepository<Permission, String> 
      */
     @EntityGraph(attributePaths = {"children"})
     List<Permission> findAllByParentIdOrderBySortable(String parentId);
+
+    /**
+     * Find all by permission id in list.
+     *
+     * @param permissionIds the permission ids
+     * @return the list
+     */
+    Set<Permission> findAllByPermissionIdIn(Collection<String> permissionIds);
 }

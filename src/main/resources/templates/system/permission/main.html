@@ -118,7 +118,7 @@
                 type: 'put',
                 success: function (result) {
                     layer.close(loading);
-                    if (result.success) {
+                    if (result.code === 200 ) {
                         popup.success(result.msg);
                     } else {
                         popup.failure(result.msg);
@@ -157,7 +157,7 @@
                     type: 'delete',
                     success: function (result) {
                         layer.close(loading);
-                        if (result.success) {
+                        if (result.code === 200 ) {
                             popup.success(result.msg, function () {
                                 obj.del();
                             })

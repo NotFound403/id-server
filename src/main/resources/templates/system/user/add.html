@@ -32,8 +32,15 @@
                 <div class="layui-form-item">
                     <label class="layui-form-label layui-form-required">密码</label>
                     <div class="layui-input-block">
-                        <input autocomplete="off" class="layui-input" lay-verify="required" name="password" placeholder="请输入password"
-                               type="text">
+                        <input autocomplete="off" class="layui-input" lay-verify="required" name="password" placeholder="请输入密码"
+                               type="password">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label layui-form-required">密码</label>
+                    <div class="layui-input-block">
+                        <input autocomplete="off" class="layui-input" lay-verify="required" name="confirmPassword" placeholder="请再次输入密码"
+                               type="password">
                     </div>
                 </div>
                 <div class="layui-form-item">
@@ -73,12 +80,10 @@
         let $ = layui.jquery;
 
         form.on('submit(user-save)', function (data) {
-            // let roleIds = "";
-            // $('input[type=checkbox]:checked').each(function () {
-            //     roleIds += $(this).val() + ",";
-            // });
-            // roleIds = roleIds.substr(0, roleIds.length - 1);
-            // data.field.roleIds = roleIds;
+           if(data.field.password!== data.field.confirmPassword){
+               layer.msg('两次密码不一致', {icon: 2, time: 1000});
+               return false;
+           }
 
             $.ajax({
                 url: '/system/user/add',

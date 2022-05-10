@@ -39,11 +39,16 @@
 </script>
 
 <script id="user-bar" type="text/html">
+    <button
+            class="pear-btn pear-btn-warming pear-btn-sm" lay-event="role"><i
+            class="layui-icon layui-icon-vercode"></i>
+    </button>
     <button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="edit"><i class="pear-icon pear-icon-edit"></i>
     </button>
     <button class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i class="pear-icon pear-icon-ashbin"></i>
     </button>
-    <button class="pear-btn pear-btn-danger pear-btn-sm" lay-event="editpasswordadmin"><i class="layui-icon layui-icon-key"></i>
+    <button class="pear-btn pear-btn-danger pear-btn-sm" lay-event="editpasswordadmin"><i
+            class="layui-icon layui-icon-key"></i>
     </button>
 </script>
 
@@ -73,7 +78,6 @@
         let common = layui.common;
 
 
-
         let cols = [
             [
                 {title: '账号', field: 'username', align: 'center'},
@@ -97,14 +101,14 @@
             height: 'full-148',
             toolbar: '#user-toolbar',
             text: {none: '暂无人员信息'},
-            parseData:function (response) {
+            parseData: function (response) {
 
-              return {
-                  "code": response.code, //返回状态码
-                  "msg": response.msg, //解析提示信息
-                  "count": response.data.totalElements, //后台返回的数据总条数，用于自定义分页使用
-                  "data": response.data.content //解析数据列表
-              };
+                return {
+                    "code": response.code, //返回状态码
+                    "msg": response.msg, //解析提示信息
+                    "count": response.data.totalElements, //后台返回的数据总条数，用于自定义分页使用
+                    "data": response.data.content //解析数据列表
+                };
             },
             defaultToolbar: [{
                 layEvent: 'refresh',
@@ -112,23 +116,6 @@
                 title: "刷新"
             }, 'filter', 'print', 'exports']
         });
-
-/*        dtree.render({
-            elem: "#dept-tree",
-            method: "get",
-            url: "/system/dept/tree",
-            dataFormat: "list",
-            line: true,
-            skin: "laySimple",
-            icon: "-1",
-            response: {treeId: "deptId", parentId: "parentId", title: "deptName"},
-        });
-
-        dtree.on("node('dept-tree')", function (obj) {
-            let field = form.val("user-query-form");
-            field.deptId = obj.param.nodeId;
-            window.refresh(field);
-        });*/
 
         $(".user-group").click(function () {
             let group = $(this).attr("user-group");
@@ -154,8 +141,10 @@
                 window.remove(obj);
             } else if (obj.event === 'edit') {
                 window.edit(obj);
-            }else if (obj.event === 'editpasswordadmin') {
+            } else if (obj.event === 'editpasswordadmin') {
                 window.editpasswordadmin(obj);
+            } else if (obj.event === 'role') {
+                window.role(obj);
             }
         });
 
@@ -164,9 +153,7 @@
                 window.add();
             } else if (obj.event === 'refresh') {
                 window.refresh();
-            } else if (obj.event === 'batchRemove') {
-                window.batchRemove(obj);
-            } else if (obj.event == 'collasped') {
+            } else if (obj.event === 'collasped') {
                 $(".user-left").toggleClass("user-collasped");
                 $(".user-main").toggleClass("user-collasped");
                 table.resize();
@@ -178,16 +165,16 @@
             return false;
         });
 
-        form.on('switch(user-enable)', function (obj) {
+        form.on('switch(user-enable)', function () {
             let loading = layer.load();
             $.ajax({
-                url: '/system/user/enable/' +this.value,
+                url: '/system/user/enable/' + this.value,
                 dataType: 'json',
                 contentType: 'application/json',
                 type: 'post',
                 success: function (result) {
                     layer.close(loading);
-                    if (result.code===200) {
+                    if (result.code === 200) {
                         popup.success(result.msg);
                     } else {
                         popup.failure(result.msg);
@@ -202,10 +189,18 @@
                 title: '新增',
                 shade: 0.1,
                 area: ['500px', '500px'],
-                content:'/system/user/add'
+                content: '/system/user/add'
             });
         }
-
+        window.role = function (obj) {
+            layer.open({
+                type: 2,
+                title: '授权',
+                shade: 0.1,
+                area: ['320px', '400px'],
+                content: '/system/user/role/' + obj.data["userId"]
+            });
+        }
         window.edit = function (obj) {
             layer.open({
                 type: 2,
@@ -216,13 +211,13 @@
             });
         }
 
-        window.editpasswordadmin = function (obj){
+        window.editpasswordadmin = function (obj) {
             layer.open({
                 type: 2,
                 title: '修改用户密码',
                 shade: 0.1,
                 area: ['550px', '300px'],
-                content:'/system/user/password/' + obj.data['userId']
+                content: '/system/user/password/' + obj.data['userId']
             });
         }
 
@@ -233,40 +228,13 @@
                 $.ajax({
                     url: '/system/user/remove/' + obj.data['userId'],
                     dataType: 'json',
-                    type: 'delete',
+                    type: 'post',
                     success: function (result) {
                         layer.close(loading);
-                        if (result.success) {
+                        if (result.code === 200) {
                             popup.success(result.msg, function () {
                                 obj.del();
                             });
-                        } else {
-                            popup.failure(result.msg);
-                        }
-                    }
-                })
-            });
-        }
-
-        window.batchRemove = function (obj) {
-            let ids = common.checkField(obj, 'userId');
-            if (common.isEmpty(ids)) {
-                popup.warning("未选中数据");
-                return false;
-            }
-            layer.confirm('确定要删除选中用户', {icon: 3, title: '提示'}, function (index) {
-                layer.close(index);
-                let loading = layer.load();
-                $.ajax({
-                    url:'/system/user/batchRemove/' + ids,
-                    dataType: 'json',
-                    type: 'delete',
-                    success: function (result) {
-                        layer.close(loading);
-                        if (result.success) {
-                            popup.success(result.msg, function () {
-                                table.reload('user-table');
-                            })
                         } else {
                             popup.failure(result.msg);
                         }

@@ -2,6 +2,7 @@ package cn.felord.idserver.service;
 
 import cn.felord.idserver.entity.OAuth2Client;
 import cn.felord.idserver.entity.dto.OAuth2ClientDTO;
+import cn.felord.idserver.exception.NotFoundException;
 import cn.felord.idserver.mapstruct.OAuth2ClientMapper;
 import cn.felord.idserver.repository.OAuth2ClientRepository;
 import lombok.AllArgsConstructor;
@@ -45,7 +46,7 @@ public class JpaRegisteredClientRepository implements OAuth2ClientService {
     @Override
     public void update(OAuth2ClientDTO client) {
         String id = client.getId();
-        OAuth2Client flush = this.oAuth2ClientRepository.findById(id).orElseThrow(RuntimeException::new);
+        OAuth2Client flush = this.oAuth2ClientRepository.findById(id).orElseThrow(NotFoundException::new);
         OAuth2Client source = client.toClient();
         // 忽略密码更新
         source.setClientSecret(null);

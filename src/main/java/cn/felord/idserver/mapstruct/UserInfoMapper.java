@@ -1,6 +1,7 @@
 package cn.felord.idserver.mapstruct;
 
 import cn.felord.idserver.entity.UserInfo;
+import cn.felord.idserver.entity.dto.UserInfoDTO;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -25,6 +26,29 @@ public interface UserInfoMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mappings(value = {
             @Mapping(target = "password", ignore = true),
+            @Mapping(target = "authorities", ignore = true),
     })
-    void merge(UserInfo source, @MappingTarget UserInfo target);
+    void mergeIgnorePasswordAndAuthorities(UserInfo source, @MappingTarget UserInfo target);
+
+    /**
+     * Merge.
+     *
+     * @param source the source
+     * @param target the target
+     */
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mappings(value = {
+            @Mapping(target = "authorities", ignore = true),
+    })
+    void mergeIgnoreAuthorities(UserInfo source, @MappingTarget UserInfo target);
+
+    @Mapping(target = "userId", ignore = true)
+    @Mapping(target = "updateTime", ignore = true)
+    @Mapping(target = "updateId", ignore = true)
+    @Mapping(target = "enabled", ignore = true)
+    @Mapping(target = "createTime", ignore = true)
+    @Mapping(target = "createId", ignore = true)
+    @Mapping(target = "authorities", ignore = true)
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    void toUserInfo(UserInfoDTO userInfoDTO, @MappingTarget UserInfo target);
 }

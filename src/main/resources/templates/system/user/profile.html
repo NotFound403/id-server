@@ -67,7 +67,7 @@
                     processData: false,
                     contentType: false,
                     success: function (result) {
-                        if (result.success) {
+                        if (result.code === 200 ) {
                             // 修改 avatar 字段
                             $.ajax({
                                 method: "put",

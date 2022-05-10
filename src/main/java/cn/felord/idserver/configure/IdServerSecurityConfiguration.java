@@ -2,6 +2,7 @@ package cn.felord.idserver.configure;
 
 import cn.felord.idserver.handler.RedirectLoginAuthenticationSuccessHandler;
 import cn.felord.idserver.handler.SimpleAuthenticationEntryPoint;
+import cn.felord.idserver.service.OAuth2UserDetailsService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -13,8 +14,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.oauth2.server.authorization.config.ProviderSettings;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
@@ -37,6 +36,9 @@ public class IdServerSecurityConfiguration {
 
     private static final String CUSTOM_CONSENT_PAGE_URI = "/oauth2/consent";
     private static final String SYSTEM_ANT_PATH = "/system/**";
+    /**
+     * The constant ID_SERVER_SYSTEM_SECURITY_CONTEXT_KEY.
+     */
     public static final String ID_SERVER_SYSTEM_SECURITY_CONTEXT_KEY = "ID_SERVER_SYSTEM_SECURITY_CONTEXT";
 
     /**
@@ -149,13 +151,16 @@ public class IdServerSecurityConfiguration {
         /**
          * Default security filter chain security filter chain.
          *
-         * @param http the http
+         * @param http                     the http
+         * @param oAuth2UserDetailsService the oauth2 user details service
+         * @param securityFilterChain      the security filter chain
          * @return the security filter chain
          * @throws Exception the exception
          */
         @Bean
         @Order(Ordered.HIGHEST_PRECEDENCE + 2)
         SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http,
+                                                       OAuth2UserDetailsService oAuth2UserDetailsService,
                                                        @Qualifier("authorizationServerSecurityFilterChain") SecurityFilterChain securityFilterChain) throws Exception {
             DefaultSecurityFilterChain authorizationServerFilterChain = (DefaultSecurityFilterChain) securityFilterChain;
             SimpleAuthenticationEntryPoint authenticationEntryPoint = new SimpleAuthenticationEntryPoint();
@@ -167,12 +172,7 @@ public class IdServerSecurityConfiguration {
                             authorizeRequests
                                     .anyRequest().authenticated()
                     ).csrf().disable()
-                    .userDetailsService(username -> User.builder()
-                            .username("user")
-                            .password("user")
-                            .passwordEncoder(PasswordEncoderFactories.createDelegatingPasswordEncoder()::encode)
-                            .roles("USER")
-                            .build())
+                    .userDetailsService(oAuth2UserDetailsService::loadOAuth2UserByUsername)
                     .formLogin().loginPage("/login")
                     .successHandler(new RedirectLoginAuthenticationSuccessHandler())
                     .failureHandler(authenticationFailureHandler).permitAll()

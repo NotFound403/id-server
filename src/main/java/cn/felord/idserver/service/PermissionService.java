@@ -1,6 +1,7 @@
 package cn.felord.idserver.service;
 
 import cn.felord.idserver.entity.Permission;
+import cn.felord.idserver.entity.dto.PermissionDTO;
 
 import java.util.List;
 
@@ -56,4 +57,13 @@ public interface PermissionService {
      * @return the list
      */
     List<Permission> parents();
+
+    /**
+     * Permission tree data list.
+     *
+     * @param roleId the role id
+     * @return the list
+     */
+    List<PermissionDTO> permissionTreeData(String roleId);
+
 }
