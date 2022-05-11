@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    url: jdbc:mysql://wwaliyuncnit.mysql.rds.aliyuncs.com:3306/id_server
+    username: id_server
+    password: ID_SERVER_DATABASE123

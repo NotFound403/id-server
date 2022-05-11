@@ -29,3 +29,16 @@ INSERT INTO id_server.menu (id, parent_id, title, type, open_type, icon, href) V
 INSERT INTO id_server.menu (id, parent_id, title, type, open_type, icon, href) VALUES ('40289f998079c44c018079c45bbe0000', '40334f998079c44c018079c34cbe0000', '菜单管理', '1', '_iframe', 'icon pear-icon pear-icon-menu', '/system/menu/main');
 INSERT INTO id_server.menu (id, parent_id, title, type, open_type, icon, href) VALUES ('40333f998079c44c018079c34cbe0000', '0', '客户端管理', '0', null, 'layui-icon layui-icon-auz', '');
 INSERT INTO id_server.menu (id, parent_id, title, type, open_type, icon, href) VALUES ('40334f998079c44c018079c34cbe0000', '0', '系统管理', '0', null, 'layui-icon layui-icon-set-fill', '');
+
+INSERT INTO id_server.oauth2_client (id, client_id, client_id_issued_at, client_secret, client_secret_expires_at, client_name) VALUES ('2c9c20818099c695018099cbca030000', 'e2fa7e64-249b-46f0-ae1d-797610e88615', '2022-05-06 22:35:11', '{bcrypt}$2a$10$uHWdt9Ackncw6s5BJlYO9OOdpD3Q44aan0SjttGRCZU2qvvk3fAZO', null, 'felord');
+INSERT INTO id_server.client_auth_method (client_id, client_authentication_method) VALUES ('e2fa7e64-249b-46f0-ae1d-797610e88615', 'client_secret_basic');
+INSERT INTO id_server.oauth2_client_settings (client_id, require_proof_key, require_authorization_consent, jwk_set_url, signing_algorithm) VALUES ('e2fa7e64-249b-46f0-ae1d-797610e88615', false, true, '', '');
+INSERT INTO id_server.oauth2_grant_type (client_id, grant_type_name) VALUES ('e2fa7e64-249b-46f0-ae1d-797610e88615', 'authorization_code');
+INSERT INTO id_server.oauth2_grant_type (client_id, grant_type_name) VALUES ('e2fa7e64-249b-46f0-ae1d-797610e88615', 'client_credentials');
+INSERT INTO id_server.oauth2_grant_type (client_id, grant_type_name) VALUES ('e2fa7e64-249b-46f0-ae1d-797610e88615', 'refresh_token');
+INSERT INTO id_server.oauth2_scope (client_id, scope, description) VALUES ('e2fa7e64-249b-46f0-ae1d-797610e88615', 'message.read', '读取信息');
+INSERT INTO id_server.oauth2_scope (client_id, scope, description) VALUES ('e2fa7e64-249b-46f0-ae1d-797610e88615', 'message.write', '写入信息');
+INSERT INTO id_server.oauth2_scope (client_id, scope, description) VALUES ('e2fa7e64-249b-46f0-ae1d-797610e88615', 'userinfo', '用户信息');
+INSERT INTO id_server.oauth2_token_settings (client_id, access_token_time_to_live, token_format, reuse_refresh_tokens, refresh_token_time_to_live, id_token_signature_algorithm) VALUES ('e2fa7e64-249b-46f0-ae1d-797610e88615', 300000000000, 'self-contained', true, 3600000000000, 'RS256');
+INSERT INTO id_server.redirect_uri (client_id, redirect_uri) VALUES ('e2fa7e64-249b-46f0-ae1d-797610e88615', 'http://127.0.0.1:8082/foo/bar');
+INSERT INTO id_server.redirect_uri (client_id, redirect_uri) VALUES ('e2fa7e64-249b-46f0-ae1d-797610e88615', 'http://127.0.0.1:8082/login/oauth2/code/felord');

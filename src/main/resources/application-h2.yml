@@ -24,9 +24,3 @@ spring:
         # h2 数据库开启页面访问      http://localhost:8085/h2-console   jdbc url 需要改为 jdbc:h2:mem:id_server
         # 该路径目前会被Spring Security禁止访问
         path: /h2-console
-logging:
-  level:
-    org.springframework.web: trace
-    org.springframework.security.oauth2: debug
-    org.springframework.jdbc.core: debug
-    org.springframework.security: trace
