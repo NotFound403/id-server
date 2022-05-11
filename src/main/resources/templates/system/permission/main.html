@@ -4,7 +4,7 @@
     <th:block th:include="include :: header('权限列表')"/>
 </head>
 <body class="pear-container">
-<div  sec:authorize="hasPermission('permission','list')"  class="layui-card">
+<div sec:authorize="hasPermission('permission','list')" class="layui-card">
     <div class="layui-card-body">
         <table id="permission-table" lay-filter="permission-table"></table>
     </div>
@@ -41,7 +41,7 @@
 
 
 <script id="permissionCode" type="text/html">
-     <button plain class="pear-btn pear-btn-success" disabled>{{d.permissionCode}}</button>
+    <button plain class="pear-btn pear-btn-success" disabled>{{d.permissionCode}}</button>
 </script>
 
 </body>
@@ -53,34 +53,35 @@
         let $ = layui.jquery;
         let treeTable = layui.treetable;
         let popup = layui.popup;
-        treeTable.render({
-            treeColIndex: 0,
-            treeSpid: 0,
-            treeIdName: 'permissionId',
-            treePidName: 'parentId',
-            skin: 'line',
-            method: 'get',
-            treeDefaultClose: true,
-            toolbar: '#permission-toolbar',
-            elem: '#permission-table',
-            url: '/system/permission/list',
-            page: false,
-            defaultToolbar: [{
-                layEvent: 'refresh',
-                icon: 'layui-icon-refresh',
-                title: '刷新'
-            }, 'filter', 'print', 'exports'],
-            cols: [
-                [
-                    {field: 'title', title: '权限名称'},
-                    {field: 'permissionCode',   title: '权限码', templet: '#permissionCode'},
-                    {field: 'description', title: '描述'},
-                    {field: 'sortable', title: '序号'},
-                    // {title: '操作', templet: '#permission-bar', width: 150, align: 'center'}
+        if ([[${#authorization.expression("hasPermission('permission','list')")}]]) {
+            treeTable.render({
+                treeColIndex: 0,
+                treeSpid: 0,
+                treeIdName: 'permissionId',
+                treePidName: 'parentId',
+                skin: 'line',
+                method: 'get',
+                treeDefaultClose: true,
+                toolbar: '#permission-toolbar',
+                elem: '#permission-table',
+                url: '/system/permission/list',
+                page: false,
+                defaultToolbar: [{
+                    layEvent: 'refresh',
+                    icon: 'layui-icon-refresh',
+                    title: '刷新'
+                }, 'filter', 'print', 'exports'],
+                cols: [
+                    [
+                        {field: 'title', title: '权限名称'},
+                        {field: 'permissionCode', title: '权限码', templet: '#permissionCode'},
+                        {field: 'description', title: '描述'},
+                        {field: 'sortable', title: '序号'},
+                        // {title: '操作', templet: '#permission-bar', width: 150, align: 'center'}
+                    ]
                 ]
-            ]
-        });
-
+            });
+        }
         form.on('submit(permission-query)', function (data) {
             treeTable.search("#permission-table", data.field.powerName)
             return false;
@@ -122,7 +123,7 @@
                 type: 'put',
                 success: function (result) {
                     layer.close(loading);
-                    if (result.code === 200 ) {
+                    if (result.code === 200) {
                         popup.success(result.msg);
                     } else {
                         popup.failure(result.msg);
@@ -161,7 +162,7 @@
                     type: 'delete',
                     success: function (result) {
                         layer.close(loading);
-                        if (result.code === 200 ) {
+                        if (result.code === 200) {
                             popup.success(result.msg, function () {
                                 obj.del();
                             })

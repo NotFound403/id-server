@@ -79,35 +79,38 @@
         let $ = layui.jquery;
         let treeTable = layui.treetable;
         let popup = layui.popup;
-        treeTable.render({
-            treeColIndex: 0,
-            treeSpid: 0,
-            treeIdName: 'id',
-            treePidName: 'parentId',
-            skin: 'line',
-            method: 'get',
-            treeDefaultClose: true,
-            toolbar: '#menu-toolbar',
-            elem: '#menu-table',
-            url: '/system/menu/list',
-            page: false,
-            defaultToolbar: [{
-                layEvent: 'refresh',
-                icon: 'layui-icon-refresh',
-                title: '刷新'
-            }, 'filter', 'print', 'exports'],
-            cols: [
-                [
-                    // {type: 'checkbox'},
-                    {field: 'title', minWidth: 200, title: '菜单名称'},
-                    {field: 'type', minWidth: 200, templet: '#menu-type', title: '类型'},
-                    {field: 'icon', title: '图标', templet: '#icon'},
-                    {field: 'openType', title: '打开类型', templet: '#open-type'},
-                    {field: 'href', minWidth: 200, title: '链接', templet: '#menu-href'},
-                    // {title: '操作', templet: '#menu-bar', width: 150, align: 'center'}
+         // 判断权限
+        if ([[${#authorization.expression("hasPermission('menu','list')")}]]) {
+            treeTable.render({
+                treeColIndex: 0,
+                treeSpid: 0,
+                treeIdName: 'id',
+                treePidName: 'parentId',
+                skin: 'line',
+                method: 'get',
+                treeDefaultClose: true,
+                toolbar: '#menu-toolbar',
+                elem: '#menu-table',
+                url: '/system/menu/list',
+                page: false,
+                defaultToolbar: [{
+                    layEvent: 'refresh',
+                    icon: 'layui-icon-refresh',
+                    title: '刷新'
+                }, 'filter', 'print', 'exports'],
+                cols: [
+                    [
+                        // {type: 'checkbox'},
+                        {field: 'title', minWidth: 200, title: '菜单名称'},
+                        {field: 'type', minWidth: 200, templet: '#menu-type', title: '类型'},
+                        {field: 'icon', title: '图标', templet: '#icon'},
+                        {field: 'openType', title: '打开类型', templet: '#open-type'},
+                        {field: 'href', minWidth: 200, title: '链接', templet: '#menu-href'},
+                        // {title: '操作', templet: '#menu-bar', width: 150, align: 'center'}
+                    ]
                 ]
-            ]
-        });
+            });
+        }
 
         form.on('submit(menu-query)', function (data) {
             treeTable.search("#menu-table", data.field.powerName)

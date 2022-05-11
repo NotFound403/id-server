@@ -12,6 +12,7 @@ import cn.felord.idserver.mapstruct.RoleMapper;
 import cn.felord.idserver.repository.PermissionRepository;
 import cn.felord.idserver.repository.RoleRepository;
 import cn.felord.idserver.repository.UserInfoRepository;
+import cn.felord.idserver.repository.UserRoleRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -39,6 +40,7 @@ public class JpaRoleService implements RoleService {
     private static final String ROOT_ROLE_NAME = "id_server";
     private final RoleMapper roleMapper;
     private final RoleRepository roleRepository;
+    private final UserRoleRepository userRoleRepository;
     private final PermissionRepository permissionRepository;
     private final UserInfoRepository userInfoRepository;
 
@@ -65,7 +67,9 @@ public class JpaRoleService implements RoleService {
 
     @Override
     public void deleteById(String roleId) {
-
+        if (userRoleRepository.countByRoleId(roleId) > 0) {
+            throw new BindingException("有用户持有该角色，删除前需要解除关系");
+        }
         roleRepository.deleteById(roleId);
     }
 

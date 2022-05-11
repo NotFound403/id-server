@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -208,4 +209,11 @@ public class UserController extends BaseController {
         this.userInfoService.deleteById(userId);
         return RestBody.ok("操作成功");
     }
+
+    @GetMapping("/system/user/center")
+    public String profile(Model model, @AuthenticationPrincipal UserInfo userInfo) {
+        model.addAttribute("userInfo", userInfo);
+        return "/system/user/center";
+    }
+
 }

@@ -6,6 +6,7 @@ import cn.felord.idserver.entity.dto.PermissionDTO;
 import cn.felord.idserver.mapstruct.PermissionMapper;
 import cn.felord.idserver.repository.PermissionRepository;
 import cn.felord.idserver.repository.RoleRepository;
+import cn.felord.idserver.repository.UserRoleRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,11 +22,21 @@ import java.util.stream.Stream;
 class RoleTests {
 
     @Autowired
+    UserRoleRepository userRoleRepository;
+    @Autowired
     private RoleRepository roleRepository;
     @Autowired
     PermissionMapper permissionMapper;
     @Autowired
     private PermissionRepository permissionRepository;
+
+
+    @Test
+    @Transactional
+    public void count() {
+        long l = userRoleRepository.countByRoleId("2c9460818065589b01806558ad2b0003");
+        System.out.println("l = " + l);
+    }
 
     @Test
     @Transactional
