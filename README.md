@@ -1,16 +1,32 @@
 # 🚀id-server
-
 一个基于**Spring Authorization Server**的开源的授权服务器，欢迎Star，如果有兴趣也可以对本项目发起贡献。
+- gitee: [https://gitee.com/felord/id-server](https://gitee.com/felord/id-server)
+- 文档建设中……
 ## 主要功能
 - 创建OAuth2客户端，并对OAuth2客户端进行管理。
-- UI控制台，可动态调整管理员的用户角色。
+- 提供OAuth2授权服务。
+- 支持四种客户端认证方式：
+  - **CLIENT_SECRET_BASIC**
+  - **CLIENT_SECRET_POST**
+  - **CLIENT_SECRET_JWT**
+  - **PRIVATE_KEY_JWT**
+- 支持三种授权方式：
+  - **AUTHORIZATION_CODE**
+  - **CLIENT_CREDENTIALS**
+  - **REFRESH_TOKEN**
+- **OIDC 1.0**的支持（完善中）。
+- 提供UI控制台，降低上手成本。
+- 可动态调整管理员的用户角色，对授权服务器进行按钮功能级别的权限控制。
 ## 主要技术
-- Spring Boot
-- Spring Security
-- Spring Authorization Server
-- Spring Data JPA
-- H2 数据库
-- layui
+- **Spring Boot**
+- **Spring Security**
+- **Spring Authorization Server**
+- **Spring Data JPA**
+- **layui**
+- **thymeleaf**
+- 数据库
+  - **H2**
+  - **Mysql**
 
 ## 简单用法
 - 拉取主分支最新代码到本地。
