@@ -1,6 +1,7 @@
 # 🚀id-server
-
 一个基于**Spring Authorization Server**的开源的授权服务器，欢迎Star，如果有兴趣也可以对本项目发起贡献。
+- gitee: [https://gitee.com/felord/id-server](https://gitee.com/felord/id-server)
+- 文档建设中……
 ## 主要功能
 - 创建OAuth2客户端，并对OAuth2客户端进行管理。
 - UI控制台，可动态调整管理员的用户角色。
