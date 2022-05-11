@@ -212,6 +212,16 @@ public class IdServerSecurityConfiguration {
                 .antMatchers("/favicon.ico");
     }
 
+    /**
+     * 权限评估.
+     *
+     * @return the permission evaluator
+     */
+    @Bean
+    PermissionEvaluator permissionEvaluator(){
+        return new ResourcePermissionEvaluator();
+    }
+
 
     /**
      * The type Resource permission evaluator.
@@ -222,6 +232,7 @@ public class IdServerSecurityConfiguration {
         @Override
         @SuppressWarnings("unchecked")
         public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
+            final String permissionCode = targetDomainObject+":"+permission;
             Collection<Role> roles = (Collection<Role>) authentication.getAuthorities();
             if (roles.stream().anyMatch(role -> Objects.equals(ROOT_ROLE_NAME,role.getRoleName()))) {
                 return true;
@@ -229,13 +240,12 @@ public class IdServerSecurityConfiguration {
             return roles.stream()
                     .flatMap(role -> role.getPermissions().stream())
                     .map(Permission::getPermissionCode)
-                    .anyMatch(p -> Objects.equals(p, permission));
+                    .anyMatch(p -> Objects.equals(p, permissionCode));
         }
 
         @Override
         public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
-            //todo
-            return true;
+            throw new IllegalArgumentException("暂不支持");
         }
     }
 }

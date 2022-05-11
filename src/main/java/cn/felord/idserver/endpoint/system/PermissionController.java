@@ -4,6 +4,7 @@ import cn.felord.idserver.advice.BaseController;
 import cn.felord.idserver.entity.Permission;
 import cn.felord.idserver.service.PermissionService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -59,6 +60,7 @@ private final PermissionService permissionService;
      */
     @GetMapping("/system/permission/list")
     @ResponseBody
+    @PreAuthorize("hasPermission('permission','list')")
     public List<Permission> list() {
         return permissionService.findAll();
     }

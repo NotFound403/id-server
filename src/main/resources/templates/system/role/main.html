@@ -4,15 +4,20 @@
     <th:block th:include="include :: header('角色列表')"/>
 </head>
 <body class="pear-container">
-<div class="layui-card">
+<div sec:authorize="hasPermission('role','list')" class="layui-card">
     <div class="layui-card-body">
         <table id="role-table" lay-filter="role-table"></table>
+    </div>
+</div>
+<div sec:authorize="not hasPermission('role','list')" class="layui-card">
+    <div class="layui-card-body">
+        <b>您无权查看该列表</b>
     </div>
 </div>
 </body>
 
 <script id="role-toolbar" type="text/html">
-    <button
+    <button sec:authorize="hasPermission('role','add')"
             class="pear-btn pear-btn-primary pear-btn-md" lay-event="add">
         <i class="layui-icon layui-icon-add-1"></i>
         新增
@@ -20,14 +25,14 @@
 </script>
 
 <script id="role-bar" type="text/html">
-    <button
+    <button sec:authorize="hasPermission('role','update')"
             class="pear-btn pear-btn-primary pear-btn-sm" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>
     </button>
-    <button
+    <button sec:authorize="hasPermission('role','permission')"
             class="pear-btn pear-btn-warming pear-btn-sm" lay-event="permission"><i
             class="layui-icon layui-icon-vercode"></i>
     </button>
-    <button
+    <button sec:authorize="hasPermission('role','remove')"
             class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i class="layui-icon layui-icon-delete"></i>
     </button>
 </script>
@@ -145,7 +150,7 @@
                 type: 2,
                 title: '授权',
                 shade: 0.1,
-                area: ['320px', '400px'],
+                area: ['400px', '500px'],
                 content: MODULE_PATH + 'permission/' + obj.data["roleId"]
             });
         }

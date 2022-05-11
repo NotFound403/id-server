@@ -12,6 +12,7 @@ import cn.felord.idserver.service.RoleService;
 import cn.felord.idserver.service.UserInfoService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -55,6 +56,7 @@ public class UserController extends BaseController {
      */
     @GetMapping("/system/user/data")
     @ResponseBody
+    @PreAuthorize("hasPermission('user','list')")
     public Page<UserInfo> page(@RequestParam Integer page, @RequestParam Integer limit) {
         Authentication authentication = this.currentUser();
         System.out.println("authentication = " + authentication.getAuthorities());
@@ -67,6 +69,7 @@ public class UserController extends BaseController {
      * @return the string
      */
     @GetMapping("/system/user/add")
+    @PreAuthorize("hasPermission('user','add')")
     public String add() {
         return "system/user/add";
     }
@@ -79,6 +82,7 @@ public class UserController extends BaseController {
      */
     @PostMapping("/system/user/add")
     @ResponseBody
+    @PreAuthorize("hasPermission('user','add')")
     public Rest<?> add(@RequestBody UserInfoDTO userInfo) {
         userInfoService.save(userInfo);
         return RestBody.ok("操作成功");
@@ -92,6 +96,7 @@ public class UserController extends BaseController {
      * @return the string
      */
     @GetMapping("/system/user/edit/{userId}")
+    @PreAuthorize("hasPermission('user','update')")
     public String edit(Model model, @PathVariable String userId) {
         UserInfo userInfo = userInfoService.findById(userId);
         model.addAttribute("userInfo", userInfo);
@@ -106,6 +111,7 @@ public class UserController extends BaseController {
      */
     @PostMapping("/system/user/edit")
     @ResponseBody
+    @PreAuthorize("hasPermission('user','update')")
     public Rest<?> edit(@RequestBody UserInfo userInfo) {
         // 帐号不可修改
         userInfo.setUsername(null);
@@ -121,7 +127,8 @@ public class UserController extends BaseController {
      */
     @PostMapping("/system/user/enable/{userId}")
     @ResponseBody
-    public Rest<?> edit(@PathVariable String userId) {
+    @PreAuthorize("hasPermission('user','enable')")
+    public Rest<?> enable(@PathVariable String userId) {
         userInfoService.enable(userId);
         return RestBody.ok("操作成功");
     }
@@ -160,6 +167,7 @@ public class UserController extends BaseController {
      * @return the string
      */
     @GetMapping("/system/user/role/{userId}")
+    @PreAuthorize("hasPermission('user','role')")
     public String bindRole(Model model, @PathVariable String userId) {
         //       [[${userId}]]
         model.addAttribute("userId", userId);
@@ -174,6 +182,7 @@ public class UserController extends BaseController {
      */
     @GetMapping("/system/user/roles/{roleId}")
     @ResponseBody
+    @PreAuthorize("hasPermission('user','role')")
     public List<RoleDTO> roles(@PathVariable String roleId) {
         return roleService.roleTreeData(roleId);
     }
@@ -186,6 +195,7 @@ public class UserController extends BaseController {
      */
     @PostMapping("/system/user/save/roles")
     @ResponseBody
+    @PreAuthorize("hasPermission('user','role')")
     public Rest<?> saveRolePermissions(@RequestBody UserRoleDTO userRoleDTO) {
         this.userInfoService.bindRoles(userRoleDTO);
         return RestBody.ok("操作成功");
@@ -193,6 +203,7 @@ public class UserController extends BaseController {
 
     @PostMapping("/system/user/remove/{userId}")
     @ResponseBody
+    @PreAuthorize("hasPermission('user','remove')")
     public Rest<?> remove(@PathVariable String userId) {
         this.userInfoService.deleteById(userId);
         return RestBody.ok("操作成功");

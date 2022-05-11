@@ -5,56 +5,49 @@
     <link rel="stylesheet" th:href="@{/admin/css/other/user.css}"/>
 </head>
 <body class="pear-container">
-<div class="layui-card">
-</div>
-<div class="user-left user-collasped">
-    <div class="layui-card">
-        <div class="layui-card-body">
-            <div class="button button-primary user-group" user-group=""> 全 部 用 户</div>
-            <div class="button button-default user-group" user-group="-1"> 默 认 分 组</div>
-            <div style="overflow: auto">
-                <ul class="dept-tree" data-id="0" id="dept-tree"></ul>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="user-main user-collasped">
-    <div class="layui-card">
+    <div sec:authorize="hasPermission('user','list')" class="layui-card">
         <div class="layui-card-body">
             <table id="user-table" lay-filter="user-table"></table>
         </div>
     </div>
-</div>
+    <div sec:authorize="not hasPermission('user','list')" class="layui-card">
+        <div class="layui-card-body">
+            <b>您无权查看该列表</b>
+        </div>
+    </div>
 </body>
 
 <script id="user-toolbar" type="text/html">
-    <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="add">
+    <button sec:authorize="hasPermission('user','add')" class="pear-btn pear-btn-primary pear-btn-md" lay-event="add">
         <i class="pear-icon pear-icon-add"></i>
         新增
-    </button>
-    <button class="pear-btn pear-btn-md" lay-event="collasped">
-        <i class="pear-icon pear-icon-modular"></i>
-        高级
     </button>
 </script>
 
 <script id="user-bar" type="text/html">
-    <button
+    <button sec:authorize="hasPermission('user','role')"
             class="pear-btn pear-btn-warming pear-btn-sm" lay-event="role"><i
             class="layui-icon layui-icon-vercode"></i>
     </button>
-    <button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="edit"><i class="pear-icon pear-icon-edit"></i>
+    <button sec:authorize="hasPermission('user','update')" class="pear-btn pear-btn-primary pear-btn-sm" lay-event="edit"><i class="pear-icon pear-icon-edit"></i>
     </button>
-    <button class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i class="pear-icon pear-icon-ashbin"></i>
+    <button sec:authorize="hasPermission('user','remove')" class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i class="pear-icon pear-icon-ashbin"></i>
     </button>
-    <button class="pear-btn pear-btn-danger pear-btn-sm" lay-event="editpasswordadmin"><i
+    <button sec:authorize="hasPermission('user','password')" class="pear-btn pear-btn-danger pear-btn-sm" lay-event="editpasswordadmin"><i
             class="layui-icon layui-icon-key"></i>
     </button>
 </script>
 
 <script id="user-enable" type="text/html">
-    <input type="checkbox" name="enabled" value="{{d.userId}}" lay-skin="switch" lay-text="启用|禁用"
+    <input sec:authorize="hasPermission('user','enable')" type="checkbox" name="enabled" value="{{d.userId}}" lay-skin="switch" lay-text="启用|禁用"
            lay-filter="user-enable" {{ d.enabled== true ? 'checked' : '' }} />
+    <div sec:authorize="not hasPermission('user','enable')">
+        {{#if (d.enabled) { }}
+        <span>启用</span>
+        {{# }else { }}
+        <span>禁用</span>
+        {{# } }}
+    </div>
 </script>
 
 <script id="user-gender" type="text/html">

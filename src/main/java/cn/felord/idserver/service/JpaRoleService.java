@@ -65,6 +65,7 @@ public class JpaRoleService implements RoleService {
 
     @Override
     public void deleteById(String roleId) {
+
         roleRepository.deleteById(roleId);
     }
 

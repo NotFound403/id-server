@@ -10,6 +10,7 @@ import cn.felord.idserver.service.PermissionService;
 import cn.felord.idserver.service.RoleService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,6 +51,7 @@ public class RoleController extends BaseController {
      * @return the string
      */
     @GetMapping("/system/role/add")
+    @PreAuthorize("hasPermission('role','add')")
     public String add() {
         return "/system/role/add";
     }
@@ -62,6 +64,7 @@ public class RoleController extends BaseController {
      */
     @PostMapping("/system/role/add")
     @ResponseBody
+    @PreAuthorize("hasPermission('role','add')")
     public Rest<?> add(@RequestBody Role role) {
         roleService.save(role);
         return RestBody.ok("操作成功");
@@ -76,6 +79,7 @@ public class RoleController extends BaseController {
      */
     @GetMapping("/system/role/data")
     @ResponseBody
+    @PreAuthorize("hasPermission('role','list')")
     public Page<Role> page(@RequestParam Integer page, @RequestParam Integer limit) {
         return roleService.page(page, limit);
     }
@@ -88,6 +92,7 @@ public class RoleController extends BaseController {
      * @return the string
      */
     @GetMapping("/system/role/permission/{roleId}")
+    @PreAuthorize("hasPermission('role','permission')")
     public String bindPermission(Model model, @PathVariable String roleId) {
         //       [[${roleId}]]
         model.addAttribute("roleId", roleId);
@@ -102,6 +107,7 @@ public class RoleController extends BaseController {
      * @return the string
      */
     @GetMapping("/system/role/edit/{roleId}")
+    @PreAuthorize("hasPermission('role','update')")
     public String edit(Model model, @PathVariable String roleId) {
         Role role = roleService.findByRoleId(roleId);
         model.addAttribute("role", role);
@@ -116,6 +122,7 @@ public class RoleController extends BaseController {
      */
     @PostMapping("/system/role/edit")
     @ResponseBody
+    @PreAuthorize("hasPermission('role','update')")
     public Rest<?> edit(@RequestBody Role role) {
         roleService.update(role);
         return RestBody.ok("操作成功");
@@ -129,6 +136,7 @@ public class RoleController extends BaseController {
      */
     @GetMapping("/system/role/permissions/{roleId}")
     @ResponseBody
+    @PreAuthorize("hasPermission('role','permission')")
     public List<PermissionDTO> permissions(@PathVariable String roleId) {
         return permissionService.permissionTreeData(roleId);
     }
@@ -141,6 +149,7 @@ public class RoleController extends BaseController {
      */
     @PostMapping("/system/role/save/permissions")
     @ResponseBody
+    @PreAuthorize("hasPermission('role','permission')")
     public Rest<?> saveRolePermissions(@RequestBody RolePermissionDTO rolePermissionDTO) {
         this.roleService.bindPermissions(rolePermissionDTO);
         return RestBody.ok("操作成功");
@@ -154,6 +163,7 @@ public class RoleController extends BaseController {
      */
     @PostMapping("/system/role/remove/{roleId}")
     @ResponseBody
+    @PreAuthorize("hasPermission('role','remove')")
     public Rest<?> remove(@PathVariable String roleId) {
         roleService.deleteById(roleId);
         return RestBody.ok("操作成功");

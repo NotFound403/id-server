@@ -6,6 +6,7 @@ import cn.felord.idserver.advice.RestBody;
 import cn.felord.idserver.entity.Menu;
 import cn.felord.idserver.service.JpaMenuService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -88,6 +89,7 @@ public class MenuController extends BaseController {
      */
     @GetMapping("/system/menu/list")
     @ResponseBody
+    @PreAuthorize("hasPermission('menu','list')")
     public List<Menu> menuList() {
         return jpaMenuService.findAll();
     }

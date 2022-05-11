@@ -4,12 +4,16 @@
     <th:block th:include="include :: header('权限列表')"/>
 </head>
 <body class="pear-container">
-<div class="layui-card">
+<div  sec:authorize="hasPermission('permission','list')"  class="layui-card">
     <div class="layui-card-body">
         <table id="permission-table" lay-filter="permission-table"></table>
     </div>
 </div>
-
+<div sec:authorize="not hasPermission('permission','list')" class="layui-card">
+    <div class="layui-card-body">
+        <b>您无权查看该列表</b>
+    </div>
+</div>
 <script id="permission-toolbar" type="text/html">
     <!--<button
             class="pear-btn pear-btn-primary pear-btn-md" lay-event="add">

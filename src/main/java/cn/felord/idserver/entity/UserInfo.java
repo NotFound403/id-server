@@ -32,7 +32,6 @@ import java.util.Set;
 @Setter
 @ToString
 @EntityListeners(AuditingEntityListener.class)
-
 @NamedEntityGraphs(
         @NamedEntityGraph(name = "userinfo.userDetails",
         attributeNodes = {
