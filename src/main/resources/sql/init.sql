@@ -1,8 +1,0 @@
-INSERT INTO id_server.menu (id, parent_id, title, type, open_type, icon, href) VALUES ('2c9c2081807fb0e201807fb22ae00000', '694203021537574911', '用户列表', '1', '_iframe', 'layui-icon layui-icon-username', '/system/user/main');
-INSERT INTO id_server.menu (id, parent_id, title, type, open_type, icon, href) VALUES ('2c9c2081807fc01001807fc25ad00000', '694203021537574913', '客户端列表', '1', '_iframe', 'layui-icon layui-icon-component', '/system/client/main');
-INSERT INTO id_server.menu (id, parent_id, title, type, open_type, icon, href) VALUES ('2c9c2081808a6b7801808a715cb70000', '40334f998079c44c018079c34cbe0000', '角色管理', '1', '_iframe', 'layui-icon layui-icon-friends', '/system/role/main');
-INSERT INTO id_server.menu (id, parent_id, title, type, open_type, icon, href) VALUES ('2c9c2081808a72a501808a7c3bc30000', '40334f998079c44c018079c34cbe0000', '权限管理', '1', '_iframe', 'layui-icon layui-icon-vercode', '/system/permission/main');
-INSERT INTO id_server.menu (id, parent_id, title, type, open_type, icon, href) VALUES ('40289f998079c44c018079c45bbe0000', '40334f998079c44c018079c34cbe0000', '菜单管理', '1', '_iframe', 'icon pear-icon pear-icon-menu', '/system/menu/main');
-INSERT INTO id_server.menu (id, parent_id, title, type, open_type, icon, href) VALUES ('40334f998079c44c018079c34cbe0000', '0', '系统管理', '0', null, 'layui-icon layui-icon-set-fill', '');
-INSERT INTO id_server.menu (id, parent_id, title, type, open_type, icon, href) VALUES ('694203021537574911', '0', '用户管理', '0', null, 'layui-icon layui-icon-user', '');
-INSERT INTO id_server.menu (id, parent_id, title, type, open_type, icon, href) VALUES ('694203021537574913', '0', '客户端管理', '0', null, 'layui-icon layui-icon-auz', '');
