@@ -1,15 +1,27 @@
 # 🚀id-server
 
-一个基于**Spring Authorization Server**的开源的授权服务器，欢迎Star
-
+一个基于**Spring Authorization Server**的开源的授权服务器，欢迎Star。
+## 主要功能
+- 创建OAuth2客户端，并对OAuth2客户端进行管理。
+- UI控制台，可动态调整管理员的用户角色。
+## 主要技术
+- Spring Boot
+- Spring Security
+- Spring Authorization Server
+- Spring Data JPA
+- H2 数据库
+- layui
 
 ## 简单用法
 
-- 初始化数据脚本自行执行`init.sql`，自行修改数据库链接。
-- 管理后台登录 `http://localhost:9000/system/login`，默认管理用户`felord`、默认密码`123456`。
-- 自行建立一个客户端，选择`client_secret_basic`或者`client_secret_post`，除非你看过我的教程，知道其它的怎么玩。
-- 授权测试账号密码分别为`user`和`user`，暂时这个还没有对接数据库先弄个临时账号能跑通。
-- 客户端应用在samples下，参考 [spring-security-oauth2-tutorial](https://gitee.com/felord/spring-security-oauth2-tutorial)中的客户端应用，配置改成自己刚创建的客户端信息。
+- 拉取主分支最新代码到本地。
+- 通过`IdServerApplication`来启动授权服务器。管理控制台本地登录路径为`http://localhost:9000/system/login`，最高权限用户为`root`，密码为`idserver`。
+- 你可以通过`root`用户创建管理其它控制台管理员用户，并赋予他们角色。
+## oauth2 测试方法
+- 在**Id Server**中创建一个OAuth2客户端，自己记住密码，密码功能还不够完善。
+- 样例客户端在`samples`文件夹下，根据创建的OAuth2客户端信息修改配置，主要是`client-id`,`client-secret`,`client-authentication-method`,`scope`，其它选项除非你比较了解OAuth2，否则先不要动，也可以通过issue咨询。
+- 调用`redirect-uri`，进入登录页，输入用户名`user`和密码`user`即可。
+> `redirect-uri`必须在授权服务器Id Server注册客户端时声明。
 
 ## 概念
 一些概念

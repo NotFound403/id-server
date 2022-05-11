@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('角色授权')"/>
+</head>
+<body>
+<form action="" class="layui-form">
+    <div class="mainBox">
+        <div class="main-container">
+            <div class="main-container">
+                <ul class="dtree" data-id="0" id="role-permission"></ul>
+            </div>
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="button-container">
+            <button class="pear-btn pear-btn-primary pear-btn-sm" lay-filter="permission-save" lay-submit="" type="submit">
+                <i class="layui-icon layui-icon-ok"></i>
+                提交
+            </button>
+            <button class="pear-btn pear-btn-sm" type="reset">
+                <i class="layui-icon layui-icon-refresh"></i>
+                重置
+            </button>
+        </div>
+    </div>
+</form>
+<th:block th:include="include :: footer"/>
+<script th:inline="javascript">
+    layui.use(['dtree', 'form', 'jquery'], function () {
+        let dtree = layui.dtree;
+        let form = layui.form;
+        let $ = layui.jquery;
+
+        dtree.render({
+            elem: "#role-permission",
+            method: "get",
+            url: "/system/role/permissions/" + [[${roleId}]],
+            dataFormat: "list",
+            checkbar: true,
+            checkbarLoad:"leaf",
+            skin: "layui",
+            initLevel: "1",
+            checkbarType: "no-all",
+            response: {treeId: "permissionId", parentId: "parentId", title: "title"},
+        });
+
+        form.on('submit(permission-save)', function () {
+            let param = dtree.getCheckbarNodesParam("role-permission");
+
+            let permissionIds = param.map(function (node) {
+                    return  node.nodeId;
+            })
+            let params = {roleId: [[${roleId}]],permissionIds:permissionIds}
+
+                        $.ajax({
+                            url: '/system/role/save/permissions',
+                            data: JSON.stringify(params),
+                            dataType: 'json',
+                            contentType: 'application/json',
+                            type: 'post',
+                            success: function (result) {
+                                if (result.code === 200) {
+                                    layer.msg(result.msg, {icon: 1, time: 1000}, function () {
+                                        parent.layer.close(parent.layer.getFrameIndex(window.name));
+                                    });
+                                } else {
+                                    layer.msg(result.msg, {icon: 2, time: 1000});
+                                }
+                            }
+                        })
+            return false;
+        });
+
+    })
+</script>
+</body>
+</html>

@@ -6,27 +6,30 @@
 </head>
 <body class="pear-container">
 
-<div class="layui-card">
+<div sec:authorize="hasPermission('client','list')" class="layui-card">
     <div class="layui-card-body">
         <table id="client-table" lay-filter="client-table"></table>
     </div>
 </div>
-
+<div sec:authorize="not hasPermission('client','list')" class="layui-card">
+    <div class="layui-card-body">
+            <b>您无权查看该列表</b>
+    </div>
+</div>
 </body>
 
 <script id="client-toolbar" type="text/html">
-    <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="add">
+    <button sec:authorize="hasPermission('client','add')" class="pear-btn pear-btn-primary pear-btn-md" lay-event="add">
         <i class="pear-icon pear-icon-add"></i>
         新增
     </button>
 </script>
 
 <script id="client-bar" type="text/html">
-    <button class="pear-btn pear-btn-primary pear-btn-sm" lay-event="edit"><i class="pear-icon pear-icon-edit"></i>
+    <button sec:authorize="hasPermission('client','update')" class="pear-btn pear-btn-primary pear-btn-sm" lay-event="edit"><i class="pear-icon pear-icon-edit"></i>
     </button>
-    <button class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i class="pear-icon pear-icon-ashbin"></i>
+    <button sec:authorize="hasPermission('client','remove')" class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i class="pear-icon pear-icon-ashbin"></i>
     </button>
-
 </script>
 
 <script id="client-details" type="text/html">

@@ -19,7 +19,7 @@ layui.define(['jquery', 'element', 'form'], function (exports) {
                     type: 'get',
                     async: false,
                     success: function (result) {
-                        if (result.success === true) {
+                        if (result.code === 200 ) {
                             loadDictData = result.data;
                             try {
                                 window.sessionStorage.removeItem('loadDictData' + dictCode);
@@ -49,7 +49,7 @@ layui.define(['jquery', 'element', 'form'], function (exports) {
                     type: 'get',
                     async: false,
                     success: function (result) {
-                        if (result.success === true) {
+                        if (result.code === 200 ) {
                             loadTableDictData = result.data;
                             try {
                                 window.sessionStorage.removeItem('loadTableDictData' + dictCode);

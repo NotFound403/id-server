@@ -4,64 +4,49 @@
     <th:block th:include="include :: header('用户修改')"/>
 </head>
 <body>
-<form action="" class="layui-form">
+<form class="layui-form">
     <div class="mainBox">
         <div class="main-container">
             <div class="main-container">
                 <div class="layui-form-item layui-hide">
-                    <label class="layui-form-label">编号</label>
                     <div class="layui-input-block">
                         <input autocomplete="off" class="layui-input" lay-verify="required" name="userId"
-                               placeholder="请输入标题" th:value="${sysUser.userId}" type="text">
+                               placeholder="请输入userId" th:value="${userInfo.userId}" type="text">
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">账号</label>
+                    <label class="layui-form-label layui-form-required">账号</label>
                     <div class="layui-input-block">
-                        <input autocomplete="off" class="layui-input" lay-verify="required" name="username"
-                               placeholder="请输入标题" th:value="${sysUser.username}" type="text">
+                        <input autocomplete="off" class="layui-input" lay-verify="required" name="username" placeholder="请输入账号"
+                               type="text" th:value="${userInfo.username}" readonly>
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">姓名</label>
+                    <label class="layui-form-label layui-form-required">姓名</label>
                     <div class="layui-input-block">
-                        <input autocomplete="off" class="layui-input" lay-verify="required" name="realName"
-                               placeholder="请输入标题" th:value="${sysUser.realName}" type="text">
+                        <input autocomplete="off" class="layui-input" lay-verify="required" name="realName" placeholder="请输入姓名"
+                               type="text" th:value="${userInfo.realName}">
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">邮箱</label>
+                    <label class="layui-form-label layui-form-required">昵称</label>
                     <div class="layui-input-block">
-                        <input autocomplete="off" class="layui-input" name="email"
-                               placeholder="请输入标题" th:value="${sysUser.email}" type="text">
+                        <input autocomplete="off" class="layui-input" lay-verify="required" name="nickName" placeholder="请输入昵称"
+                               type="text" th:value="${userInfo.nickName}">
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">电话</label>
+                    <label class="layui-form-label layui-form-required">邮箱</label>
                     <div class="layui-input-block">
-                        <input autocomplete="off" class="layui-input" name="phone"
-                               placeholder="请输入标题" th:value="${sysUser.phone}" type="text">
+                        <input autocomplete="off" class="layui-input" name="email" lay-verify="required|email" placeholder="请输入邮箱"
+                               type="text" th:value="${userInfo.email}">
                     </div>
                 </div>
                 <div class="layui-form-item">
-                    <label class="layui-form-label">性别</label>
+                    <label class="layui-form-label layui-form-required">电话</label>
                     <div class="layui-input-block">
-                        <input name="sex" th:checked="${sysUser.sex eq '0'}" title="男" type="radio" value="0">
-                        <input name="sex" th:checked="${sysUser.sex eq '1'}" title="女" type="radio" value="1">
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">部门</label>
-                    <div class="layui-input-block">
-                        <ul class="dtree" data-id="0" id="selectParent" name="deptId"></ul>
-                    </div>
-                </div>
-                <div class="layui-form-item">
-                    <label class="layui-form-label">角色</label>
-                    <div class="layui-input-block">
-                        <input lay-skin="primary" name="roleIds"
-                               th:checked="${sysRole.checked}" th:each="sysRole:${sysRoles}" th:title="${sysRole.roleName}"
-                               th:value="${sysRole.roleId}" type="checkbox">
+                        <input autocomplete="off" class="layui-input" name="phoneNumber" lay-verify="required" placeholder="请输入电话"
+                               type="text" th:value="${userInfo.phoneNumber}">
                     </div>
                 </div>
             </div>
@@ -69,8 +54,7 @@
     </div>
     <div class="bottom">
         <div class="button-container">
-            <button class="pear-btn pear-btn-primary pear-btn-sm" lay-filter="user-update" lay-submit=""
-                    type="submit">
+            <button class="pear-btn pear-btn-primary pear-btn-sm" lay-filter="user-update" lay-submit="" type="submit">
                 <i class="layui-icon layui-icon-ok"></i>
                 提交
             </button>
@@ -82,38 +66,20 @@
     </div>
 </form>
 <th:block th:include="include :: footer"/>
-<script th:inline="javascript">
-    layui.use(['form', 'jquery', 'dtree'], function () {
+<script>
+    layui.use(['form', 'jquery'], function () {
         let form = layui.form;
         let $ = layui.jquery;
-        let dtree = layui.dtree;
-
-        dtree.renderSelect({
-            elem: "#selectParent",
-            url: "/system/dept/tree",
-            method: 'get',
-            selectInputName: {nodeId: "deptId", context: "deptName"},
-            skin: "layui",
-            dataFormat: "list",
-            response: {treeId: "deptId", parentId: "parentId", title: "deptName"},
-            selectInitVal: [[${sysUser.deptId}]]
-        });
 
         form.on('submit(user-update)', function (data) {
-            let roleIds = "";
-            $('input[type=checkbox]:checked').each(function () {
-                roleIds += $(this).val() + ",";
-            });
-            roleIds = roleIds.substr(0, roleIds.length - 1);
-            data.field.roleIds = roleIds;
             $.ajax({
-                url: '/system/user/update',
+                url: '/system/user/edit',
                 data: JSON.stringify(data.field),
                 dataType: 'json',
                 contentType: 'application/json',
-                type: 'put',
+                type: 'post',
                 success: function (result) {
-                    if (result.success) {
+                    if (result.code===200) {
                         layer.msg(result.msg, {icon: 1, time: 1000}, function () {
                             parent.layer.close(parent.layer.getFrameIndex(window.name));//关闭当前页
                             parent.layui.table.reload("user-table");
@@ -126,6 +92,8 @@
             return false;
         });
     })
+</script>
+<script>
 </script>
 </body>
 </html>

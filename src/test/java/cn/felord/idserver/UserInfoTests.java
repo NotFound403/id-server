@@ -31,7 +31,7 @@ public class UserInfoTests {
 
         UserMapper mapper = UserMapper.MAPPER;
 
-        mapper.update(userDTO,userInfo);
+        mapper.update(userDTO, userInfo);
 
 
         Assertions.assertEquals("cat", userInfo.getRealName());
@@ -63,6 +63,8 @@ public class UserInfoTests {
         @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
         void update(UserDTO dto, @MappingTarget UserInfo userInfo);
     }
+
+
 
 
 }

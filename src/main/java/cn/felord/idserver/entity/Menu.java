@@ -14,12 +14,19 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * The type Menu.
+ *
+ * @author felord.cn
+ * @since 1.0.0
+ */
 @Entity
 @Getter
 @Setter
 @ToString
 public class Menu implements Serializable {
     private static final long serialVersionUID = 4206503097158085877L;
+
     @Id
     @GenericGenerator(name = "uuid-hex", strategy = "uuid.hex")
     @GeneratedValue(generator = "uuid-hex")

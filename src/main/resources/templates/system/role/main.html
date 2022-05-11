@@ -4,59 +4,35 @@
     <th:block th:include="include :: header('角色列表')"/>
 </head>
 <body class="pear-container">
-<div class="layui-card">
-    <div class="layui-card-body">
-        <form action="" class="layui-form">
-            <div class="layui-form-item">
-                <label class="layui-form-label">角色名</label>
-                <div class="layui-input-inline">
-                    <input class="layui-input" name="roleContent" placeholder="" type="text">
-                </div>
-                <label class="layui-form-label">角色标识</label>
-                <div class="layui-input-inline">
-                    <input class="layui-input" name="roleName" placeholder="" type="text">
-                </div>
-                <button class="pear-btn pear-btn-md pear-btn-primary" lay-filter="role-query" lay-submit>
-                    <i class="layui-icon layui-icon-search"></i>
-                    查询
-                </button>
-                <button class="pear-btn pear-btn-md" type="reset">
-                    <i class="layui-icon layui-icon-refresh"></i>
-                    重置
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-<div class="layui-card">
+<div sec:authorize="hasPermission('role','list')" class="layui-card">
     <div class="layui-card-body">
         <table id="role-table" lay-filter="role-table"></table>
+    </div>
+</div>
+<div sec:authorize="not hasPermission('role','list')" class="layui-card">
+    <div class="layui-card-body">
+        <b>您无权查看该列表</b>
     </div>
 </div>
 </body>
 
 <script id="role-toolbar" type="text/html">
-    <button
+    <button sec:authorize="hasPermission('role','add')"
             class="pear-btn pear-btn-primary pear-btn-md" lay-event="add">
         <i class="layui-icon layui-icon-add-1"></i>
         新增
     </button>
-    <button  class="pear-btn pear-btn-md"
-            lay-event="batchRemove">
-        <i class="layui-icon layui-icon-delete"></i>
-        删除
-    </button>
 </script>
 
 <script id="role-bar" type="text/html">
-    <button
+    <button sec:authorize="hasPermission('role','update')"
             class="pear-btn pear-btn-primary pear-btn-sm" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>
     </button>
-    <button
-            class="pear-btn pear-btn-warming pear-btn-sm" lay-event="power"><i
+    <button sec:authorize="hasPermission('role','permission')"
+            class="pear-btn pear-btn-warming pear-btn-sm" lay-event="permission"><i
             class="layui-icon layui-icon-vercode"></i>
     </button>
-    <button
+    <button sec:authorize="hasPermission('role','remove')"
             class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i class="layui-icon layui-icon-delete"></i>
     </button>
 </script>
@@ -79,11 +55,10 @@
 
         let cols = [
             [
-                {type: 'checkbox'},
                 {title: '角色名', field: 'roleContent', align: 'center', width: 100},
-                {title: '编码', field: 'roleName', align: 'center'},
+                {title: '角色码', field: 'roleName', align: 'center'},
                 {title: '描述', field: 'description', align: 'center'},
-                {title: '是否可用', field: 'enabled', align: 'center', templet: '#role-enable'},
+                // {title: '是否可用', field: 'enabled', align: 'center', templet: '#role-enable'},
                 {title: '操作', toolbar: '#role-bar', align: 'center', width: 195}
             ]
         ]
@@ -117,8 +92,8 @@
                 window.remove(obj);
             } else if (obj.event === 'edit') {
                 window.edit(obj);
-            } else if (obj.event === 'power') {
-                window.power(obj);
+            } else if (obj.event === 'permission') {
+                window.permission(obj);
             }
         });
 
@@ -127,8 +102,6 @@
                 window.add();
             } else if (obj.event === 'refresh') {
                 window.refresh();
-            } else if (obj.event === 'batchRemove') {
-                window.batchRemove(obj);
             }
         });
 
@@ -153,7 +126,7 @@
                 type: 'put',
                 success: function (result) {
                     layer.close(loading);
-                    if (result.success) {
+                    if (result.code === 200 ) {
                         layer.msg(result.msg, {icon: 1, time: 1000});
                     } else {
                         layer.msg(result.msg, {icon: 2, time: 1000});
@@ -172,13 +145,13 @@
             });
         }
 
-        window.power = function (obj) {
+        window.permission = function (obj) {
             layer.open({
                 type: 2,
                 title: '授权',
                 shade: 0.1,
-                area: ['320px', '400px'],
-                content: MODULE_PATH + 'power?roleId=' + obj.data["roleId"]
+                area: ['400px', '500px'],
+                content: MODULE_PATH + 'permission/' + obj.data["roleId"]
             });
         }
 
@@ -188,7 +161,7 @@
                 title: '修改',
                 shade: 0.1,
                 area: ['500px', '500px'],
-                content: MODULE_PATH + 'edit?roleId=' + obj.data['roleId']
+                content: MODULE_PATH + 'edit/' + obj.data['roleId']
             });
         }
 
@@ -199,10 +172,10 @@
                 $.ajax({
                     url: MODULE_PATH + "remove/" + obj.data['roleId'],
                     dataType: 'json',
-                    type: 'delete',
+                    type: 'post',
                     success: function (result) {
                         layer.close(loading);
-                        if (result.success) {
+                        if (result.code === 200 ) {
                             layer.msg(result.msg, {icon: 1, time: 1000}, function () {
                                 obj.del();
                             });
@@ -229,7 +202,7 @@
                     type: 'delete',
                     success: function (result) {
                         layer.close(loading);
-                        if (result.success) {
+                        if (result.code === 200 ) {
                             popup.success(result.msg, function () {
                                 table.reload('role-table');
                             });

@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,6 +51,7 @@ public class ClientController extends BaseController {
      * @return the string
      */
     @GetMapping("/system/client/add")
+    @PreAuthorize("hasPermission('client','add')")
     public String add() {
         return "/system/client/add";
     }
@@ -62,6 +64,7 @@ public class ClientController extends BaseController {
      * @return the string
      */
     @GetMapping("/system/client/edit/{id}")
+    @PreAuthorize("hasPermission('client','update')")
     public String edit(Model model,@PathVariable String id) {
         OAuth2Client oauth2Client = clientRepository.findClientById(id);
         String oAuth2Scope = oauth2Client.getScopes().stream().map(OAuth2Scope::getScope).collect(Collectors.joining(","));
@@ -80,6 +83,7 @@ public class ClientController extends BaseController {
      */
     @PostMapping("/system/client/add")
     @ResponseBody
+    @PreAuthorize("hasPermission('client','add')")
     public Rest<?> addOAuth2Client(@RequestBody OAuth2ClientDTO oAuth2Client) {
         clientRepository.saveClient(oAuth2Client);
         return RestBody.ok("操作成功");
@@ -93,6 +97,7 @@ public class ClientController extends BaseController {
      */
     @PostMapping("/system/client/remove/{id}")
     @ResponseBody
+    @PreAuthorize("hasPermission('client','remove')")
     public Rest<?> remove(@PathVariable String id){
         clientRepository.removeByClientId(id);
         return RestBody.ok("操作成功");
@@ -106,6 +111,7 @@ public class ClientController extends BaseController {
      */
     @PostMapping("/system/client/edit")
     @ResponseBody
+    @PreAuthorize("hasPermission('client','update')")
     public Rest<?> edit(@RequestBody OAuth2ClientDTO oAuth2Client){
         clientRepository.update(oAuth2Client);
         return RestBody.ok("操作成功");
@@ -121,6 +127,7 @@ public class ClientController extends BaseController {
      */
     @GetMapping("/system/client/data")
     @ResponseBody
+    @PreAuthorize("hasPermission('client','list')")
     public Page<OAuth2Client> page(@RequestParam Integer page, @RequestParam Integer limit) {
         page = Math.max(page - 1, 0);
         return clientRepository.page(PageRequest.of(page, limit, Sort.sort(OAuth2Client.class)
@@ -135,6 +142,7 @@ public class ClientController extends BaseController {
      * @return the o auth 2 client
      */
     @GetMapping("/system/client/details/{id}")
+    @PreAuthorize("hasPermission('client','list')")
     public String details(Model model, @PathVariable String id) {
         OAuth2Client oauth2Client = clientRepository.findClientById(id);
         model.addAttribute("oauth2Client",oauth2Client);

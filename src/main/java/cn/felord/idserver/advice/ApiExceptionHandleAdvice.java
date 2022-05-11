@@ -1,6 +1,7 @@
 package cn.felord.idserver.advice;
 
 
+import cn.felord.idserver.exception.BindingException;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.boot.autoconfigure.web.servlet.error.AbstractErrorController;
@@ -39,6 +40,12 @@ public class ApiExceptionHandleAdvice {
         List<ObjectError> allErrors = e.getAllErrors();
         ObjectError objectError = allErrors.get(0);
         return RestBody.failure(400, objectError.getDefaultMessage());
+    }
+
+    @ExceptionHandler(BindingException.class)
+    public Rest<?> binding(HttpServletRequest request, BindingException e) {
+        logger(request, e);
+        return RestBody.failure(400, e.getMessage());
     }
 
     /**

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('权限列表')"/>
+</head>
+<body class="pear-container">
+<div sec:authorize="hasPermission('permission','list')" class="layui-card">
+    <div class="layui-card-body">
+        <table id="permission-table" lay-filter="permission-table"></table>
+    </div>
+</div>
+<div sec:authorize="not hasPermission('permission','list')" class="layui-card">
+    <div class="layui-card-body">
+        <b>您无权查看该列表</b>
+    </div>
+</div>
+<script id="permission-toolbar" type="text/html">
+    <!--<button
+            class="pear-btn pear-btn-primary pear-btn-md" lay-event="add">
+        <i class="layui-icon layui-icon-add-1"></i>
+        新增
+    </button>-->
+    <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="expandAll">
+        <i class="layui-icon layui-icon-spread-left"></i>
+        展开
+    </button>
+    <button class="pear-btn pear-btn-primary pear-btn-md" lay-event="foldAll">
+        <i class="layui-icon layui-icon-shrink-right"></i>
+        折叠
+    </button>
+</script>
+
+<script id="permission-bar" type="text/html">
+    <button
+            class="pear-btn pear-btn-primary pear-btn-sm" lay-event="edit"><i class="layui-icon layui-icon-edit"></i>
+    </button>
+    <button
+            class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i class="layui-icon layui-icon-delete"></i>
+    </button>
+</script>
+
+
+<script id="permissionCode" type="text/html">
+    <button plain class="pear-btn pear-btn-success" disabled>{{d.permissionCode}}</button>
+</script>
+
+</body>
+<th:block th:include="include :: footer"/>
+<script>
+    layui.use(['table', 'form', 'jquery', 'treetable', 'popup'], function () {
+        let table = layui.table;
+        let form = layui.form;
+        let $ = layui.jquery;
+        let treeTable = layui.treetable;
+        let popup = layui.popup;
+        if ([[${#authorization.expression("hasPermission('permission','list')")}]]) {
+            treeTable.render({
+                treeColIndex: 0,
+                treeSpid: 0,
+                treeIdName: 'permissionId',
+                treePidName: 'parentId',
+                skin: 'line',
+                method: 'get',
+                treeDefaultClose: true,
+                toolbar: '#permission-toolbar',
+                elem: '#permission-table',
+                url: '/system/permission/list',
+                page: false,
+                defaultToolbar: [{
+                    layEvent: 'refresh',
+                    icon: 'layui-icon-refresh',
+                    title: '刷新'
+                }, 'filter', 'print', 'exports'],
+                cols: [
+                    [
+                        {field: 'title', title: '权限名称'},
+                        {field: 'permissionCode', title: '权限码', templet: '#permissionCode'},
+                        {field: 'description', title: '描述'},
+                        {field: 'sortable', title: '序号'},
+                        // {title: '操作', templet: '#permission-bar', width: 150, align: 'center'}
+                    ]
+                ]
+            });
+        }
+        form.on('submit(permission-query)', function (data) {
+            treeTable.search("#permission-table", data.field.powerName)
+            return false;
+        });
+
+        table.on('tool(permission-table)', function (obj) {
+            if (obj.event === 'remove') {
+                window.remove(obj);
+            } else if (obj.event === 'edit') {
+                window.edit(obj);
+            }
+        })
+
+        table.on('toolbar(permission-table)', function (obj) {
+            if (obj.event === 'add') {
+                window.add();
+            } else if (obj.event === 'refresh') {
+                window.refresh();
+            } else if (obj.event === 'expandAll') {
+                treeTable.expandAll("#permission-table");
+            } else if (obj.event === 'foldAll') {
+                treeTable.foldAll("#permission-table");
+            }
+        });
+
+        form.on('switch(permission-enable)', function (obj) {
+            let operate;
+            if (obj.elem.checked) {
+                operate = "enable";
+            } else {
+                operate = "disable";
+            }
+            let loading = layer.load();
+            $.ajax({
+                url: '/system/permission/' + operate,
+                data: JSON.stringify({powerId: this.value}),
+                dataType: 'json',
+                contentType: 'application/json',
+                type: 'put',
+                success: function (result) {
+                    layer.close(loading);
+                    if (result.code === 200) {
+                        popup.success(result.msg);
+                    } else {
+                        popup.failure(result.msg);
+                    }
+                }
+            })
+        });
+
+        window.add = function () {
+            layer.open({
+                type: 2,
+                title: '新增',
+                shade: 0.5,
+                area: ['700px', '500px'],
+                content: '/system/permission/add'
+            });
+        }
+
+        window.edit = function (obj) {
+            layer.open({
+                type: 2,
+                title: '修改',
+                shade: 0.5,
+                area: ['700px', '500px'],
+                content: '/system/permission/edit?powerId=' + obj.data['powerId']
+            });
+        }
+
+        window.remove = function (obj) {
+            layer.confirm('确定要删除该菜单', {icon: 3, title: '提示'}, function (index) {
+                layer.close(index);
+                let loading = layer.load();
+                $.ajax({
+                    url: "/system/permission/remove/" + obj.data['powerId'],
+                    dataType: 'json',
+                    type: 'delete',
+                    success: function (result) {
+                        layer.close(loading);
+                        if (result.code === 200) {
+                            popup.success(result.msg, function () {
+                                obj.del();
+                            })
+                        } else {
+                            popup.failure(result.msg);
+                        }
+                    }
+                })
+            });
+        }
+
+        window.refresh = function () {
+            treeTable.reload('#permission-table');
+        }
+    })
+</script>
+</html>

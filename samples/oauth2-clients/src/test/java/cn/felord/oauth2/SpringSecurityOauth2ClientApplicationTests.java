@@ -1,6 +1,5 @@
 package cn.felord.oauth2;
 
-import cn.felord.oauth2.wechat.DelegatingOAuth2UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
@@ -9,10 +8,6 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -62,13 +57,5 @@ class SpringSecurityOauth2ClientApplicationTests {
         when(auth2UserRequest2.getClientRegistration()).thenReturn(clientRegistration2);
         when(userService1.loadUser(auth2UserRequest2)).thenReturn(mockUser2);
 
-        Map<String, OAuth2UserService<OAuth2UserRequest, OAuth2User>> userServiceMap = new HashMap<>();
-           userServiceMap.put(registrationId1, userService1);
-           userServiceMap.put(registrationId2, userService2);
-        DelegatingOAuth2UserService<OAuth2UserRequest, OAuth2User> delegatingUserService =
-                new DelegatingOAuth2UserService<>(userServiceMap);
-
-        OAuth2User oAuth2User = delegatingUserService.loadUser(auth2UserRequest1);
-        assertThat(oAuth2User).isEqualTo(mockUser1);
     }
 }

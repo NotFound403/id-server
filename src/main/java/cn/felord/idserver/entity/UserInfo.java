@@ -1,5 +1,7 @@
 package cn.felord.idserver.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -10,35 +12,51 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.Objects;
+import java.util.Set;
 
+/**
+ * The type UserInfo.
+ *
+ * @author felord.cn
+ * @since 1.0.0
+ */
 @Entity
 @Getter
 @Setter
 @ToString
 @EntityListeners(AuditingEntityListener.class)
-public class UserInfo implements Serializable {
+@NamedEntityGraphs(
+        @NamedEntityGraph(name = "userinfo.userDetails",
+        attributeNodes = {
+                @NamedAttributeNode(value = "authorities",subgraph = "permissions")
+        },subgraphs = {
+                @NamedSubgraph(name = "permissions",
+                        attributeNodes = @NamedAttributeNode("permissions"))
+        })
+)
+public class UserInfo implements UserDetails, Serializable {
     private static final long serialVersionUID = -4968368933210959171L;
     @Id
     @GenericGenerator(name = "uuid-hex", strategy = "uuid.hex")
     @GeneratedValue(generator = "uuid-hex")
     private String userId;
-
+    @Column(unique = true,nullable = false)
     private String username;
-
-    private String secret;
+    @Column(nullable = false)
+    @JsonIgnore
+    private String password;
 
     private String nickName;
 
     private String realName;
-
+    @Column(unique = true,nullable = false)
     private String phoneNumber;
 
     private String avatarUrl;
@@ -50,16 +68,23 @@ public class UserInfo implements Serializable {
     private Boolean enabled;
 
     @CreatedDate
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Instant createTime;
 
     @CreatedBy
     private String createId;
 
     @LastModifiedDate
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Instant updateTime;
 
     @LastModifiedBy
     private String updateId;
+
+    @ManyToMany(targetEntity = Role.class, fetch = FetchType.LAZY)
+    @JoinTable(name = "user_role", joinColumns = {@JoinColumn(name = "user_id")}, inverseJoinColumns = {@JoinColumn(name = "role_id")})
+    @ToString.Exclude
+    private Set<Role> authorities = Collections.emptySet();
 
     @Override
     public boolean equals(Object o) {
@@ -72,5 +97,25 @@ public class UserInfo implements Serializable {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return this.enabled;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return this.enabled;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return this.enabled;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.enabled;
     }
 }

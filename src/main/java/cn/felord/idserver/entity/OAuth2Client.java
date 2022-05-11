@@ -20,9 +20,10 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
- * The type Client.
+ * The type OAuth2Client.
  *
- * @author Steve Riesenberg
+ * @author felord.cn
+ * @since 1.0.0
  */
 @Entity
 @Getter

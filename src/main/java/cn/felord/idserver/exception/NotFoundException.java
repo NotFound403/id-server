@@ -7,6 +7,8 @@ package cn.felord.idserver.exception;
  */
 public class NotFoundException extends RuntimeException {
 
+    private static final long serialVersionUID = 6908309950272531445L;
+
     public NotFoundException() {
         super();
     }

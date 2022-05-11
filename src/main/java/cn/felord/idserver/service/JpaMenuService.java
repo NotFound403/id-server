@@ -20,11 +20,11 @@ import java.util.List;
 @AllArgsConstructor
 @Transactional(rollbackFor = Exception.class)
 public class JpaMenuService implements MenuService {
+    private static final String ROOT_ID = "0";
     private final MenuRepository menuRepository;
-
     private final MenuMapper menuMapper;
 
-    private static final String ROOT_ID = "0";
+
 
     @Override
     public Menu save(Menu menu) {
@@ -58,11 +58,12 @@ public class JpaMenuService implements MenuService {
      * @param menu 菜单
      */
     @Override
-    public void update(final Menu menu) {
-        final Menu flush = this.menuRepository.findById(menu.getId()).orElseThrow(RuntimeException::new);
+    public Menu update(final Menu menu) {
+        final Menu flush = this.menuRepository.findById(menu.getId()).orElseThrow(NotFoundException::new);
         // 此处未修改 children
-        this.menuMapper.fireMerge(menu, flush);
+        this.menuMapper.merge(menu, flush);
         this.menuRepository.flush();
+        return flush;
     }
 
 

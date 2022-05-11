@@ -25,8 +25,9 @@ public interface MenuService {
      * 修改 菜单
      *
      * @param menu 菜单
+     * @return the menu
      */
-    void update(Menu menu);
+    Menu update(Menu menu);
 
     /**
      * 通过 id 查询 菜单

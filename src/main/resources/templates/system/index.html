@@ -37,8 +37,8 @@
                 <a class="layui-icon layui-icon-username" href="javascript:;"></a>
                 <!-- 功 能 菜 单 -->
                 <dl class="layui-nav-child">
-                    <dd><a user-menu-id="5555" user-menu-title="基本资料" user-menu-url="/system/user/center">基本资料</a></dd>
-                    <dd><a class="logout" href="javascript:void(0);">注销登录</a></dd>
+                    <dd><a user-menu-id="5555" user-menu-title="个人资料" user-menu-url="/system/user/center">个人资料</a></dd>
+<!--                    <dd><a class="logout" href="javascript:void(0);">注销登录</a></dd>-->
                 </dl>
             </li>
             <!-- 主 题 配 置 -->
@@ -101,7 +101,7 @@
                 type: 'post',
                 success: function (result) {
                     layer.close(loading);
-                    if (result.success) {
+                    if (result.code === 200 ) {
                         popup.success(result.msg, function () {
                             location.href = "/system/login";
                         });

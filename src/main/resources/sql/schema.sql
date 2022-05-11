@@ -1,1 +1,0 @@
-create schema id_server_database;
