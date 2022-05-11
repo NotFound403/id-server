@@ -1,3 +1,5 @@
+--  H2 数据库专用 MySQL 可以通过JPA 自动创建
+
 drop schema if exists `id_server`;
 create schema `id_server`;
 use `id_server`;
@@ -9,26 +11,26 @@ create table authorization
     registered_client_id          varchar(100)                            not null,
     principal_name                varchar(200)                            not null,
     authorization_grant_type      varchar(100)                            not null,
-    attributes                    blob                                    null,
+    attributes                    text                                    null,
     state                         varchar(500)                            null,
-    authorization_code_value      blob                                    null,
-    authorization_code_issued_at  timestamp default CURRENT_TIMESTAMP     not null,
-    authorization_code_expires_at timestamp default '0000-00-00 00:00:00' not null,
-    authorization_code_metadata   blob                                    null,
-    access_token_value            blob                                    null,
-    access_token_issued_at        timestamp default CURRENT_TIMESTAMP     not null,
-    access_token_expires_at       timestamp default '0000-00-00 00:00:00' not null,
-    access_token_metadata         blob                                    null,
+    authorization_code_value      text                                    null,
+    authorization_code_issued_at  timestamp default CURRENT_TIMESTAMP     null,
+    authorization_code_expires_at timestamp default '0000-00-00 00:00:00' null,
+    authorization_code_metadata   text                                    null,
+    access_token_value            text                                    null,
+    access_token_issued_at        timestamp default CURRENT_TIMESTAMP     null,
+    access_token_expires_at       timestamp default '0000-00-00 00:00:00' null,
+    access_token_metadata         text                                    null,
     access_token_type             varchar(100)                            null,
     access_token_scopes           varchar(1000)                           null,
-    oidc_id_token_value           blob                                    null,
-    oidc_id_token_issued_at       timestamp default CURRENT_TIMESTAMP     not null,
-    oidc_id_token_expires_at      timestamp default CURRENT_TIMESTAMP     not null,
-    oidc_id_token_metadata        blob                                    null,
-    refresh_token_value           blob                                    null,
-    refresh_token_issued_at       timestamp default CURRENT_TIMESTAMP     not null,
-    refresh_token_expires_at      timestamp default CURRENT_TIMESTAMP     not null,
-    refresh_token_metadata        blob                                    null,
+    oidc_id_token_value           text                                    null,
+    oidc_id_token_issued_at       timestamp default CURRENT_TIMESTAMP     null,
+    oidc_id_token_expires_at      timestamp default CURRENT_TIMESTAMP     null,
+    oidc_id_token_metadata        text                                    null,
+    refresh_token_value           text                                    null,
+    refresh_token_issued_at       timestamp default CURRENT_TIMESTAMP     null,
+    refresh_token_expires_at      timestamp default CURRENT_TIMESTAMP     null,
+    refresh_token_metadata        text                                    null,
     oidc_id_token_claims          varchar(2000)                           null
 );
 
@@ -62,12 +64,12 @@ create table menu
 
 create table oauth2_client_settings
 (
-    client_id                     varchar(255)     not null comment 'oauth2客户端id'
+    client_id                     varchar(255)         not null comment 'oauth2客户端id'
         primary key,
     require_proof_key             tinyint(1) default 0 null comment '客户端是否需要证明密钥',
     require_authorization_consent tinyint(1) default 0 null comment '客户端是否需要授权确认页面',
-    jwk_set_url                   varchar(255)     null comment 'jwkSet url',
-    signing_algorithm             varchar(255)     null comment '支持的签名算法'
+    jwk_set_url                   varchar(255)         null comment 'jwkSet url',
+    signing_algorithm             varchar(255)         null comment '支持的签名算法'
 )
     comment 'oauth2客户端配置';
 
@@ -81,9 +83,7 @@ create table oauth2_client
     client_secret_expires_at timestamp                           null comment '客户端密码过期时间',
     client_name              varchar(200)                        not null comment '客户端名称',
     constraint UK_drwlno5wbex09l0acnnwecp7r
-        unique (client_id),
-    constraint FK84y7lpmc28dy5gxfi5y7itpu6
-        foreign key (client_id) references oauth2_client_settings (client_id)
+        unique (client_id)
 )
     comment 'oauth2客户端基础信息表';
 
@@ -106,13 +106,13 @@ create table oauth2_scope
 
 create table oauth2_token_settings
 (
-    client_id                    varchar(255)     not null comment 'oauth2客户端id'
+    client_id                    varchar(255)         not null comment 'oauth2客户端id'
         primary key,
-    access_token_time_to_live    bigint           null comment 'access_token 有效时间',
-    token_format                 varchar(255)     null comment 'token 格式  jwt、opaque',
+    access_token_time_to_live    bigint               null comment 'access_token 有效时间',
+    token_format                 varchar(255)         null comment 'token 格式  jwt、opaque',
     reuse_refresh_tokens         tinyint(1) default 1 null comment '是否重用 refresh_token',
-    refresh_token_time_to_live   bigint           null comment 'refresh_token 有效时间',
-    id_token_signature_algorithm varchar(255)     null comment 'oidc id_token 签名算法'
+    refresh_token_time_to_live   bigint               null comment 'refresh_token 有效时间',
+    id_token_signature_algorithm varchar(255)         null comment 'oidc id_token 签名算法'
 )
     comment 'oauth2客户端的token配置项';
 

@@ -1,6 +1,6 @@
 # 🚀id-server
 
-一个基于**Spring Authorization Server**的开源的授权服务器，欢迎Star。
+一个基于**Spring Authorization Server**的开源的授权服务器，欢迎Star，如果有兴趣也可以对本项目发起贡献。
 ## 主要功能
 - 创建OAuth2客户端，并对OAuth2客户端进行管理。
 - UI控制台，可动态调整管理员的用户角色。
@@ -13,16 +13,22 @@
 - layui
 
 ## 简单用法
-
 - 拉取主分支最新代码到本地。
 - 通过`IdServerApplication`来启动授权服务器。管理控制台本地登录路径为`http://localhost:9000/system/login`，最高权限用户为`root`，密码为`idserver`。
-- 你可以通过`root`用户创建管理其它控制台管理员用户，并赋予他们角色。
+- 你可以通过`root`用户做这些事情：
+  - 创建角色（角色管理）并为角色绑定权限。
+  - 创建控制台管理用户（用户管理），并赋予他们角色。
+> 退出功能还未完善，需要通过关闭浏览器来清除session。
 ## oauth2 测试方法
-- 在**Id Server**中创建一个OAuth2客户端，自己记住密码，密码功能还不够完善。
-- 样例客户端在`samples`文件夹下，根据创建的OAuth2客户端信息修改配置，主要是`client-id`,`client-secret`,`client-authentication-method`,`scope`，其它选项除非你比较了解OAuth2，否则先不要动，也可以通过issue咨询。
-- 调用`redirect-uri`，进入登录页，输入用户名`user`和密码`user`即可。
+- 启动**Id Server**，默认情况下在客户端列表提供了一个内置的OAuth2客户端。
+- 样例客户端在`samples`文件夹下，直接启动，浏览器配置文件下的`http://127.0.0.1:8082/foo/bar`，进入登录页，输入用户名`user`和密码`user`即可。
+- 你也可以在Id Server中创建一个客户端并模仿DEMO中的配置，主要修改`client-id`,`client-secret`,`client-authentication-method`,`scope`，其它选项除非你比较了解OAuth2，否则先不要动，也可以通过issue咨询。
 > `redirect-uri`必须在授权服务器Id Server注册客户端时声明。
-
+## 环境
+目前**Id Server**提供**H2**和**Mysql**两种数据库环境，分别对应`application-h2.yml`和`application-mysql.yml`两个配置文件。
+- **H2**，默认数据库，在**H2**环境下，数据库DDL脚本和DML脚本会自动执行，无需开发者手动执行，该环境主要用来测试、研究、学习。
+- **Mysql**，生产推荐，**首次启动时开发者手动执行初始化DML脚本**。
+> 目前两种环境的效果是一致的。
 ## 概念
 一些概念
 ### OAuth2Client 

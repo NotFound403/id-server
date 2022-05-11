@@ -2,7 +2,7 @@ server:
   port: 9000
 spring:
   profiles:
-    active: dev
+    active: h2
   application:
     name: id-server
   jpa:
