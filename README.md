@@ -1,5 +1,5 @@
-# 🚀id-server
-一个基于**Spring Authorization Server**的开源的授权服务器，欢迎Star，如果有兴趣也可以对本项目发起贡献。
+# 🚀Id Server
+[Id Server](https://github.com/NotFound403/id-server)是一个基于**Spring Authorization Server**的开源的授权服务器，欢迎Star，如果有兴趣也可以对本项目发起贡献。
 - gitee: [https://gitee.com/felord/id-server](https://gitee.com/felord/id-server)
 - 文档建设中……
 ## 主要功能
@@ -10,7 +10,7 @@
   - **CLIENT_SECRET_POST**
   - **CLIENT_SECRET_JWT**
   - **PRIVATE_KEY_JWT**
-- 支持三种授权方式：
+- 支持三种OAuth2授权方式：
   - **AUTHORIZATION_CODE**
   - **CLIENT_CREDENTIALS**
   - **REFRESH_TOKEN**
@@ -51,6 +51,12 @@
 - **H2**，默认数据库，在**H2**环境下，数据库DDL脚本和DML脚本会自动执行，无需开发者手动执行，该环境主要用来测试、研究、学习。
 - **Mysql**，生产推荐，**首次启动时开发者手动执行初始化DML脚本**。
 > 目前两种环境的效果是一致的，切换时务必在`pom.xml`中更换对应的数据库驱动程序依赖。
+## 截图
+![首页](https://asset.felord.cn/blog/20220512134905.png)
+![通过UI创建OAuth2客户端](https://asset.felord.cn/blog/20220512135204.png)
+![创建管理用户](https://asset.felord.cn/blog/20220512135249.png)
+![角色授权](https://asset.felord.cn/blog/20220512135420.png)
+
 ## 概念
 一些概念
 ### OAuth2Client 
