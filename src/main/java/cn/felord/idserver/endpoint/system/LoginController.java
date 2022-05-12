@@ -1,5 +1,7 @@
 package cn.felord.idserver.endpoint.system;
 
+import cn.felord.idserver.advice.Rest;
+import cn.felord.idserver.advice.RestBody;
 import cn.felord.idserver.entity.SystemSettings;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -9,6 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpSession;
 
 /**
  * The type Login endpoint.
@@ -29,7 +34,7 @@ public class LoginController {
                             @CurrentSecurityContext(expression = "authentication") Authentication authentication,
                             @RequestAttribute(name = "org.springframework.security.web.csrf.CsrfToken", required = false) CsrfToken csrfToken) {
 
-        if (!(authentication instanceof AnonymousAuthenticationToken)){
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
             return "redirect:/system";
         }
         if (csrfToken != null) {
@@ -39,6 +44,15 @@ public class LoginController {
 
         model.addAttribute("systemSettings", systemSettings);
         return "/system/login";
+    }
+
+    @GetMapping("/system/logout")
+    @ResponseBody
+    public Rest logout(Model model,
+                       @CurrentSecurityContext(expression = "authentication") Authentication authentication,
+                       @RequestAttribute(name = "org.springframework.security.web.csrf.CsrfToken", required = false) CsrfToken csrfToken, HttpSession session) {
+        session.invalidate();
+        return RestBody.ok("注销成功");
     }
 
     @GetMapping("/system")
@@ -52,7 +66,7 @@ public class LoginController {
      * @return the string
      */
     @GetMapping("/system/console")
-    public String home(){
+    public String home() {
         return "console/console";
     }
 

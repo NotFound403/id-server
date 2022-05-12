@@ -38,7 +38,8 @@
                 <!-- 功 能 菜 单 -->
                 <dl class="layui-nav-child">
                     <dd><a user-menu-id="5555" user-menu-title="个人资料" user-menu-url="/system/user/center">个人资料</a></dd>
-<!--                    <dd><a class="logout" href="javascript:void(0);">注销登录</a></dd>-->
+                    <dd><a class="logout" href="javascript:void(0);" th:onclick="admin.logout()" user-menu-title="注销登录">注销登录</a>
+                    </dd>
                 </dl>
             </li>
             <!-- 主 题 配 置 -->
@@ -96,12 +97,11 @@
         admin.logout(function () {
             let loading = layer.load();
             $.ajax({
-                url: '/logout',
-                dataType: 'json',
-                type: 'post',
+                url: '/system/logout',
+                type: 'get',
                 success: function (result) {
                     layer.close(loading);
-                    if (result.code === 200 ) {
+                    if (result.code === 200) {
                         popup.success(result.msg, function () {
                             location.href = "/system/login";
                         });
