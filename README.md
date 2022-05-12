@@ -40,6 +40,12 @@
 - 样例客户端在`samples`文件夹下，直接启动，浏览器配置文件下的`http://127.0.0.1:8082/foo/bar`，进入登录页，输入用户名`user`和密码`user`即可。
 - 你也可以在Id Server中创建一个客户端并模仿DEMO中的配置，主要修改`client-id`,`client-secret`,`client-authentication-method`,`scope`，其它选项除非你比较了解OAuth2，否则先不要动，也可以通过issue咨询。
 > `redirect-uri`必须在授权服务器Id Server注册客户端时声明。
+### 如何替换内置用户user
+首先要正确区分管理用户和普通用户这两个概念。
+#### 管理用户
+`root`及其创建的用户为UI控制台的管理用户，超级管理员`root`是目前提供了一个默认用户，具有Id Server的最高权限。如果你需要自定义，可实现`RootUserDetailsService`接口并注入**Spring IoC**。
+## 普通用户
+普通用户就是OAuth2中的资源拥有者，主要对OAuth2客户端的授权请求进行授权。默认提供了一个`user`用来演示，开发者可以实现`OAuth2UserDetailsService`接口并注入**Spring IoC**来自定义用户的来源。
 ## 环境
 目前**Id Server**提供**H2**和**Mysql**两种数据库环境，分别对应`application-h2.yml`和`application-mysql.yml`两个配置文件。
 - **H2**，默认数据库，在**H2**环境下，数据库DDL脚本和DML脚本会自动执行，无需开发者手动执行，该环境主要用来测试、研究、学习。

@@ -2,6 +2,7 @@ package cn.felord.idserver.configure;
 
 import cn.felord.idserver.entity.Permission;
 import cn.felord.idserver.entity.Role;
+import cn.felord.idserver.enumate.RootUserConstants;
 import cn.felord.idserver.handler.RedirectLoginAuthenticationSuccessHandler;
 import cn.felord.idserver.handler.SimpleAuthenticationEntryPoint;
 import cn.felord.idserver.service.OAuth2UserDetailsService;
@@ -227,14 +228,14 @@ public class IdServerSecurityConfiguration {
      * The type Resource permission evaluator.
      */
     static class ResourcePermissionEvaluator implements PermissionEvaluator {
-        private static final String ROOT_ROLE_NAME = "id_server";
+
 
         @Override
         @SuppressWarnings("unchecked")
         public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
             final String permissionCode = targetDomainObject+":"+permission;
             Collection<Role> roles = (Collection<Role>) authentication.getAuthorities();
-            if (roles.stream().anyMatch(role -> Objects.equals(ROOT_ROLE_NAME,role.getRoleName()))) {
+            if (roles.stream().anyMatch(role -> Objects.equals(RootUserConstants.ROOT_ROLE_NAME.val(),role.getRoleName()))) {
                 return true;
             }
             return roles.stream()

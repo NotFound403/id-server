@@ -7,6 +7,7 @@ import cn.felord.idserver.entity.dto.UserPasswordDTO;
 import cn.felord.idserver.entity.dto.UserRoleDTO;
 import cn.felord.idserver.enumate.Enabled;
 import cn.felord.idserver.enumate.Gender;
+import cn.felord.idserver.enumate.RootUserConstants;
 import cn.felord.idserver.exception.BindingException;
 import cn.felord.idserver.exception.NotFoundException;
 import cn.felord.idserver.mapstruct.UserInfoMapper;
@@ -53,6 +54,9 @@ public class JpaUserInfoService implements UserInfoService {
 
     @Override
     public UserInfo save(UserInfoDTO userInfoDTO) {
+        if (RootUserConstants.ROOT_USERNAME.val().equals(userInfoDTO.getUsername())) {
+            throw new BindingException("root用户不允许被创建");
+        }
         UserInfo userInfo = new UserInfo();
         userInfoMapper.toUserInfo(userInfoDTO, userInfo);
         userInfo.setPassword(delegatingPasswordEncoder.encode(userInfo.getPassword()));
@@ -67,6 +71,9 @@ public class JpaUserInfoService implements UserInfoService {
 
     @Override
     public void update(final UserInfo userInfo) {
+        if (RootUserConstants.ROOT_USERNAME.val().equals(userInfo.getUsername())) {
+            throw new BindingException("root用户不允许被创建");
+        }
         UserInfo target = userInfoRepository.findById(userInfo.getUserId())
                 .orElseThrow(NotFoundException::new);
         this.userInfoMapper.mergeIgnorePasswordAndAuthorities(userInfo, target);

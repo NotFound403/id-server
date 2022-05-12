@@ -3,15 +3,16 @@ package cn.felord.idserver.configure;
 import cn.felord.idserver.entity.Role;
 import cn.felord.idserver.entity.UserInfo;
 import cn.felord.idserver.enumate.Gender;
+import cn.felord.idserver.enumate.RootUserConstants;
 import cn.felord.idserver.service.InMemoryOAuth2UserDetailsService;
 import cn.felord.idserver.service.OAuth2UserDetailsService;
+import cn.felord.idserver.service.RootUserDetailsService;
 import cn.felord.idserver.service.UserInfoService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -19,24 +20,25 @@ import java.util.Collections;
 
 
 /**
- * The User details configuration.
+ * The UserDetails configuration.
  *
  * @author felord.cn
  * @since 1.0.0
  */
 @Configuration(proxyBeanMethods = false)
 public class UserDetailsConfiguration {
-    private static final String ROOT_USERNAME = "root";
-
 
     /**
      * Users user details service.
      *
+     * @param userInfoService        the user info service
+     * @param rootUserDetailsService the root user details service
      * @return the user details service
      */
     @Bean
-    UserDetailsService systemUserDetailsService(UserInfoService userInfoService) {
-        return new RootUserDetailsService(userInfoService);
+    UserDetailsService systemUserDetailsService(UserInfoService userInfoService, RootUserDetailsService rootUserDetailsService) {
+        return username -> RootUserConstants.ROOT_USERNAME.val().equals(username) ?
+                rootUserDetailsService.loadRootUserByUsername(username) : userInfoService.findByUsername(username);
     }
 
     /**
@@ -50,35 +52,37 @@ public class UserDetailsConfiguration {
         return new InMemoryOAuth2UserDetailsService();
     }
 
+    /**
+     * 加载root用户，你可以通过实现{@link RootUserDetailsService}进行覆盖
+     *
+     * @return the root user details service
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    RootUserDetailsService rootUserDetailsService() {
+        return new InMemoryRootUserDetailsService();
+    }
 
-    static final class RootUserDetailsService implements UserDetailsService {
-        private static final String ROOT_USE_ID = "root_user_id";
-        private static final String ROOT_RAW_PASSWORD = "idserver";
-        private static final String ROOT_ROLE_NAME = "id_server";
+    /**
+     * The type In memory root user details service.
+     */
+    static final class InMemoryRootUserDetailsService implements RootUserDetailsService {
         private static final PasswordEncoder PASSWORD_ENCODER = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        private final UserInfoService userInfoService;
-
-
-        public RootUserDetailsService(UserInfoService userInfoService) {
-            this.userInfoService = userInfoService;
-        }
 
         @Override
-        public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-            if (!ROOT_USERNAME.equals(username)) {
-                return userInfoService.findByUsername(username);
-            }
+        public UserDetails doLoadRootUser(String username) {
+            String rootUserName = RootUserConstants.ROOT_USERNAME.val();
             UserInfo userInfo = new UserInfo();
-            userInfo.setUserId(ROOT_USE_ID);
-            userInfo.setUsername(ROOT_USERNAME);
-            userInfo.setPassword(PASSWORD_ENCODER.encode(ROOT_RAW_PASSWORD));
-            userInfo.setNickName(ROOT_USERNAME);
-            userInfo.setRealName(ROOT_USERNAME);
+            userInfo.setUserId(RootUserConstants.ROOT_USE_ID.val());
+            userInfo.setUsername(rootUserName);
+            userInfo.setPassword(PASSWORD_ENCODER.encode(RootUserConstants.ROOT_RAW_PASSWORD.val()));
+            userInfo.setNickName(rootUserName);
+            userInfo.setRealName(rootUserName);
             userInfo.setEnabled(Boolean.TRUE);
             userInfo.setGender(Integer.valueOf(Gender.UNKNOWN.val()));
             Role rootRole = new Role();
             // only roleName
-            rootRole.setRoleName(ROOT_ROLE_NAME);
+            rootRole.setRoleName(RootUserConstants.ROOT_ROLE_NAME.val());
             userInfo.setAuthorities(Collections.singleton(rootRole));
             return userInfo;
         }
