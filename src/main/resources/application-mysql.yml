@@ -3,3 +3,6 @@ spring:
     url: jdbc:mysql://localhost:3306/id_server
     username: yourname
     password: yourpassword
+  jpa:
+    hibernate:
+      ddl-auto: update

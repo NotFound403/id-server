@@ -44,7 +44,7 @@
 首先要正确区分管理用户和普通用户这两个概念。
 #### 管理用户
 `root`及其创建的用户为UI控制台的管理用户，超级管理员`root`是目前提供了一个默认用户，具有Id Server的最高权限。如果你需要自定义，可实现`RootUserDetailsService`接口并注入**Spring IoC**。
-## 普通用户
+#### 普通用户
 普通用户就是OAuth2中的资源拥有者，主要对OAuth2客户端的授权请求进行授权。默认提供了一个`user`用来演示，开发者可以实现`OAuth2UserDetailsService`接口并注入**Spring IoC**来自定义用户的来源。
 ## 环境
 目前**Id Server**提供**H2**和**Mysql**两种数据库环境，分别对应`application-h2.yml`和`application-mysql.yml`两个配置文件。

@@ -1,9 +1,6 @@
 spring:
-  # h2 数据库开启页面访问      http://localhost:8085/h2-console   jdbc url 需要改为 jdbc:h2:mem:spring_security
   datasource:
-    #  驱动
     driver-class-name: org.h2.Driver
-    # h2 内存数据库
     url: jdbc:h2:mem:id_server;MODE=MySQL;DATABASE_TO_LOWER=TRUE
   sql:
     init:
@@ -13,17 +10,15 @@ spring:
       data-locations: classpath:sql/dml.sql
       mode: embedded
     h2:
-      #    开启console 访问 默认false
       console:
         enabled: true
         settings:
-          #      开启h2 console 跟踪 方便调试  默认 false
           trace: true
-          #      允许console 远程访问 默认false
           web-allow-others: true
-        # h2 数据库开启页面访问      http://localhost:8085/h2-console   jdbc url 需要改为 jdbc:h2:mem:id_server
-        # 该路径目前会被Spring Security禁止访问
         path: /h2-console
+  jpa:
+    hibernate:
+      ddl-auto: none
 logging:
   level:
     org.springframework.web: trace
