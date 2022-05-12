@@ -111,7 +111,7 @@
         window.add = function () {
             layer.open({
                 type: 2,
-                title: '新增',
+                title: '<strong>新增</strong>',
                 shade: 0.1,
                 area: ['750px', '750px'],
                 content: '/system/client/add'
@@ -121,7 +121,7 @@
         window.edit = function (obj) {
             layer.open({
                 type: 2,
-                title: '修改',
+                title: '<strong>修改</strong>',
                 shade: 0.1,
                 area: ['750px', '750px'],
                 content: '/system/client/edit/' + obj.data['id']
@@ -131,9 +131,9 @@
         window.yaml = function (obj) {
             layer.open({
                 type: 2,
-                title: '配置辅助',
+                title: '<strong>配置辅助</strong>',
                 shade: 0.1,
-                area: ['950px', '650px'],
+                area: ['950px', '720px'],
                 content: '/system/client/yaml/' + obj.data['id']
             });
         }

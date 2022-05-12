@@ -24,12 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.yaml.snakeyaml.DumperOptions;
-import org.yaml.snakeyaml.Yaml;
 
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -189,32 +184,29 @@ public class ClientController extends BaseController {
                         oauth2Client.getScopes().stream()
                                 .map(OAuth2Scope::getScope), Stream.of(OidcScopes.OPENID))
                 .collect(Collectors.joining(","));
-        LinkedHashMap<String, Object> client = new LinkedHashMap<>();
-        LinkedHashMap<String, Object> clientRegistration = new LinkedHashMap<>();
-        clientRegistration.put("client-id", clientId);
-        clientRegistration.put("client-secret", "请填写您记忆的OAuth2客户端密码");
-        clientRegistration.put("redirect-uri", "请从" + uris + "指定一个");
-        clientRegistration.put("authorization-grant-type", "请从 " + types + " 指定一个");
-        clientRegistration.put("client-authentication-method", method);
-        clientRegistration.put("scope", scopes);
-        client.put("registration",
-                Collections.singletonMap(clientName, clientRegistration));
-        client.put("provider", Collections.singletonMap(clientName,
-                Collections.singletonMap("issuer-uri", "http://localhost:9000")));
+        String yml = "spring:\n" +
+                "  security:\n" +
+                "    oauth2:\n" +
+                "      client:\n" +
+                "        registration:\n" +
+                "             # 这里为客户端名称可自行更改\n" +
+                "          " + clientName + ":\n" +
+                "            client-id: " + clientId + "\n" +
+                "             # 密码为注册客户端时的密码\n" +
+                "            client-secret: 请填写您记忆的OAuth2客户端密码\n" +
+                "             # 只能选择一个\n" +
+                "            redirect-uri: 请从" + uris + "指定一个\n" +
+                "             # 只能选择一个\n" +
+                "            authorization-grant-type: " + types + "三选一\n" +
+                "            client-authentication-method: " + method + "\n" +
+                "            scope: " + scopes + "\n" +
+                "        provider:\n" +
+                "          " + clientName + ":\n" +
+                "             # 要保证授权服务器地址可以被客户端访问\n" +
+                "            issuer-uri: http://localhost:9000";
 
 
-        Map<String, Object> spring =
-                Collections.singletonMap("spring",
-                        Collections.singletonMap("security",
-                                Collections.singletonMap("oauth2",
-                                        Collections.singletonMap("client", client))));
-
-
-        DumperOptions dumperOptions = new DumperOptions();
-        dumperOptions.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-        Yaml yaml = new Yaml(dumperOptions);
-        String dump = yaml.dump(spring);
-        model.addAttribute("yaml", dump);
+        model.addAttribute("yaml", yml);
         return "/system/client/yaml";
     }
 

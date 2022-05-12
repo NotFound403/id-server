@@ -3,15 +3,14 @@
 <head>
     <th:block th:include="include :: header('配置辅助')"/>
     <link rel="stylesheet" th:href="@{/admin/css/other/console1.css}"/>
-    <link rel="stylesheet"
-          href="https://felord.cn/css/gruvbox-dark.min.css">
+    <link rel="stylesheet" th:href="@{/admin/css/code/gruvbox-dark.min.css}">
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
 
     <style type="text/css">
         .yaml {
-            font-size: 1.3em;
-            font-family: monospace, sans-serif;
+            font-size: 1.2em;
+            font-family: JetBrainsMono, monospace, sans-serif;
             white-space: pre;
             text-overflow: clip;
         }
