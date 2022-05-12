@@ -28,6 +28,8 @@
 <script id="client-bar" type="text/html">
     <button sec:authorize="hasPermission('client','update')" class="pear-btn pear-btn-primary pear-btn-sm" lay-event="edit"><i class="pear-icon pear-icon-edit"></i>
     </button>
+    <button sec:authorize="hasPermission('client','list')" class="pear-btn pear-btn-primary pear-btn-sm" lay-event="yaml"><i class="pear-icon pear-icon-setting"></i>
+    </button>
     <button sec:authorize="hasPermission('client','remove')" class="pear-btn pear-btn-danger pear-btn-sm" lay-event="remove"><i class="pear-icon pear-icon-ashbin"></i>
     </button>
 </script>
@@ -84,6 +86,8 @@
                 window.remove(obj);
             } else if (obj.event === 'edit') {
                 window.edit(obj);
+            }else if (obj.event === 'yaml') {
+                window.yaml(obj);
             }else if(obj.event === 'details') {
                 console.log(obj)
                 window.details(obj.data);
@@ -121,6 +125,16 @@
                 shade: 0.1,
                 area: ['750px', '750px'],
                 content: '/system/client/edit/' + obj.data['id']
+            });
+        }
+
+        window.yaml = function (obj) {
+            layer.open({
+                type: 2,
+                title: '配置辅助',
+                shade: 0.1,
+                area: ['950px', '650px'],
+                content: '/system/client/yaml/' + obj.data['id']
             });
         }
 

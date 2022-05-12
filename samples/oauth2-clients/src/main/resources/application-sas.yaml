@@ -19,7 +19,7 @@ spring:
         provider:
           felord:
             #todo       实际生产中 provider 尽量用域名  尽量不用localhost或者IP  而且要和well-known接口中保持一致
-            issuer-uri: http://localhost:9000
+            issuer-uri:
 #           issuer-uri 可以简化下面的配置
 #            authorization-uri: http://localhost:9000/oauth2/authorize
 #            token-uri: http://localhost:9000/oauth2/token

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <th:block th:include="include :: header('配置辅助')"/>
+    <link rel="stylesheet" th:href="@{/admin/css/other/console1.css}"/>
+    <link rel="stylesheet"
+          href="https://felord.cn/css/gruvbox-dark.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.5.1/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <style type="text/css">
+        .yaml {
+            font-size: 1.3em;
+            font-family: monospace, sans-serif;
+            white-space: pre;
+            text-overflow: clip;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-card">
+    <div class="layui-card-header">请务必核对配置信息</div>
+    <div class="layui-card-body">
+        <pre>
+           <code class="yaml" th:utext="${yaml}">
+            </code>
+        </pre>
+    </div>
+</div>
+<th:block th:include="include :: footer"/>
+</body>
+</html>
