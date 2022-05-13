@@ -1,5 +1,6 @@
 # 🚀Id Server
-[Id Server](https://github.com/NotFound403/id-server)是一个基于**Spring Authorization Server**的开源的授权服务器，拉取代码直接运行，无需过多配置。欢迎Star，如果有兴趣也可以对本项目发起贡献。
+[Id Server](https://github.com/NotFound403/id-server)是一个基于[Spring Authorization Server](https://github.com/spring-projects/spring-authorization-server)的开源的授权服务器，拉取代码直接运行，无需过多配置。欢迎Star，如果有兴趣也可以对本项目发起贡献。
+- github: [https://gitee.com/felord/id-server](https://github.com/NotFound403/id-server)
 - gitee: [https://gitee.com/felord/id-server](https://gitee.com/felord/id-server)
 - 文档建设中……
 ## 主要功能
@@ -44,7 +45,7 @@
 - 你也可以在Id Server中创建一个客户端并模仿DEMO中的配置，主要修改`client-id`,`client-secret`,`client-authentication-method`,`scope`，其它选项除非你比较了解OAuth2，否则先不要动，也可以通过issue咨询。
 > `redirect-uri`必须在授权服务器Id Server注册客户端时声明。
 ### 如何替换内置用户user
-首先要正确区分管理用户和普通用户这两个概念。
+首先要正确区分**管理用户**和**普通用户**这两个概念。
 #### 管理用户
 `root`及其创建的用户为UI控制台的管理用户，超级管理员`root`是目前提供了一个默认用户，具有Id Server的最高权限。如果你需要自定义，可实现`RootUserDetailsService`接口并注入**Spring IoC**。
 #### 普通用户
@@ -59,6 +60,7 @@
 ![首页](https://asset.felord.cn/blog/20220512134905.png)
 ![通过UI创建OAuth2客户端](https://asset.felord.cn/blog/20220512135204.png)
 ![创建管理用户](https://asset.felord.cn/blog/20220512135249.png)
+![一键生成配置](https://asset.felord.cn/blog/20220513141607.gif)
 ![角色授权](https://asset.felord.cn/blog/20220512135420.png)
 ![授权登录](https://asset.felord.cn/blog/20220512143317.png)
 ![授权确认](https://asset.felord.cn/blog/20220512143550.png)

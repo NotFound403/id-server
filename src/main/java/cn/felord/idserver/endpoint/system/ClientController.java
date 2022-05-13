@@ -193,7 +193,7 @@ public class ClientController extends BaseController {
                 "          " + clientName + ":\n" +
                 "            client-id: " + clientId + "\n" +
                 "             # 密码为注册客户端时的密码\n" +
-                "            client-secret: 请填写您记忆的OAuth2客户端密码\n" +
+                "            client-secret: 请填写OAuth2客户端密码\n" +
                 "             # 只能选择一个\n" +
                 "            redirect-uri: 请从" + uris + "指定一个\n" +
                 "             # 只能选择一个\n" +
