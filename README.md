@@ -59,6 +59,7 @@
 ![首页](https://asset.felord.cn/blog/20220512134905.png)
 ![通过UI创建OAuth2客户端](https://asset.felord.cn/blog/20220512135204.png)
 ![创建管理用户](https://asset.felord.cn/blog/20220512135249.png)
+![一键生成配置](https://asset.felord.cn/blog/20220513141607.gif)
 ![角色授权](https://asset.felord.cn/blog/20220512135420.png)
 ![授权登录](https://asset.felord.cn/blog/20220512143317.png)
 ![授权确认](https://asset.felord.cn/blog/20220512143550.png)
