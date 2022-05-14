@@ -25,6 +25,8 @@ public class SecurityConfiguration {
                         .antMatchers("/foo/bar")
                         .hasAnyAuthority("ROLE_ANONYMOUS")
                         .anyRequest().authenticated())
+                .oauth2Login()
+                .and()
                 .oauth2Client();
         return http.build();
     }
