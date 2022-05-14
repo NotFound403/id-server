@@ -41,4 +41,4 @@ INSERT INTO id_server.oauth2_scope (client_id, scope, description) VALUES ('e2fa
 INSERT INTO id_server.oauth2_scope (client_id, scope, description) VALUES ('e2fa7e64-249b-46f0-ae1d-797610e88615', 'userinfo', '用户信息');
 INSERT INTO id_server.oauth2_token_settings (client_id, access_token_time_to_live, token_format, reuse_refresh_tokens, refresh_token_time_to_live, id_token_signature_algorithm) VALUES ('e2fa7e64-249b-46f0-ae1d-797610e88615', 300000000000, 'self-contained', true, 3600000000000, 'RS256');
 INSERT INTO id_server.redirect_uri (client_id, redirect_uri) VALUES ('e2fa7e64-249b-46f0-ae1d-797610e88615', 'http://127.0.0.1:8082/foo/bar');
-INSERT INTO id_server.redirect_uri (client_id, redirect_uri) VALUES ('e2fa7e64-249b-46f0-ae1d-797610e88615', 'http://127.0.0.1:8082/login/oauth2/code/felord');
+INSERT INTO id_server.redirect_uri (client_id, redirect_uri) VALUES ('e2fa7e64-249b-46f0-ae1d-797610e88615', 'http://127.0.0.1:8083/login/oauth2/code/felord');
