@@ -21,8 +21,10 @@ public class SecurityConfiguration {
      */
     @Bean
     SecurityFilterChain customSecurityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests().anyRequest().authenticated()
-                .and()
+        http.authorizeRequests((requests) -> requests
+                        .antMatchers("/foo/bar")
+                        .hasAnyAuthority("ROLE_ANONYMOUS")
+                        .anyRequest().authenticated())
                 .oauth2Login(oauth2clientLogin->
                         oauth2clientLogin.loginPage("/oauth2/authorization/felord"))
                 .oauth2Client();

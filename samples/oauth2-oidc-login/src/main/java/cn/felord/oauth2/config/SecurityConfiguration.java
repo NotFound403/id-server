@@ -2,6 +2,7 @@ package cn.felord.oauth2.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
@@ -21,10 +22,7 @@ public class SecurityConfiguration {
      */
     @Bean
     SecurityFilterChain customSecurityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests((requests) -> requests
-                        .antMatchers("/foo/bar")
-                        .hasAnyAuthority("ROLE_ANONYMOUS")
-                        .anyRequest().authenticated())
+        http.authorizeRequests(Customizer.withDefaults())
                 .oauth2Login(oauth2clientLogin->
                         oauth2clientLogin.loginPage("/oauth2/authorization/felord"));
         return http.build();
