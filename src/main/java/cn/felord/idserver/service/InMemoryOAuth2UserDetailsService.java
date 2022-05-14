@@ -21,7 +21,7 @@ public class InMemoryOAuth2UserDetailsService implements OAuth2UserDetailsServic
                 .username("user")
                 .password("user")
                 .passwordEncoder(PasswordEncoderFactories.createDelegatingPasswordEncoder()::encode)
-                .roles("USER")
+                .roles("user","test")
                 .build();
         this.users.put(userDetails.getUsername(), userDetails);
     }

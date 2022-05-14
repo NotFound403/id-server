@@ -5,7 +5,6 @@ import cn.felord.idserver.advice.Rest;
 import cn.felord.idserver.advice.RestBody;
 import cn.felord.idserver.entity.ClientAuthMethod;
 import cn.felord.idserver.entity.OAuth2Client;
-import cn.felord.idserver.entity.OAuth2GrantType;
 import cn.felord.idserver.entity.OAuth2Scope;
 import cn.felord.idserver.entity.RedirectUri;
 import cn.felord.idserver.entity.dto.OAuth2ClientDTO;
@@ -173,10 +172,6 @@ public class ClientController extends BaseController {
         String uris = redirectUris.stream()
                 .map(RedirectUri::getRedirectUri)
                 .collect(Collectors.joining(","));
-        Set<OAuth2GrantType> authorizationGrantTypes = oauth2Client.getAuthorizationGrantTypes();
-        String types = authorizationGrantTypes.stream()
-                .map(OAuth2GrantType::getGrantTypeName)
-                .collect(Collectors.joining(","));
         String method = oauth2Client.getClientAuthenticationMethods().stream()
                 .map(ClientAuthMethod::getClientAuthenticationMethod)
                 .collect(Collectors.joining(","));
@@ -196,8 +191,8 @@ public class ClientController extends BaseController {
                 "            client-secret: 请填写OAuth2客户端密码\n" +
                 "             # 只能选择一个\n" +
                 "            redirect-uri: 请从" + uris + "指定一个\n" +
-                "             # 只能选择一个\n" +
-                "            authorization-grant-type: " + types + "三选一\n" +
+                "             # 其它两种方式为refresh_token,client_credentials\n" +
+                "            authorization-grant-type: authorization_code\n" +
                 "            client-authentication-method: " + method + "\n" +
                 "            scope: " + scopes + "\n" +
                 "        provider:\n" +

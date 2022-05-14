@@ -9,7 +9,7 @@ spring:
             redirect-uri:  'http://127.0.0.1:8082/foo/bar'
             authorization-grant-type: authorization_code
             client-authentication-method: client_secret_basic
-            scope: message.read,message.write
+            scope: message.read,userinfo,message.write
         provider:
           felord:
             issuer-uri: http://localhost:9000
