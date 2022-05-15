@@ -23,6 +23,7 @@ public class SecurityConfiguration {
     SecurityFilterChain customSecurityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeRequests().anyRequest().authenticated()
                 .and()
+                // 避免 favicon.ico 404 被 save request 引发的重定向错误
                 .oauth2Login(oauth2clientLogin ->
                         oauth2clientLogin.loginPage("/oauth2/authorization/felord"));
         return http.build();

@@ -5,8 +5,18 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * The type Resource server config.
+ */
 @EnableWebSecurity
 public class ResourceServerConfig {
+    /**
+     * Security filter chain security filter chain.
+     *
+     * @param httpSecurity the http security
+     * @return the security filter chain
+     * @throws Exception the exception
+     */
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeRequests()

@@ -4,7 +4,7 @@ server:
 logging:
   level:
     org.springframework.web: trace
-    org.springframework.security: trace
+    org.springframework.security: debug
     org.springframework.security.oauth2: debug
 spring:
   profiles:
