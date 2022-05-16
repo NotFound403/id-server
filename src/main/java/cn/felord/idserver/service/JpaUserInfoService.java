@@ -37,6 +37,7 @@ public class JpaUserInfoService implements UserInfoService {
     private static final PasswordEncoder delegatingPasswordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
     private final UserInfoRepository userInfoRepository;
     private final RoleRepository roleRepository;
+    private final RootUserDetailsService rootUserDetailsService;
     private final UserInfoMapper userInfoMapper;
 
     @Override
@@ -48,7 +49,8 @@ public class JpaUserInfoService implements UserInfoService {
 
     @Override
     public UserInfo findByUsername(String username) {
-        return userInfoRepository.findByUsername(username)
+        return RootUserConstants.ROOT_USERNAME.val().equals(username) ?
+                rootUserDetailsService.loadRootUserByUsername(username) : userInfoRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("用户未找到"));
     }
 
