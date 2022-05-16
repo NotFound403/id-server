@@ -3,26 +3,13 @@ spring:
     oauth2:
       client:
         registration:
-#          这个标识不需要在授权服务器定义
           felord:
-#          客户端必须在授权服务器定义
             client-id: e2fa7e64-249b-46f0-ae1d-797610e88615
             client-secret: secret
-            #            isValidRedirectUri
-            #            http://127.0.0.1:8082/oauth2/authorization/felord
-            #todo        redirect-uri:  '{baseUrl}/foo/bar' 错误的写法  根据oauth2协议localhost不可被解析
-            #            redirect-uri:  '{baseUrl}/login/oauth2/code/{registrationId}'
             redirect-uri:  'http://127.0.0.1:8082/foo/bar'
             authorization-grant-type: authorization_code
             client-authentication-method: client_secret_basic
-            scope: message.read,message.write
+            scope: message.read,userinfo,message.write
         provider:
           felord:
-            #todo       实际生产中 provider 尽量用域名  尽量不用localhost或者IP  而且要和well-known接口中保持一致
-            issuer-uri:
-#           issuer-uri 可以简化下面的配置
-#            authorization-uri: http://localhost:9000/oauth2/authorize
-#            token-uri: http://localhost:9000/oauth2/token
-#            user-info-uri: http://your-userinfo-endpoiont
-#            user-name-attribute: username
-#            user-info-authentication-method: GET
+            issuer-uri: http://localhost:9000

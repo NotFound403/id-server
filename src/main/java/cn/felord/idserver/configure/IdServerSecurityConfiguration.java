@@ -6,6 +6,7 @@ import cn.felord.idserver.enumate.RootUserConstants;
 import cn.felord.idserver.handler.RedirectLoginAuthenticationSuccessHandler;
 import cn.felord.idserver.handler.SimpleAuthenticationEntryPoint;
 import cn.felord.idserver.service.OAuth2UserDetailsService;
+import cn.felord.idserver.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -125,7 +126,7 @@ public class IdServerSecurityConfiguration {
          */
         @Bean
         @Order(Ordered.HIGHEST_PRECEDENCE + 1)
-        SecurityFilterChain systemSecurityFilterChain(HttpSecurity http) throws Exception {
+        SecurityFilterChain systemSecurityFilterChain(HttpSecurity http, UserInfoService userInfoService) throws Exception {
             SimpleAuthenticationEntryPoint authenticationEntryPoint = new SimpleAuthenticationEntryPoint();
             AuthenticationEntryPointFailureHandler authenticationFailureHandler = new AuthenticationEntryPointFailureHandler(authenticationEntryPoint);
             HttpSessionSecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
@@ -140,6 +141,7 @@ public class IdServerSecurityConfiguration {
                       .exceptionHandling()
                       .authenticationEntryPoint(authenticationEntryPoint)*/
                     .and()
+                    .userDetailsService(userInfoService::findByUsername)
                     .formLogin().loginPage("/system/login").loginProcessingUrl("/system/login")
                     .successHandler(new RedirectLoginAuthenticationSuccessHandler("/system"))
                     .failureHandler(authenticationFailureHandler).permitAll();
@@ -219,7 +221,7 @@ public class IdServerSecurityConfiguration {
      * @return the permission evaluator
      */
     @Bean
-    PermissionEvaluator permissionEvaluator(){
+    PermissionEvaluator permissionEvaluator() {
         return new ResourcePermissionEvaluator();
     }
 
@@ -233,9 +235,9 @@ public class IdServerSecurityConfiguration {
         @Override
         @SuppressWarnings("unchecked")
         public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
-            final String permissionCode = targetDomainObject+":"+permission;
+            final String permissionCode = targetDomainObject + ":" + permission;
             Collection<Role> roles = (Collection<Role>) authentication.getAuthorities();
-            if (roles.stream().anyMatch(role -> Objects.equals(RootUserConstants.ROOT_ROLE_NAME.val(),role.getRoleName()))) {
+            if (roles.stream().anyMatch(role -> Objects.equals(RootUserConstants.ROOT_ROLE_NAME.val(), role.getRoleName()))) {
                 return true;
             }
             return roles.stream()

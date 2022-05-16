@@ -1,0 +1,39 @@
+logging:
+  level:
+    root: INFO
+    org.springframework.web: TRACE
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG
+    org.springframework.cloud.gateway: DEBUG
+spring:
+  application:
+    name: gateway
+  security:
+    oauth2:
+      client:
+        registration:
+          # 这里为客户端名称可自行更改
+          gatewayclient:
+            client-id: e4da4a32-592b-46f0-ae1d-784310e88423
+            # 密码为注册客户端时的密码
+            client-secret: secret
+            # 只能选择一个
+            redirect-uri: http://127.0.0.1:8080/login/oauth2/code/gatewayclient
+            # 其它两种方式为refresh_token,client_credentials
+            authorization-grant-type: authorization_code
+            client-authentication-method: client_secret_basic
+            scope: message.write,userinfo,message.read,openid
+        provider:
+          gatewayclient:
+            # 要保证授权服务器地址可以被客户端访问
+            issuer-uri: http://localhost:9000
+  cloud:
+    gateway:
+      routes:
+        - id: resource-server
+          uri: http://127.0.0.1:8084
+          predicates:
+            - Path=/res/**
+          filters:
+#            - StripPrefix=1
+            - TokenRelay

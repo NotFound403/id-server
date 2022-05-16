@@ -25,6 +25,8 @@ public class SecurityConfiguration {
                         .antMatchers("/foo/bar")
                         .hasAnyAuthority("ROLE_ANONYMOUS")
                         .anyRequest().authenticated())
+                .oauth2Login(oauth2clientLogin->
+                        oauth2clientLogin.loginPage("/oauth2/authorization/felord"))
                 .oauth2Client();
         return http.build();
     }

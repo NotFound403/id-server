@@ -7,12 +7,11 @@ import cn.felord.idserver.enumate.RootUserConstants;
 import cn.felord.idserver.service.InMemoryOAuth2UserDetailsService;
 import cn.felord.idserver.service.OAuth2UserDetailsService;
 import cn.felord.idserver.service.RootUserDetailsService;
-import cn.felord.idserver.service.UserInfoService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -29,16 +28,15 @@ import java.util.Collections;
 public class UserDetailsConfiguration {
 
     /**
-     * Users user details service.
+     * 全局缺省设置，多个UserDetailsService下需要一个全局兜底的不可用实现。
      *
-     * @param userInfoService        the user info service
-     * @param rootUserDetailsService the root user details service
      * @return the user details service
      */
     @Bean
-    UserDetailsService systemUserDetailsService(UserInfoService userInfoService, RootUserDetailsService rootUserDetailsService) {
-        return username -> RootUserConstants.ROOT_USERNAME.val().equals(username) ?
-                rootUserDetailsService.loadRootUserByUsername(username) : userInfoService.findByUsername(username);
+    UserDetailsService notFoundUserDetailsService() {
+        return username -> {
+            throw new UsernameNotFoundException("用户未找到");
+        };
     }
 
     /**
@@ -70,7 +68,7 @@ public class UserDetailsConfiguration {
         private static final PasswordEncoder PASSWORD_ENCODER = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
         @Override
-        public UserDetails doLoadRootUser(String username) {
+        public UserInfo doLoadRootUser(String username) {
             String rootUserName = RootUserConstants.ROOT_USERNAME.val();
             UserInfo userInfo = new UserInfo();
             userInfo.setUserId(RootUserConstants.ROOT_USE_ID.val());

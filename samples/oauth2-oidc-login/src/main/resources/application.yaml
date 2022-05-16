@@ -1,0 +1,11 @@
+server:
+  port: 8083
+# 方便调试
+logging:
+  level:
+    org.springframework.web: trace
+    org.springframework.security: debug
+    org.springframework.security.oauth2: debug
+spring:
+  profiles:
+    active: sas

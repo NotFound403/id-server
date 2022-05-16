@@ -1,7 +1,7 @@
 package cn.felord.idserver.service;
 
+import cn.felord.idserver.entity.UserInfo;
 import cn.felord.idserver.enumate.RootUserConstants;
-import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * The interface Root user details service.
@@ -14,7 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 public interface RootUserDetailsService {
 
 
-    default UserDetails loadRootUserByUsername(String username) {
+    default UserInfo loadRootUserByUsername(String username) {
         if (!RootUserConstants.ROOT_USERNAME.val().equals(username)) {
             throw new IllegalArgumentException("仅提供给root用户");
         }
@@ -27,5 +27,5 @@ public interface RootUserDetailsService {
      * @param username the username
      * @return the user details
      */
-    UserDetails doLoadRootUser(String username);
+    UserInfo doLoadRootUser(String username);
 }

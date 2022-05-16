@@ -1,0 +1,15 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          felord:
+            client-id: e2fa7e64-249b-46f0-ae1d-797610e88615
+            client-secret: secret
+            redirect-uri: 'http://127.0.0.1:8083/login/oauth2/code/{registrationId}'
+            authorization-grant-type: authorization_code
+            client-authentication-method: client_secret_basic
+            scope: message.read,message.write,openid
+        provider:
+          felord:
+            issuer-uri: http://localhost:9000
