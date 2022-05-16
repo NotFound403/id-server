@@ -1,6 +1,6 @@
 # 🚀Id Server
 [Id Server](https://github.com/NotFound403/id-server)是一个基于[Spring Authorization Server](https://github.com/spring-projects/spring-authorization-server)的开源的授权服务器，拉取代码直接运行，无需过多配置。欢迎Star，如果有兴趣也可以对本项目发起贡献。
-- github: [https://gitee.com/felord/id-server](https://github.com/NotFound403/id-server)
+- github: [https://github.com/NotFound403/id-server](https://github.com/NotFound403/id-server)
 - gitee: [https://gitee.com/felord/id-server](https://gitee.com/felord/id-server)
 - 文档建设中……
 ## 主要功能
@@ -65,14 +65,4 @@
 ![授权登录](https://asset.felord.cn/blog/20220512143317.png)
 ![授权确认](https://asset.felord.cn/blog/20220512143550.png)
 
-## 概念
-一些概念
-### OAuth2Client 
-
-**客户端**指的是**OAuth2 Client**，但又不单单是一个**OAuth2 Client**，连**id server**本身都是一个**客户端**。
-
-### `role`和`scope`的关系
-
-`role`和`scope`其实是一个东西，只不过面向的对象不一样。`role`针对的是资源拥有者（Resource Owner），而`scope`针对的是**OAuth2客户端**。举个例子，`ROLE_email`是用户具有获取电子邮件信息的接口访问权限，`SCOPE_email`是拥有`ROLE_email`权限的用户授权OAuth2客户端访问获取电子邮件信息接口，用户如果没有这个权限，那他凭什么授权呢？
-> 所以结论就是： `ROLE_email`=`SCOPE_email`=`email`。
 
