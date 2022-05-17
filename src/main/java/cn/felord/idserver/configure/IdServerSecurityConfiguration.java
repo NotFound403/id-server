@@ -25,6 +25,7 @@ import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationEntryPointFailureHandler;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
@@ -50,6 +51,7 @@ public class IdServerSecurityConfiguration {
      * The constant ID_SERVER_SYSTEM_SECURITY_CONTEXT_KEY.
      */
     public static final String ID_SERVER_SYSTEM_SECURITY_CONTEXT_KEY = "ID_SERVER_SYSTEM_SECURITY_CONTEXT";
+    public static final String ID_SERVER_SYSTEM_SAVED_REQUEST_KEY = "ID_SERVER_SYSTEM_SECURITY__SAVED_REQUEST";
 
     /**
      * 授权服务器配置
@@ -131,8 +133,12 @@ public class IdServerSecurityConfiguration {
             AuthenticationEntryPointFailureHandler authenticationFailureHandler = new AuthenticationEntryPointFailureHandler(authenticationEntryPoint);
             HttpSessionSecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
             securityContextRepository.setSpringSecurityContextKey(ID_SERVER_SYSTEM_SECURITY_CONTEXT_KEY);
+            HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
+            requestCache.setSessionAttrName(ID_SERVER_SYSTEM_SAVED_REQUEST_KEY);
             http.antMatcher(SYSTEM_ANT_PATH).csrf().disable()
                     .headers().frameOptions().sameOrigin()
+                    .and()
+                    .requestCache().requestCache(requestCache)
                     .and()
                     .securityContext().securityContextRepository(securityContextRepository)
                     .and()
@@ -143,7 +149,7 @@ public class IdServerSecurityConfiguration {
                     .and()
                     .userDetailsService(userInfoService::findByUsername)
                     .formLogin().loginPage("/system/login").loginProcessingUrl("/system/login")
-                    .successHandler(new RedirectLoginAuthenticationSuccessHandler("/system"))
+                    .successHandler(new RedirectLoginAuthenticationSuccessHandler("/system", requestCache))
                     .failureHandler(authenticationFailureHandler).permitAll();
             return http.build();
         }

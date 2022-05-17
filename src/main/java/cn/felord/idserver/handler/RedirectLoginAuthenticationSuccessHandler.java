@@ -13,6 +13,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
+import org.springframework.util.Assert;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,16 +30,18 @@ public class RedirectLoginAuthenticationSuccessHandler implements Authentication
     protected final Log logger = LogFactory.getLog(this.getClass());
     private final ObjectMapper objectMapper = new ObjectMapper()
             .registerModule(new JavaTimeModule());
-    private RequestCache requestCache = new HttpSessionRequestCache();
+    private RequestCache requestCache;
     private static final String defaultTargetUrl = "/";
     private final String redirect;
 
     public RedirectLoginAuthenticationSuccessHandler() {
-        this.redirect = defaultTargetUrl;
+        this(defaultTargetUrl, new HttpSessionRequestCache());
     }
 
-    public RedirectLoginAuthenticationSuccessHandler(String redirect) {
+    public RedirectLoginAuthenticationSuccessHandler(String redirect,RequestCache requestCache) {
+        Assert.notNull(requestCache,"requestCache must not be null");
         this.redirect = redirect;
+        this.requestCache= requestCache;
     }
 
     @Override
