@@ -27,7 +27,7 @@ public class SecurityConfiguration {
                         .anyRequest().authenticated())
                 .oauth2Login(oauth2clientLogin->
                         oauth2clientLogin.loginPage("/oauth2/authorization/felord"))
-                .oauth2Client();
+                .oauth2Client().and().exceptionHandling();
         return http.build();
     }
 

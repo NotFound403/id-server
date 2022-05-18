@@ -41,7 +41,7 @@ import java.util.Objects;
  * @author felord.cn
  * @since 1.0.0
  */
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class IdServerSecurityConfiguration {
 
