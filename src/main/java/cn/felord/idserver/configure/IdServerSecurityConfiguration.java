@@ -1,5 +1,6 @@
 package cn.felord.idserver.configure;
 
+import cn.felord.idserver.cookie.CookieSecurityContextRepository;
 import cn.felord.idserver.entity.Permission;
 import cn.felord.idserver.entity.Role;
 import cn.felord.idserver.enumate.RootUserConstants;
@@ -19,12 +20,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.server.authorization.config.ProviderSettings;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationEntryPointFailureHandler;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -131,14 +132,16 @@ public class IdServerSecurityConfiguration {
         SecurityFilterChain systemSecurityFilterChain(HttpSecurity http, UserInfoService userInfoService) throws Exception {
             SimpleAuthenticationEntryPoint authenticationEntryPoint = new SimpleAuthenticationEntryPoint();
             AuthenticationEntryPointFailureHandler authenticationFailureHandler = new AuthenticationEntryPointFailureHandler(authenticationEntryPoint);
-            HttpSessionSecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
-            securityContextRepository.setSpringSecurityContextKey(ID_SERVER_SYSTEM_SECURITY_CONTEXT_KEY);
+//            HttpSessionSecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
+            CookieSecurityContextRepository securityContextRepository = new CookieSecurityContextRepository();
+//            securityContextRepository.setSpringSecurityContextKey(ID_SERVER_SYSTEM_SECURITY_CONTEXT_KEY);
             HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
             requestCache.setSessionAttrName(ID_SERVER_SYSTEM_SAVED_REQUEST_KEY);
             http.antMatcher(SYSTEM_ANT_PATH).csrf().disable()
                     .headers().frameOptions().sameOrigin()
                     .and()
                     .requestCache().requestCache(requestCache)
+                    .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     .and()
                     .securityContext().securityContextRepository(securityContextRepository)
                     .and()
