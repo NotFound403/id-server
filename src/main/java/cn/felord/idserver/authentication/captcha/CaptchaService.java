@@ -1,4 +1,4 @@
-package cn.felord.authentication.captcha;
+package cn.felord.idserver.authentication.captcha;
 
 /**
  * @author n1

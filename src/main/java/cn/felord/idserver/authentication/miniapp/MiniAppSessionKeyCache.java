@@ -1,4 +1,4 @@
-package cn.felord.authentication.miniapp;
+package cn.felord.idserver.authentication.miniapp;
 
 /**
  * 缓存sessionKey

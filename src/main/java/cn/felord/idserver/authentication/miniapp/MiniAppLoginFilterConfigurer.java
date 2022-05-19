@@ -1,8 +1,8 @@
-package cn.felord.authentication.miniapp;
+package cn.felord.idserver.authentication.miniapp;
 
 
-import cn.felord.authentication.AbstractLoginFilterConfigurer;
-import cn.felord.authentication.LoginFilterSecurityConfigurer;
+import cn.felord.idserver.authentication.AbstractLoginFilterConfigurer;
+import cn.felord.idserver.authentication.LoginFilterSecurityConfigurer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.HttpSecurityBuilder;

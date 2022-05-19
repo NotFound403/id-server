@@ -1,4 +1,4 @@
-package cn.felord.authentication.miniapp;
+package cn.felord.idserver.authentication.miniapp;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;

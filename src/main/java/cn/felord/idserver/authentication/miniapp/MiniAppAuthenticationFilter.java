@@ -1,4 +1,4 @@
-package cn.felord.authentication.miniapp;
+package cn.felord.idserver.authentication.miniapp;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.core.convert.converter.Converter;

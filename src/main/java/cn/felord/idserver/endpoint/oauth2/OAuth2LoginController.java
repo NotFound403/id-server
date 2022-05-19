@@ -41,7 +41,7 @@ public class OAuth2LoginController {
         SystemSettings systemSettings = new SystemSettings();
 
         model.addAttribute("systemSettings", systemSettings);
-        return "oauth2_login";
+        return "oauth2_login2";
     }
 
 

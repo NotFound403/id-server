@@ -1,4 +1,4 @@
-package cn.felord.authentication.captcha;
+package cn.felord.idserver.authentication.captcha;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.HttpMethod;

@@ -1,4 +1,4 @@
-package cn.felord.authentication.captcha;
+package cn.felord.idserver.authentication.miniapp;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -7,25 +7,18 @@ import org.springframework.security.core.SpringSecurityCoreVersion;
 import java.util.Collection;
 
 /**
- * @author n1
+ * @author felord.cn
+ * @since 1.0.8.RELEASE
  */
-public class CaptchaAuthenticationToken extends AbstractAuthenticationToken {
-
+public class MiniAppAuthenticationToken extends AbstractAuthenticationToken {
     private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
 
     private final Object principal;
-    private String captcha;
 
-    /**
-     * 此构造函数用来初始化未授信凭据.
-     *
-     * @param principal the principal
-     * @param captcha   the captcha
-     */
-    public CaptchaAuthenticationToken(Object principal, String captcha) {
+
+    public MiniAppAuthenticationToken(Object principal) {
         super(null);
         this.principal = principal;
-        this.captcha = captcha;
         setAuthenticated(false);
     }
 
@@ -33,21 +26,19 @@ public class CaptchaAuthenticationToken extends AbstractAuthenticationToken {
      * 此构造函数用来初始化授信凭据.
      *
      * @param principal   the principal
-     * @param captcha     the captcha
      * @param authorities the authorities
      */
-    public CaptchaAuthenticationToken(Object principal, String captcha,
+    public MiniAppAuthenticationToken(Object principal,
                                       Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.principal = principal;
-        this.captcha = captcha;
         // must use super, as we override
         super.setAuthenticated(true);
     }
 
     @Override
     public Object getCredentials() {
-        return this.captcha;
+        return this.principal;
     }
 
     @Override
@@ -68,6 +59,5 @@ public class CaptchaAuthenticationToken extends AbstractAuthenticationToken {
     @Override
     public void eraseCredentials() {
         super.eraseCredentials();
-        captcha = null;
     }
 }

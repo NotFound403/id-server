@@ -16,6 +16,7 @@
 package cn.felord.idserver.service;
 
 import cn.felord.idserver.entity.Authorization;
+import cn.felord.idserver.jackson2.IdServerJackson2Module;
 import cn.felord.idserver.repository.AuthorizationRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.Module;
@@ -63,7 +64,7 @@ public class JpaOAuth2AuthorizationService implements OAuth2AuthorizationService
 		ClassLoader classLoader = JpaOAuth2AuthorizationService.class.getClassLoader();
 		List<Module> securityModules = SecurityJackson2Modules.getModules(classLoader);
 		this.objectMapper.registerModules(securityModules);
-		this.objectMapper.registerModule(new OAuth2AuthorizationServerJackson2Module());
+		this.objectMapper.registerModules(new OAuth2AuthorizationServerJackson2Module(),new IdServerJackson2Module());
 	}
 
 	@Override
