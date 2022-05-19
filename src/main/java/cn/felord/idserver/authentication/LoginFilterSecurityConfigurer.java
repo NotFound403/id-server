@@ -1,8 +1,8 @@
-package cn.felord.authentication;
+package cn.felord.idserver.authentication;
 
 
-import cn.felord.configuers.authentication.captcha.CaptchaLoginFilterConfigurer;
-import cn.felord.configuers.authentication.miniapp.MiniAppLoginFilterConfigurer;
+import cn.felord.idserver.authentication.captcha.CaptchaLoginFilterConfigurer;
+import cn.felord.idserver.authentication.miniapp.MiniAppLoginFilterConfigurer;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.HttpSecurityBuilder;

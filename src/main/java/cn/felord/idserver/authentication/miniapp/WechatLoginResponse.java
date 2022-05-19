@@ -1,4 +1,4 @@
-package cn.felord.authentication.miniapp;
+package cn.felord.idserver.authentication.miniapp;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

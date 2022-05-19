@@ -1,4 +1,4 @@
-package cn.felord.authentication.miniapp;
+package cn.felord.idserver.authentication.miniapp;
 
 /**
  * The interface Mini app client service.

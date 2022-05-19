@@ -16,6 +16,11 @@
   - **AUTHORIZATION_CODE**
   - **CLIENT_CREDENTIALS**
   - **REFRESH_TOKEN**
+- 支持以下用户认证方式：
+  - 账密登录
+  - 手机号验证码登录
+  - 小程序登录
+
 - **OIDC 1.0**的支持（完善中）。
 - 一键生成配置`yaml`文件。
 - 提供UI控制台，降低上手成本。

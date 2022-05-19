@@ -1,9 +1,10 @@
-package cn.felord.authentication.miniapp;
+package cn.felord.idserver.authentication.miniapp;
 
-import cn.felord.handler.ResponseWriter;
+import cn.felord.idserver.advice.Rest;
+import cn.felord.idserver.advice.RestBody;
+import cn.felord.idserver.handler.ResponseWriter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -20,8 +21,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -84,13 +83,9 @@ public class MiniAppPreAuthenticationFilter extends OncePerRequestFilter {
     private static class PreAuthResponseWriter extends ResponseWriter {
 
         @Override
-        protected Map<String, Object> body(HttpServletRequest request) {
+        protected Rest<?> body(HttpServletRequest request) {
             WechatLoginResponse miniAuth = (WechatLoginResponse) request.getAttribute(ATTRIBUTE_KEY);
-            Map<String, Object> map = new HashMap<>(3);
-            map.put("code", HttpStatus.OK.value());
-            map.put("data", miniAuth);
-            map.put("message", HttpStatus.OK.getReasonPhrase());
-            return map;
+            return RestBody.okData(miniAuth);
         }
     }
 

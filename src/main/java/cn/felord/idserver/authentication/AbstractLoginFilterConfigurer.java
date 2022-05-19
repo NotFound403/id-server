@@ -1,4 +1,4 @@
-package cn.felord.authentication;
+package cn.felord.idserver.authentication;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.MediaType;
