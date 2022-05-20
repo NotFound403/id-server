@@ -201,6 +201,7 @@ public class IdServerSecurityConfiguration {
                     .failureHandler(authenticationFailureHandler).permitAll()
                     .and()
                     .apply(new LoginFilterSecurityConfigurer<>())
+                    // 手机号验证码登录模拟
                     .captchaLogin(captchaLoginConfigurer->
                                     // 验证码校验 1 在此处配置 优先级最高 2 注册为Spring Bean 可以免配置
                                     captchaLoginConfigurer.captchaService(this::verifyCaptchaMock)
