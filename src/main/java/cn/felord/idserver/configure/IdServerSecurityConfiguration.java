@@ -1,5 +1,6 @@
 package cn.felord.idserver.configure;
 
+import cn.felord.idserver.authentication.LoginFilterSecurityConfigurer;
 import cn.felord.idserver.entity.Permission;
 import cn.felord.idserver.entity.Role;
 import cn.felord.idserver.enumate.RootUserConstants;
@@ -20,6 +21,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.oauth2.server.authorization.config.ProviderSettings;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
@@ -41,7 +46,7 @@ import java.util.Objects;
  * @author felord.cn
  * @since 1.0.0
  */
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class IdServerSecurityConfiguration {
 
@@ -182,6 +187,7 @@ public class IdServerSecurityConfiguration {
             DefaultSecurityFilterChain authorizationServerFilterChain = (DefaultSecurityFilterChain) securityFilterChain;
             SimpleAuthenticationEntryPoint authenticationEntryPoint = new SimpleAuthenticationEntryPoint();
             AuthenticationEntryPointFailureHandler authenticationFailureHandler = new AuthenticationEntryPointFailureHandler(authenticationEntryPoint);
+            RedirectLoginAuthenticationSuccessHandler loginAuthenticationSuccessHandler = new RedirectLoginAuthenticationSuccessHandler();
             http.requestMatcher(new AndRequestMatcher(
                             new NegatedRequestMatcher(new AntPathRequestMatcher(SYSTEM_ANT_PATH)),
                             new NegatedRequestMatcher(authorizationServerFilterChain.getRequestMatcher())
@@ -191,11 +197,39 @@ public class IdServerSecurityConfiguration {
                     ).csrf().disable()
                     .userDetailsService(oAuth2UserDetailsService::loadOAuth2UserByUsername)
                     .formLogin().loginPage("/login")
-                    .successHandler(new RedirectLoginAuthenticationSuccessHandler())
+                    .successHandler(loginAuthenticationSuccessHandler)
                     .failureHandler(authenticationFailureHandler).permitAll()
+                    .and()
+                    .apply(new LoginFilterSecurityConfigurer<>())
+                    // 手机号验证码登录模拟
+                    .captchaLogin(captchaLoginConfigurer->
+                                    // 验证码校验 1 在此处配置 优先级最高 2 注册为Spring Bean 可以免配置
+                                    captchaLoginConfigurer.captchaService(this::verifyCaptchaMock)
+                                            // 根据手机号查询用户UserDetials  1 在此处配置 优先级最高 2 注册为Spring Bean 可以免配置
+                                            .captchaUserDetailsService(this::loadUserByPhoneMock)
+                                            // 两个登录保持一致
+                                            .successHandler(loginAuthenticationSuccessHandler)
+                                            // 两个登录保持一致
+                                            .failureHandler(authenticationFailureHandler)
+                            )
                     .and()
                     .oauth2ResourceServer().jwt();
             return http.build();
+        }
+
+
+        private boolean verifyCaptchaMock(String phone, String code) {
+            return code.equals("1234");
+        }
+
+        private UserDetails loadUserByPhoneMock(String phone) throws UsernameNotFoundException {
+            return  // 用户名
+                    User.withUsername(phone)
+                            // 密码
+                            .password("password")
+                            .passwordEncoder(PasswordEncoderFactories.createDelegatingPasswordEncoder()::encode)
+                            .roles("user", "mobile")
+                            .build();
         }
 
     }

@@ -16,6 +16,10 @@
   - **AUTHORIZATION_CODE**
   - **CLIENT_CREDENTIALS**
   - **REFRESH_TOKEN**
+- 支持以下用户认证方式：
+  - 账密登录
+  - 手机号验证码登录
+  - 小程序登录
 - **OIDC 1.0**的支持（完善中）。
 - 一键生成配置`yaml`文件。
 - 提供UI控制台，降低上手成本。
@@ -26,7 +30,7 @@
 - **Spring Security**
 - **Spring Authorization Server**
 - **Spring Data JPA**
-- **layui**
+- **pear admin layui**
 - **thymeleaf**
 - 数据库
   - **H2**
@@ -50,6 +54,11 @@
 `root`及其创建的用户为UI控制台的管理用户，超级管理员`root`是目前提供了一个默认用户，具有Id Server的最高权限。如果你需要自定义，可实现`RootUserDetailsService`接口并注入**Spring IoC**。
 #### 普通用户
 普通用户就是OAuth2中的资源拥有者，主要对OAuth2客户端的授权请求进行授权。默认提供了一个`user`用来演示，开发者可以实现`OAuth2UserDetailsService`接口并注入**Spring IoC**来自定义用户的来源。
+### 手机号验证码登录
+现在OAuth2授权增加了手机号验证码登录，灵感来自[]()扩展包，不影响原有的OAuth2授权流程。资源拥有者可以在下面的页面选择认证方式：
+![](https://asset.felord.cn/blog/20220520111451.png)
+#### 关闭验证码认证方式
+对于不使用验证码认证方式的，可以通过`OAuth2LoginController#oauth2LoginPage`接口中的`enableCaptchaLogin`参数进行调整，默认值为`true`（开启）。
 ## 环境
 目前**Id Server**提供**H2**和**Mysql**两种数据库环境，分别对应`application-h2.yml`和`application-mysql.yml`两个配置文件。
 - **H2**，默认数据库，在**H2**环境下，数据库DDL脚本和DML脚本会自动执行，无需开发者手动执行，该环境主要用来测试、研究、学习。

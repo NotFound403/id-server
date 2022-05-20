@@ -2,253 +2,156 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <th:block th:include="include :: header('oauth2 登录')"/>
-    <link th:href="@{/component/layui/css/layui.css}" rel="stylesheet"/>
+    <link th:href="@{/component/layui/css/layui.css}" type="text/css" rel="stylesheet"/>
+    <link  th:href="@{/admin/css/other/oauth2login.css}" type="text/css" rel="stylesheet"/>
     <!--[if lt IE 9]>
     <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
     <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-    <style>
+    <style type="text/css">
         body {
             background: url(/admin/images/login-bg-15.jpg) 0% 0% / cover no-repeat;
             position: static;
-            font-size: 12px;
-        }
-
-        .main-body {
-            top: 50%;
-            left: 50%;
-            position: absolute;
-            -webkit-transform: translate(-50%, -50%);
-            -moz-transform: translate(-50%, -50%);
-            -ms-transform: translate(-50%, -50%);
-            -o-transform: translate(-50%, -50%);
-            transform: translate(-50%, -50%);
-            overflow: hidden;
-        }
-
-        .login-main {
-            width: 428px;
-            position: relative;
-            float: left;
-        }
-
-        .login-main .login-top {
-            height: 117px;
-            background-color: #414755;
-            border-radius: 12px 12px 0 0;
-            font-family: SourceHanSansCN-Regular, sans-serif;
-            font-size: 30px;
-            font-weight: 400;
-            font-stretch: normal;
-            letter-spacing: 0;
-            color: #fff;
-            line-height: 117px;
-            text-align: center;
-            overflow: hidden;
-            -webkit-transform: rotate(0);
-            -moz-transform: rotate(0);
-            -ms-transform: rotate(0);
-            -o-transform: rotate(0);
-            transform: rotate(0);
-        }
-
-        .login-main .login-top .bg1 {
-            display: inline-block;
-            width: 74px;
-            height: 74px;
-            background: #fff;
-            opacity: .1;
-            border-radius: 0 74px 0 0;
-            position: absolute;
-            left: 0;
-            top: 43px;
-        }
-
-        .login-main .login-top .bg2 {
-            display: inline-block;
-            width: 94px;
-            height: 94px;
-            background: #fff;
-            opacity: .1;
-            border-radius: 50%;
-            position: absolute;
-            right: -16px;
-            top: -16px;
-        }
-
-        .login-main .login-bottom {
-            width: 428px;
-            background: #fff;
-            border-radius: 0 0 12px 12px;
-            padding-bottom: 53px;
-        }
-
-        .login-main .login-bottom .center {
-            width: 288px;
-            margin: 0 auto;
-            padding-top: 40px;
-            padding-bottom: 15px;
-            position: relative;
-        }
-
-
-        .login-main .login-bottom .center .item .icon {
-            height: 22px;
-            line-height: 22px;
-        }
-
-        .login-main .login-bottom .center .item {
-            width: 288px;
-            height: 35px;
-            border-bottom: 1px solid #dae1e6;
-            margin-bottom: 35px;
-        }
-
-        .login-main .login-bottom .center .item input {
-            height: 22px;
-            line-height: 22px;
-            padding: 0;
-            position: absolute;
-            border: 0;
-            outline: 0;
-            font-size: 14px;
-            letter-spacing: 0;
-            left: 25px;
-
-        }
-
-
-        input::-webkit-input-placeholder {
-            color: #a6aebf;
-        }
-
-        input::-moz-placeholder { /* Mozilla Firefox 19+ */
-            color: #a6aebf;
-        }
-
-        input:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-            color: #a6aebf;
-        }
-
-        input:-ms-input-placeholder { /* Internet Explorer 10-11 */
-            color: #a6aebf;
-        }
-
-        input:-webkit-autofill { /* 取消Chrome记住密码的背景颜色 */
-            -webkit-box-shadow: 0 0 0 1000px white inset !important;
-        }
-
-        .login-main .login-bottom .tip {
-            width: 288px;
-            margin: 0 auto;
-        }
-
-
-        .login-main .login-bottom .login-btn {
-            width: 288px;
-            height: 40px;
-            background-color: #414755;
-            border-radius: 16px;
-            margin: 24px auto 0;
-            text-align: center;
-            line-height: 40px;
-            color: #fff;
-            font-size: 14px;
-            letter-spacing: 0;
-            cursor: pointer;
-            border: none;
-        }
-
-        .login-main .login-bottom .center .item .validateImg {
-            position: absolute;
-            right: 1px;
-            cursor: pointer;
-            height: 36px;
-            border: 1px solid #e6e6e6;
-        }
-
-        .layui-form-checkbox {
-
-        }
-
-        .footer {
-            left: 0;
-            bottom: 0;
-            color: #fff;
-            width: 100%;
-            position: absolute;
-            text-align: center;
-            line-height: 30px;
-            padding-bottom: 10px;
-            text-shadow: #000 0.1em 0.1em 0.1em;
-            font-size: 14px;
-        }
-
-        .padding-5 {
-            padding: 5px !important;
-        }
-
-        .footer a, .footer span {
-            color: #fff;
-        }
-
-        @media screen and (max-width: 428px) {
-            .login-main {
-                width: 360px !important;
-            }
-
-            .login-main .login-top {
-                width: 360px !important;
-            }
-
-            .login-main .login-bottom {
-                width: 360px !important;
-            }
         }
     </style>
 </head>
 <body>
-<div class="main-body">
-    <div class="login-main">
-        <div class="login-top">
-            <span>OAuth2</span>
-            <span>授权登录</span>
-            <span class="bg1"></span>
-            <span class="bg2"></span>
-        </div>
-        <form class="layui-form login-bottom">
-            <div class="center">
-                <div class="item">
-                    <i class="icon layui-icon layui-icon-user"></i>
-                    <input type="text" name="username" lay-verify="required" placeholder="请输入登录账号" maxlength="24"/>
-                </div>
-                <div class="item">
-                    <i class="icon layui-icon layui-icon-password"></i>
-                    <input type="password" name="password" lay-verify="required" placeholder="请输入密码" maxlength="20">
-                    <span class="bind-password icon icon-4"></span>
-                </div>
-                <!--<div id="validatePanel" class="item" style="width: 165px;">
-                    <i class="icon layui-icon layui-icon-fonts-code"></i>
-                    <input type="text" name="captcha" id="captcha" placeholder="请输入验证码" maxlength="4"
-                           lay-verify="required">
-                    <img class="validateImg" th:src="@{/public/captcha}" id="captchaImage"
-                         onclick="this.src='/public/captcha?'+ new Date().getTime()"/>
-                </div>-->
-            </div>
-            <!--            <div class="tip">-->
-            <!--                <input type="checkbox" name="rememberMe" title="记住我" value="true" lay-skin="primary">-->
-            <!--            </div>-->
-            <div class="layui-form-item" style="text-align:center; width:100%;height:100%;margin:0px;">
-                <button class="login-btn" lay-submit lay-filter="do-login">立即登录</button>
-            </div>
-        </form>
+<!--头部-->
+<div class="top">
+    <div class="top_logo">
+        <h1 >Id Server</h1>
+        <!--顶部LOGO图-->
+    <!--    <a href="javascript:void(0)">
+            <img src="" class="top_img">
+        </a>-->
+        <div class="top_title">| OAuth2 登录</div>
     </div>
 </div>
-<div class="footer">
-    <!--    ©版权所有 2018-2022 xxxxx<span class="padding-5">|</span><a target="_blank" href="http://www.miitbeian.gov.cn">陕ICPxxxxx号</a>-->
+<!--身体内容-->
+<!--------------------count样式里修改你要放的图片(注意是PNG格式)左侧背景图-------------------->
+<div class="count">
+<!--    <div class="body_left">
+        <a class="body_left_Text">
+            左侧背景图
+            <span class="body_left_Title" th:text="${clientName}"></span>
+            <span class="body_left_Texts" th:text="${remarks}"></span>
+        </a>
+    </div>-->
+    <!-- 登录模块-->
+    <div class="body_right_count" style="display: flex;align-items: center">
+        <div class="aui-register-box body_right" style="height: 476px;width: 100%">
+            <div class="aui-register-logo"></div>
+            <div class="aui-register-form" id="verifyCheck">
+                <div class="register-wrap" id="register-wrap">
+                    <div class="register" id="register">
+                        <div class="register-top" id="reg-top">
+                            <h2 class="normal" id="normal">账密登录</h2>
+                            <h2 th:if="${enableCaptchaLogin}" class="nopassword" id="nopw">手机登录</h2>
+                        </div>
+                        <!--账户密码登录-->
+                        <form class="layui-form register-con" id="rc">
+                            <div class="aui-register-form-item">
+                                <div class="adminCount Count" id="adminCount">
+                                    <img th:src="@{/admin/images/admin.png}" class="img">
+                                    <div class="xian">|</div>
+                                    <input type="text" name="username" maxlength="20" placeholder="请输入登录账号"
+                                           class="txt03 f-r3 required input" tabindex="3" data-valid="isNonEmpty"
+                                           data-error="<i class='icon-tips'></i>您还没有输入账户名||<i class='icon-tips'></i>用户名长度3-20位"
+                                           id="adminNo">
+                                    <label class="focus valid"></label>
+                                </div>
+                            </div>
+
+                            <div class="aui-register-form-item">
+                                <div class="passwordCount Count" id="passwordCount">
+                                    <img th:src="@{/admin/images/pass.png}" class="img">
+                                    <div class="xian">|</div>
+                                    <input type="password" name="password" placeholder="请输入密码" id="password" maxlength="20"
+                                           class="txt04 f-r3 required input" tabindex="4" style="ime-mode:disabled;"
+                                           onpaste="return  false" autocomplete="off"
+                                           data-valid="isNonEmpty||between:6-20"
+                                           data-error="<i class='icon-tips'></i>密码太短，最少6位||<i class='icon-tips'></i>密码长度6-20位">
+                                    <label class="focus valid"></label>
+                                </div>
+                            </div>
+                            <div class="aui-register-form-item">
+                                <button class="aui-btn-reg"  lay-submit lay-filter="do-login">立即登录</button>
+                            </div>
+                        </form>
+                        <!--手机动态码登录-->
+                        <form th:if="${enableCaptchaLogin}" class="layui-form login-con" id="lc">
+                            <div class="aui-register-form-item">
+                                <div class="Count">
+                                    <img th:src="@{/admin/images/shouji.png}" class="img">
+                                    <div class="xian">|</div>
+                                    <input type="text" id="mobile" name="phone" placeholder="请输入手机号码"
+                                           class="txt01 f-r3 required input" autocomplete="off"
+                                           keycodes="tel" tabindex="1" data-valid="isNonEmpty||isPhone"
+                                           data-error="<i class='icon-tips'></i>请输入手机号||<i class='icon-tips'></i>手机号码格式不正确"
+                                           maxlength="11">
+                                    <label class="focus valid">
+                                        <div class="msg" style="display:none"><i class='icon-tips'></i>您还未输入手机号</div>
+                                    </label>
+                                    <span class="aui-get-code btn btn-gray f-r3 f-ml5 f-size13" id="time_box" disabled
+                                          style="display:none;"></span>
+                                    <span class="aui-get-code btn btn-gray f-r3 f-ml5 f-size13"
+                                          id="captcha-btn">获取验证码</span>
+                                </div>
+                            </div>
+                            <div class="aui-register-form-item">
+                                <div class="Count">
+                                    <img th:src="@{/admin/images/dongtaima.png}" class="img">
+                                    <div class="xian">|</div>
+                                    <input type="text" placeholder="请输入验证码，默认1234" maxlength="6" id="verifyNo" name="captcha"
+                                           class="txt02 f-r3 f-fl required input" tabindex="2"
+                                           data-error="<i class='icon-tips'></i>请填写手机验证码||<i class='icon-tips'></i>请填写6位数字的手机验证码">
+                                    <label class="focus valid"></label>
+                                </div>
+                            </div>
+                            <div class="aui-register-form-item">
+                                <button class="aui-btn-reg"  lay-submit lay-filter="mobile-login">立即登录</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
 </div>
 <th:block th:include="include :: footer"/>
-<script>
+<script type="text/javascript">
+    var regTop=document.getElementById('reg-top');
+    var normal=document.getElementById('normal');
+    var nopw=document.getElementById('nopw');
+    var rc=document.getElementById('rc');
+    var lc=document.getElementById('lc');
+
+    normal.onclick=function(){
+        rc.style.display="block";
+        lc.style.display="none";
+        regTop.style.display="block";
+        nopw.style.borderBottom="none";
+        normal.style.borderBottom="1px solid rgb(1 114 229) ";
+        nopw.style.color="#666";
+        normal.style.color="rgb(1 114 229)  ";
+        rcFlag=true;
+        lcFlag=false;
+
+    }
+
+    nopw.onclick=function(){
+        rc.style.display="none";
+        lc.style.display="block";
+        regTop.style.display="block";
+        nopw.style.borderBottom="1px solid rgb(1 114 229) ";
+        normal.style.borderBottom="none";
+        nopw.style.color="rgb(1 114 229) ";
+        normal.style.color="#666";
+        rcFlag=false;
+        lcFlag=true;
+    }
+
     layui.use(['form','layer', 'button', 'jquery', 'popup'], function () {
         let form = layui.form;
         let layer = layui.layer;
@@ -278,7 +181,38 @@
             });
             return false;
         });
+
+        if ([[${enableCaptchaLogin}]]){
+            form.on('submit(mobile-login)', function (data) {
+                let loader = layer.load();
+                let btn = button.load({elem: '.login'});
+                $.ajax({
+                    url: '/login/captcha',
+                    data: data.field,
+                    type: "post",
+                    dataType: 'json',
+                    success: function (result) {
+                        layer.close(loader);
+                        btn.stop(function () {
+                            if (result.code === 200) {
+                                popup.success(result.msg, function () {
+                                    location.href = result.data.targetUrl;
+                                })
+                            } else if (result.code === 401) {
+                                popup.failure(result.msg);
+                            }
+                        })
+                    }
+                });
+                return false;
+            });
+
+            $('#captcha-btn').click(function (){
+                popup.success('验证码已发送');
+            })
+        }
     })
+
 </script>
 </body>
 </html>
