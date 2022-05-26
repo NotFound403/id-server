@@ -25,7 +25,7 @@
 - 提供UI控制台，降低上手成本。
 - 可动态调整管理员的用户角色，对授权服务器进行按钮功能级别的权限控制。
 ## 环境与技术
-- Java 8及以上
+- Java 11及以上
 - **Spring Boot**
 - **Spring Security**
 - **Spring Authorization Server**
