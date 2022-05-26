@@ -68,7 +68,7 @@ public class FooController {
         Map<String, Object> map = new HashMap<>(2);
 
         // OAuth2AuthorizedClient 为敏感信息不应该返回前端
-        log.debug("OAuth2AuthorizedClient：{} ",oAuth2AuthorizedClient);
+        map.put("OAuth2AuthorizedClient：{} ",oAuth2AuthorizedClient);
         map.put("authentication", authentication);
         return map;
     }

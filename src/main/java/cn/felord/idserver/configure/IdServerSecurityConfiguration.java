@@ -96,7 +96,9 @@ public class IdServerSecurityConfiguration {
                     .formLogin()
                     .and()
                     // 应用 授权服务器的配置
-                    .apply(authorizationServerConfigurer);
+                    .apply(authorizationServerConfigurer)
+                    .and()
+                    .oauth2ResourceServer().jwt();
             return http.build();
         }
 
@@ -211,9 +213,7 @@ public class IdServerSecurityConfiguration {
                                             .successHandler(loginAuthenticationSuccessHandler)
                                             // 两个登录保持一致
                                             .failureHandler(authenticationFailureHandler)
-                            )
-                    .and()
-                    .oauth2ResourceServer().jwt();
+                            );
             return http.build();
         }
 
