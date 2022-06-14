@@ -13,6 +13,24 @@
             background: url(/admin/images/login-bg-15.jpg) 0% 0% / cover no-repeat;
             position: static;
         }
+
+        .social-login-group {
+            display: flex;
+            justify-content: center;
+        }
+
+        .social-login-trigger {
+            margin: 0 5px;
+        }
+
+        .social-login-icon {
+            width: 30px;
+            height: 30px;
+        }
+
+        .trigger-hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -114,7 +132,32 @@
                         </form>
                     </div>
                 </div>
-                <div class="clearfix"></div>
+                <div class="social-login-group">
+                    <a class="social-login-trigger" href="#">
+                        <img class="social-login-icon" th:src="@{/admin/images/google.png}">
+                    </a>
+                    <a class="social-login-trigger" href="#">
+                        <img class="social-login-icon" th:src="@{/admin/images/github.png}">
+                    </a>
+                    <a class="social-login-trigger" href="#">
+                        <img class="social-login-icon" th:src="@{/admin/images/sina.png}">
+                    </a>
+                    <a class="social-login-trigger social-login-more-trigger" href="#">
+                        <img class="social-login-icon" th:src="@{/admin/images/more.png}">
+                    </a>
+                    <a class="social-login-trigger trigger-hidden" href="#">
+                        <img class="social-login-icon" th:src="@{/admin/images/qq.png}">
+                    </a>
+                    <a class="social-login-trigger trigger-hidden" href="#">
+                        <img class="social-login-icon" th:src="@{/admin/images/twitter.png}">
+                    </a>
+                    <a class="social-login-trigger trigger-hidden" href="#">
+                        <img class="social-login-icon" th:src="@{/admin/images/facebook.png}">
+                    </a>
+                    <a class="social-login-trigger trigger-hidden" href="#">
+                        <img class="social-login-icon" th:src="@{/admin/images/linkedin.png}">
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -210,6 +253,13 @@
             $('#captcha-btn').click(function (){
                 popup.success('验证码已发送');
             })
+	        $('.social-login-more-trigger').click(function(e) {
+		        console.log({e});
+		        $(e.currentTarget).hide();
+		        $('.trigger-hidden').show();
+		        console.log($(e.currentTarget));
+		        e.preventDefault();
+	        });
         }
     })
 
