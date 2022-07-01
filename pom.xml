@@ -29,9 +29,9 @@
     </contributors>
 
     <properties>
-        <java.version>11</java.version>
-        <mapstruct.version>1.4.2.Final</mapstruct.version>
-        <auth-server.version>0.3.0</auth-server.version>
+        <java.version>8</java.version>
+        <mapstruct.version>1.5.1.Final</mapstruct.version>
+        <auth-server.version>0.3.1</auth-server.version>
     </properties>
 
     <dependencies>
@@ -71,6 +71,11 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-oauth2-authorization-server</artifactId>
             <version>${auth-server.version}</version>
+        </dependency>
+        <dependency>
+      <!-- https://www.keycloak.org/docs/latest/server_admin/index.html#_identity_broker-->
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-client</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>

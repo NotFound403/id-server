@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.dao.DataRetrievalFailureException;
 import org.springframework.security.jackson2.SecurityJackson2Modules;
+import org.springframework.security.oauth2.client.jackson2.OAuth2ClientJackson2Module;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2AuthorizationCode;
@@ -64,7 +65,7 @@ public class JpaOAuth2AuthorizationService implements OAuth2AuthorizationService
 		ClassLoader classLoader = JpaOAuth2AuthorizationService.class.getClassLoader();
 		List<Module> securityModules = SecurityJackson2Modules.getModules(classLoader);
 		this.objectMapper.registerModules(securityModules);
-		this.objectMapper.registerModules(new OAuth2AuthorizationServerJackson2Module(),new IdServerJackson2Module());
+		this.objectMapper.registerModules(new OAuth2AuthorizationServerJackson2Module(),new IdServerJackson2Module(),new OAuth2ClientJackson2Module());
 	}
 
 	@Override

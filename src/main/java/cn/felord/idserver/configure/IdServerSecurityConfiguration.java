@@ -1,6 +1,8 @@
 package cn.felord.idserver.configure;
 
 import cn.felord.idserver.authentication.LoginFilterSecurityConfigurer;
+import cn.felord.idserver.authentication.providers.DelegateClientRegistrationRepository;
+import cn.felord.idserver.authentication.providers.OAuth2ProviderConfigurer;
 import cn.felord.idserver.entity.Permission;
 import cn.felord.idserver.entity.Role;
 import cn.felord.idserver.enumate.RootUserConstants;
@@ -8,8 +10,11 @@ import cn.felord.idserver.handler.RedirectLoginAuthenticationSuccessHandler;
 import cn.felord.idserver.handler.SimpleAuthenticationEntryPoint;
 import cn.felord.idserver.service.OAuth2UserDetailsService;
 import cn.felord.idserver.service.UserInfoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
+import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientPropertiesRegistrationAdapter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -25,6 +30,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.server.authorization.config.ProviderSettings;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
@@ -37,7 +43,9 @@ import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -56,6 +64,9 @@ public class IdServerSecurityConfiguration {
      * The constant ID_SERVER_SYSTEM_SECURITY_CONTEXT_KEY.
      */
     public static final String ID_SERVER_SYSTEM_SECURITY_CONTEXT_KEY = "ID_SERVER_SYSTEM_SECURITY_CONTEXT";
+    /**
+     * The constant ID_SERVER_SYSTEM_SAVED_REQUEST_KEY.
+     */
     public static final String ID_SERVER_SYSTEM_SAVED_REQUEST_KEY = "ID_SERVER_SYSTEM_SECURITY__SAVED_REQUEST";
 
     /**
@@ -126,7 +137,8 @@ public class IdServerSecurityConfiguration {
         /**
          * 管理后台以{@code /system}开头
          *
-         * @param http the http
+         * @param http            the http
+         * @param userInfoService the user info service
          * @return the security filter chain
          * @throws Exception the exception
          * @see AuthorizationServerConfiguration
@@ -162,6 +174,23 @@ public class IdServerSecurityConfiguration {
     }
 
     /**
+     * Delegate client registration repository delegate client registration repository.
+     *
+     * @param properties the properties
+     * @return the delegate client registration repository
+     */
+    @Bean
+    DelegateClientRegistrationRepository delegateClientRegistrationRepository(@Autowired(required = false) OAuth2ClientProperties properties) {
+        DelegateClientRegistrationRepository clientRegistrationRepository = new DelegateClientRegistrationRepository();
+        if (properties != null) {
+            List<ClientRegistration> registrations = new ArrayList<>(
+                    OAuth2ClientPropertiesRegistrationAdapter.getClientRegistrations(properties).values());
+            registrations.forEach(clientRegistrationRepository::addClientRegistration);
+        }
+        return clientRegistrationRepository;
+    }
+
+    /**
      * 普通用户访问安全配置.
      *
      * @author felord.cn
@@ -173,9 +202,10 @@ public class IdServerSecurityConfiguration {
         /**
          * Default security filter chain security filter chain.
          *
-         * @param http                     the http
-         * @param oAuth2UserDetailsService the oauth2 user details service
-         * @param securityFilterChain      the security filter chain
+         * @param http                                 the http
+         * @param oAuth2UserDetailsService             the oauth2 user details service
+         * @param securityFilterChain                  the security filter chain
+         * @param delegateClientRegistrationRepository the delegate client registration repository
          * @return the security filter chain
          * @throws Exception the exception
          */
@@ -183,7 +213,8 @@ public class IdServerSecurityConfiguration {
         @Order(Ordered.HIGHEST_PRECEDENCE + 2)
         SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http,
                                                        OAuth2UserDetailsService oAuth2UserDetailsService,
-                                                       @Qualifier("authorizationServerSecurityFilterChain") SecurityFilterChain securityFilterChain) throws Exception {
+                                                       @Qualifier("authorizationServerSecurityFilterChain") SecurityFilterChain securityFilterChain,
+                                                       DelegateClientRegistrationRepository delegateClientRegistrationRepository) throws Exception {
             DefaultSecurityFilterChain authorizationServerFilterChain = (DefaultSecurityFilterChain) securityFilterChain;
             SimpleAuthenticationEntryPoint authenticationEntryPoint = new SimpleAuthenticationEntryPoint();
             AuthenticationEntryPointFailureHandler authenticationFailureHandler = new AuthenticationEntryPointFailureHandler(authenticationEntryPoint);
@@ -212,6 +243,15 @@ public class IdServerSecurityConfiguration {
                                             // 两个登录保持一致
                                             .failureHandler(authenticationFailureHandler)
                             )
+                    .and()
+                    .apply(new OAuth2ProviderConfigurer(delegateClientRegistrationRepository))
+                    .wechatWebclient("wxdf9033184b238e7f", "bf1306baaa0d874457db15eb02d68df5")
+                    .workWechatWebLoginclient("wwa70dc5b6e56936e1", "nvzGI4Alp3zS7rfOYAlFs-BZUc3TtPtKbnfTEets5W8", "1000005")
+                    .wechatWebLoginclient("wxafd62c05779e50bd", "ab24fce07ea84228dc4e64720f8bdefd")
+                    .oAuth2LoginConfigurerConsumer(config->
+                            config.loginPage("/login")
+                                    .successHandler(loginAuthenticationSuccessHandler)
+                                    .failureHandler(authenticationFailureHandler))
                     .and()
                     .oauth2ResourceServer().jwt();
             return http.build();

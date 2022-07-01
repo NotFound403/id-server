@@ -82,7 +82,7 @@ create table oauth2_client
     client_secret_expires_at timestamp                           null comment '客户端密码过期时间',
     client_name              varchar(200)                        not null comment '客户端名称',
     primary key (`id`),
-    constraint UK_drwlno5wbex09l0acnnwecp7r
+    constraint client_id_uindex
         unique (client_id)
 )
     comment 'oauth2客户端基础信息表';
@@ -99,7 +99,7 @@ create table oauth2_scope
 (
     client_id   varchar(255) not null comment 'oauth2客户端id',
     scope       varchar(255) not null comment '客户端允许的scope 来自role表',
-    description varchar(255) null,
+    `description` varchar(255) null,
     primary key (client_id, scope)
 )
     comment 'oauth2客户端授权范围';
@@ -130,7 +130,7 @@ create table permission
     update_id       varchar(255) null,
     update_time     datetime(6)  null,
     primary key (permission_id),
-    constraint UKpubb8bn5j1jwu50vnykvbap9w
+    constraint permission_code_uindex
         unique (permission_code)
 );
 
@@ -154,7 +154,7 @@ create table `role`
     update_id     varchar(64)          null comment '修改人ID',
     enabled       tinyint(1) default 1 null comment '删除状态（1-正常，0-删除）',
     primary key (role_id),
-    constraint UKiubw515ff0ugtm28p8g3myt0h
+    constraint role_name_uindx
         unique (role_name)
 )
     comment '角色权限表';
@@ -163,11 +163,7 @@ create table role_permission
 (
     role_id       varchar(255) not null,
     permission_id varchar(255) not null,
-    primary key (role_id, permission_id),
-    constraint FKa6jx8n8xkesmjmv6jqug6bg68
-        foreign key (role_id) references role (role_id),
-    constraint FKf8yllw1ecvwqy3ehyxawqa1qp
-        foreign key (permission_id) references permission (permission_id)
+    primary key (role_id, permission_id)
 );
 
 create table system_settings
@@ -196,9 +192,9 @@ create table user_info
     enabled      tinyint(1) default 1  null comment '删除状态（1-正常，0-删除）',
     secret       varchar(255)          null,
     primary key (user_id),
-    constraint user_info_phone_number_uindex
+    constraint phone_number_uindex
         unique (phone_number),
-    constraint username
+    constraint username_uindex
         unique (username)
 )
     comment '用户表';
@@ -207,10 +203,6 @@ create table user_role
 (
     user_id varchar(255) not null,
     role_id varchar(255) not null,
-    primary key (user_id, role_id),
-    constraint FKa68196081fvovjhkek5m97n3y
-        foreign key (role_id) references role (role_id),
-    constraint FKm90yi1ak9h9tbct25k3km0hia
-        foreign key (user_id) references user_info (user_id)
+    primary key (user_id, role_id)
 );
 

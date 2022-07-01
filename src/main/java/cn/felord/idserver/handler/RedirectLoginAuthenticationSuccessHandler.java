@@ -8,6 +8,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
@@ -21,6 +24,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collections;
+import java.util.function.Consumer;
 
 /**
  * @author felord.cn
@@ -31,6 +35,10 @@ public class RedirectLoginAuthenticationSuccessHandler implements Authentication
     private final ObjectMapper objectMapper = new ObjectMapper()
             .registerModule(new JavaTimeModule());
     private RequestCache requestCache;
+
+    private Consumer<OAuth2User> oauth2UserHandler = (user) -> {};
+
+    private Consumer<OidcUser> oidcUserHandler = (user) -> this.oauth2UserHandler.accept(user);
     private static final String defaultTargetUrl = "/";
     private final String redirect;
 
@@ -47,6 +55,15 @@ public class RedirectLoginAuthenticationSuccessHandler implements Authentication
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
+        //todo 自动注册
+        if (authentication instanceof OAuth2AuthenticationToken) {
+            if (authentication.getPrincipal() instanceof OidcUser) {
+                this.oidcUserHandler.accept((OidcUser) authentication.getPrincipal());
+            } else if (authentication.getPrincipal() instanceof OAuth2User) {
+                this.oauth2UserHandler.accept((OAuth2User) authentication.getPrincipal());
+            }
+        }
+
         SavedRequest savedRequest = this.requestCache.getRequest(request, response);
 
         String targetUrl = savedRequest == null ? this.redirect : savedRequest.getRedirectUrl();
