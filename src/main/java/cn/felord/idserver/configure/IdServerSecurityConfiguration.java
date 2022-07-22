@@ -245,8 +245,7 @@ public class IdServerSecurityConfiguration {
                             )
                     .and()
                     .apply(new OAuth2ProviderConfigurer(delegateClientRegistrationRepository))
-                    .wechatWebclient("wxdf9033184b238e7f", "bf1306baaa0d874457db15eb02d68df5")
-                    .workWechatWebLoginclient("wwa70dc5b6e56936e1", "nvzGI4Alp3zS7rfOYAlFs-BZUc3TtPtKbnfTEets5W8", "1000005")
+                    .workWechatWebLoginClient("wwa70dc5b6e56936e1", "nvzGI4Alp3zS7rfOYAlFs-BZUc3TtPtKbnfTEets5W8", "1000005")
                     .wechatWebLoginclient("wxafd62c05779e50bd", "ab24fce07ea84228dc4e64720f8bdefd")
                     .oAuth2LoginConfigurerConsumer(config->
                             config.loginPage("/login")

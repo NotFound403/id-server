@@ -49,36 +49,6 @@ public enum ClientProviders {
                 URI uri = UriComponentsBuilder.fromUriString(tokenUri).queryParams(queryParameters).build().toUri();
                 return RequestEntity.get(uri).headers(headers).build();
             }),
-    /**
-     * 微信网页授权.
-     */
-    WECHAT_WEB_CLIENT("wechat-web",
-            ClientProviders::oAuth2AuthorizationRequestConsumer,
-            authorizationCodeGrantRequest -> {
-                ClientRegistration clientRegistration = authorizationCodeGrantRequest.getClientRegistration();
-                HttpHeaders headers = getTokenRequestHeaders(clientRegistration);
-
-                OAuth2AuthorizationExchange authorizationExchange = authorizationCodeGrantRequest.getAuthorizationExchange();
-                MultiValueMap<String, String> queryParameters = new LinkedMultiValueMap<>();
-                // grant_type
-                queryParameters.add(OAuth2ParameterNames.GRANT_TYPE, authorizationCodeGrantRequest.getGrantType().getValue());
-                // code
-                queryParameters.add(OAuth2ParameterNames.CODE, authorizationExchange.getAuthorizationResponse().getCode());
-                // 如果有redirect-uri
-                String redirectUri = authorizationExchange.getAuthorizationRequest().getRedirectUri();
-                if (redirectUri != null) {
-                    queryParameters.add(OAuth2ParameterNames.REDIRECT_URI, redirectUri);
-                }
-                //appid
-                queryParameters.add(WechatParameterNames.APP_ID, clientRegistration.getClientId());
-                //secret
-                queryParameters.add(WechatParameterNames.SECRET, clientRegistration.getClientSecret());
-
-                String tokenUri = clientRegistration.getProviderDetails().getTokenUri();
-
-                URI uri = UriComponentsBuilder.fromUriString(tokenUri).queryParams(queryParameters).build().toUri();
-                return RequestEntity.get(uri).headers(headers).build();
-            }),
 
     /**
      * The Work wechat scan client.
@@ -100,9 +70,8 @@ public enum ClientProviders {
                                             if (OAuth2ParameterNames.STATE.equals(k)) {
                                                 linkedParameters.put(OAuth2ParameterNames.STATE, v);
                                             }
-                                            // 借用scope
+                                            //todo 借用scope
                                             if (OAuth2ParameterNames.SCOPE.equals(k)){
-                                                // 1000005
                                                 linkedParameters.put(WechatParameterNames.AGENT_ID, v);
                                             }
                                         });

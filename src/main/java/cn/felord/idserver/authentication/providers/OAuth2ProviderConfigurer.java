@@ -46,27 +46,6 @@ public class OAuth2ProviderConfigurer extends AbstractHttpConfigurer<OAuth2Provi
     }
 
     /**
-     * Wechat webclient o auth 2 provider configurer.
-     *
-     * @param appId  the app id
-     * @param secret the secret
-     * @return the o auth 2 provider configurer
-     */
-    public OAuth2ProviderConfigurer wechatWebclient(String appId, String secret) {
-        ClientRegistration clientRegistration = getBuilder(ClientProviders.WECHAT_WEB_CLIENT.registrationId(), ClientAuthenticationMethod.NONE)
-                .clientId(appId)
-                .clientSecret(secret)
-                .scope("snsapi_userinfo")
-                .authorizationUri("https://open.weixin.qq.com/connect/oauth2/authorize")
-                .tokenUri("https://api.weixin.qq.com/sns/oauth2/access_token")
-                .userInfoUri("https://api.weixin.qq.com/sns/userinfo")
-                .clientName("微信网页授权")
-                .build();
-        this.delegateClientRegistrationRepository.addClientRegistration(clientRegistration);
-        return this;
-    }
-
-    /**
      * Wechat web loginclient o auth 2 provider configurer.
      *
      * @param appId  the app id
@@ -95,7 +74,7 @@ public class OAuth2ProviderConfigurer extends AbstractHttpConfigurer<OAuth2Provi
      * @param agentId the agent id
      * @return the o auth 2 provider configurer
      */
-    public OAuth2ProviderConfigurer workWechatWebLoginclient(String corpId, String secret, String agentId) {
+    public OAuth2ProviderConfigurer workWechatWebLoginClient(String corpId, String secret, String agentId) {
         ClientRegistration clientRegistration = getBuilder(ClientProviders.WORK_WECHAT_SCAN_CLIENT.registrationId(), ClientAuthenticationMethod.NONE)
                 .clientId(corpId)
                 .clientSecret(secret)
@@ -148,7 +127,6 @@ public class OAuth2ProviderConfigurer extends AbstractHttpConfigurer<OAuth2Provi
 
         WechatOAuth2UserService value = new WechatOAuth2UserService();
         Map<String, OAuth2UserService<OAuth2UserRequest, OAuth2User>> oAuth2UserServiceMap = new HashMap<>();
-        oAuth2UserServiceMap.put(ClientProviders.WECHAT_WEB_CLIENT.registrationId(), value);
         oAuth2UserServiceMap.put(ClientProviders.WECHAT_WEB_LOGIN_CLIENT.registrationId(), value);
         oAuth2UserServiceMap.put(ClientProviders.WORK_WECHAT_SCAN_CLIENT.registrationId(), new WorkWechatOAuth2UserService());
 
